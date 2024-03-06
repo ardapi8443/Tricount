@@ -10,6 +10,7 @@ public class Template : EntityBase<PridContext>
     
     [Required, ForeignKey(nameof(Tricount))]
     private int Tricount { get; private set; }
+    public virtual ICollection<TemplateItem> TemplateItems = new HashSet<TemplateItem>();
 
     public Template(int TemplateId, string Title, int Tricount) { 
     

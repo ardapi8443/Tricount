@@ -7,8 +7,11 @@ public class TemplateItem : EntityBase<PridContext>
     public int Weight { get; private set; }
     [Required, ForeignKey(nameof(User))]
     public int User { get; private set; }
+    public virtual User UserFromTemplateItem {  get; private set; }
+    
     [Required, ForeignKey(nameof(Template))]
     public int Template { get; private set; }
+    public virtual Template TemplateFromTemplateItem { get; private set; }
 
     public TemplateItem(int Weight, int UserFrom, int Template) { 
         this.Weight = Weight;

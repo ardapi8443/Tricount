@@ -34,6 +34,27 @@ public class PridContext : DbContextBase
             .EnableDetailedErrors() // attention : ralentit les requêtes
             ;
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder) 
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Template>()
+            .HasMany(t =>t.TemplateItems)
+            .WithOne(ti => ti.TemplateFromTemplateItem)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        // à voir...
+        //modelBuilder.Entity<User>()
+            
+
+    }
     
     public DbSet<User> Users => Set<User>();
+    public DbSet<Tricount> Tricounts => Set<Tricounts>();
+    public DbSet<Subscription> Users => Set<Subscription>();
+    public DbSet<Operation> Users => Set<Operation>();
+    public DbSet<Repartition> Users => Set<Repartition>();
+    public DbSet<Template> Users => Set<Template>();
+    public DbSet<TemplateItem> Users => Set<TemplateItem>();
 }
