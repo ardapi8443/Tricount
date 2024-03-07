@@ -23,5 +23,12 @@ public class Tricount : EntityBase<PridContext>
         this.CreatedAt = DateTime.Now;
     }
 
+    public Tricount(string Title, string Description, int Creator, DateTime Created_at) {
+        this.Title = Title;
+        this.Description = Description;
+        this.Creator = Creator;
+        this.CreatedAt = Created_at;
+    }
+
     public Tricount() { }   
 }

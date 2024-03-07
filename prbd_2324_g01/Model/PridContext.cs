@@ -7,6 +7,7 @@ namespace prbd_2324_g01.Model;
 
 public class PridContext : DbContextBase
 {
+    public static Model Context { get; private set; } = new Model();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         base.OnConfiguring(optionsBuilder);
 
@@ -49,12 +50,6 @@ public class PridContext : DbContextBase
             
 
     }
-    
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Tricount> Tricounts => Set<Tricounts>();
-    public DbSet<Subscription> Users => Set<Subscription>();
-    public DbSet<Operation> Users => Set<Operation>();
-    public DbSet<Repartition> Users => Set<Repartition>();
-    public DbSet<Template> Users => Set<Template>();
-    public DbSet<TemplateItem> Users => Set<TemplateItem>();
+
+   
 }
