@@ -25,7 +25,7 @@ namespace prbd_2324_g01.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-           
+           modelBuilder.Entity<User>().HasMany(User.)
 
       
             SeedData(modelBuilder);
