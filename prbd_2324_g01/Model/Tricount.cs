@@ -1,4 +1,6 @@
 using PRBD_Framework;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
@@ -11,9 +13,9 @@ public class Tricount : EntityBase<PridContext>
     [Required, ForeignKey(nameof(User))]
     public int Creator { get; private set; }
 
-    public virtual ICollection<User> Subscribers = new HashSet(); 
-    public virtual ICollection<Operation> Operations = new HashSet();
-    public virtual ICollection<Repartitions> Repartitions = new HashSet();
+    public virtual ICollection<User> Subscribers { get; private set; } = new HashSet<User>(); 
+    public virtual ICollection<Operation> Operations { get; private set; } = new HashSet<Operation>();
+    public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>();
 
     public Tricount(string Title, string Description, int Creator) 
     {

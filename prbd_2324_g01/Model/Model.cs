@@ -16,16 +16,15 @@ namespace prbd_2324_g01.Model
             optionsBuilder.UseSqlite(@"Data Source=prbd_2324_g01.db")
   
                 .EnableSensitiveDataLogging()
-                .UseLazyLoadingProxies(true)
-                ;
-
-
+            // Pour que le lazy loading fonctionne, les propriétés de navigation doivent être marquées comme public et virtual.
+            .UseLazyLoadingProxies(false);
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-           modelBuilder.Entity<User>().HasMany(User.)
+           // modelBuilder.Entity<User>().HasMany(User)
 
       
             SeedData(modelBuilder);

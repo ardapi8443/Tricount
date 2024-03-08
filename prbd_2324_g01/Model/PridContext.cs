@@ -5,8 +5,7 @@ using System.Configuration;
 
 namespace prbd_2324_g01.Model;
 
-public class PridContext : DbContextBase
-{
+public class PridContext : DbContextBase {
     public static Model Context { get; private set; } = new Model();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         base.OnConfiguring(optionsBuilder);
@@ -24,7 +23,7 @@ public class PridContext : DbContextBase
 
         var connectionString = ConfigurationManager.ConnectionStrings["MsSqlConnectionString"].ConnectionString;
         optionsBuilder.UseSqlServer(connectionString);
-
+        
         ConfigureOptions(optionsBuilder);
     }
 
@@ -42,7 +41,7 @@ public class PridContext : DbContextBase
 
         modelBuilder.Entity<Template>()
             .HasMany(t =>t.TemplateItems)
-            .WithOne(ti => ti.TemplateFromTemplateItem)
+            .WithOne(ti => ti.Template)
             .OnDelete(DeleteBehavior.ClientCascade);
 
         // à voir...

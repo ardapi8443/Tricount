@@ -2,24 +2,18 @@
 
 namespace prbd_2324_g01.Model;
 
-public class User : EntityBase<PridContext>
-{
-
-    public enum Role
-    {
-        Viewer = 0,
-        Administrator = 1
-    }
-
+public class User : EntityBase<PridContext> {
+    
     public int UserId { get; private set; }
     public  string FullName { get; private set; }
     public string HashedPassword { get; private set; }
-    public Role Role { get; private set; } = Role.Viewer;
+    public Role Role { get; set; } = Role.Viewer;
     public string emal {  get; private set; }
 
-    public virtual ICollection<Tricount> Tricounts = new HashSet();
-    public virtual ICollection<Operation> Operations  = new HashSet();
-    public virtual ICollection<Repartitions> Repartitions { get; set; } = new HashSet();
+    // need to put accesors for redifinition :: framework
+    public virtual ICollection<Tricount> Tricounts { get; private set; }= new HashSet<Tricount>();
+    public virtual ICollection<Operation> Operations { get; private set; } = new HashSet<Operation>();
+    public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>();
 
     public User (string FullName, string HashedPassword, string email) 
     {
