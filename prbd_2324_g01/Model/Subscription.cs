@@ -4,8 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Subscription : EntityBase<PridContext>
-{
+public class Subscription : EntityBase<Model> {
+
+    public static int countId { get; set; } = 1;
+    
+    public int SubscriptionId { get; set;}
+    
     [Required, ForeignKey(nameof(User))]
     public int User {  get; private set; }
     public virtual User UserFromSubscription { get; private set; }
@@ -14,8 +18,8 @@ public class Subscription : EntityBase<PridContext>
     public int Tricount { get; private set; }
     public virtual Tricount TricountFromSubscription { get; private set; }
 
-    public Subscription(int User, int Tricount) 
-    {
+    public Subscription(int User, int Tricount) {
+        this.SubscriptionId = countId++;
         this.User = User;
         this.Tricount = Tricount;
     }

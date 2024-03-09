@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Tricount : EntityBase<PridContext> 
-{
+public class Tricount : EntityBase<Model> {
+    
+    public static int tricountCountId { get; set; } = 1;
+    
     public int TricountId { get; private set; }
     public string Title { get; private set; }
     public string Description { get; private set; }
@@ -17,8 +19,8 @@ public class Tricount : EntityBase<PridContext>
     public virtual ICollection<Operation> Operations { get; private set; } = new HashSet<Operation>();
     public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>();
 
-    public Tricount(string Title, string Description, int Creator) 
-    {
+    public Tricount(string Title, string Description, int Creator) {
+        this.TricountId = tricountCountId++;
         this.Title = Title;
         this.Description = Description;
         this.Creator = Creator;
@@ -26,6 +28,7 @@ public class Tricount : EntityBase<PridContext>
     }
 
     public Tricount(string Title, string Description, int Creator, DateTime Created_at) {
+        this.TricountId = tricountCountId++;
         this.Title = Title;
         this.Description = Description;
         this.Creator = Creator;

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Template : EntityBase<PridContext> {
+public class Template : EntityBase<Model> {
     
     public int TemplateId {  get; set; }
     private string Title { get;  set; }
