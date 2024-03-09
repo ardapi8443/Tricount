@@ -39,17 +39,126 @@ public class PridContext : DbContextBase {
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Template>()
-            .HasMany(t =>t.TemplateItems)
-            .WithOne(ti => ti.Template)
+        modelBuilder.Entity<Tricount>()
+            .HasMany(t => t.Operations)
+            .WithOne(o => o.TricountFromOperation)
             .OnDelete(DeleteBehavior.ClientCascade);
 
-        // à voir...
-        //modelBuilder.Entity<User>()
+        modelBuilder.Entity<Tricount>()
+            .HasMany(t => t.Templates)
+            .WithOne(te => te.TricountFromTemplate)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.TricountCreated)
+            .WithOne(t => t.CreatorFromTricount)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.OperationsCreated)
+            .WithOne(o => o.Initiator)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<User>()             
+            .HasMany(u => u.Tricounts)
+            .WithMany(t => t.Subscribers)
+            .UsingEntity<Subscription>(
+                // one to to many à partit de MyRelation2
+                right => right.HasOne(s => s.TricountFromSubscription).WithMany()
+                    .HasForeignKey(nameof(Subscription.Tricount))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                //autre one to many à partir de MyRelation1
+                left => left.HasOne(s => s.UserFromSubscription).WithMany()
+                    .HasForeignKey(nameof(Subscription.User))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                 joinEntity => {
+                     joinEntity.HasKey(s => new { s.Tricount, s.User });
+                 });
+
+        modelBuilder.Entity<Tricount>()
+            .HasMany(t => t.Subscribers)
+            .WithMany(s => s.Tricounts) // !!!
+            .UsingEntity<Subscription>(
+                // one to to many à partit de MyRelation2
+                right => right.HasOne(s => s.UserFromSubscription).WithMany()
+                    .HasForeignKey(nameof(Subscription.User))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                //autre one to many à partir de MyRelation1
+                left => left.HasOne(s => s.TricountFromSubscription).WithMany()
+                    .HasForeignKey(nameof(Subscription.Tricount))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                 joinEntity => {
+                     joinEntity.HasKey(s => new { s.User, s.Tricount });
+                 });
+
+
+        modelBuilder.Entity<Template>()
+                    .HasMany(t => t.Users)
+                    .WithMany(u => u.Templates)
+                    .UsingEntity<TemplateItem>(
+                        // one to to many à partit de MyRelation2
+                        right => right.HasOne(ti => ti.UserFromTemplateItem).WithMany()
+                            .HasForeignKey(nameof(TemplateItem.User))
+                            .OnDelete(DeleteBehavior.ClientCascade),
+                        //autre one to many à partir de MyRelation1
+                        left => left.HasOne(ti => ti.TemplateFromTemplateItem).WithMany()
+                            .HasForeignKey(nameof(TemplateItem.Template))
+                            .OnDelete(DeleteBehavior.ClientCascade),
+                         joinEntity => {
+                             joinEntity.HasKey(ti => new { ti.User, ti.Template });
+                         });
+
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Templates)
+            .WithMany(t => t.Users)
+            .UsingEntity<TemplateItem>(
+                // one to to many à partit de MyRelation2
+                right => right.HasOne(ti => ti.TemplateFromTemplateItem).WithMany()
+                    .HasForeignKey(nameof(TemplateItem.Template))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                //autre one to many à partir de MyRelation1
+                left => left.HasOne(ti => ti.UserFromTemplateItem).WithMany()
+                    .HasForeignKey(nameof(TemplateItem.User))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                 joinEntity => {
+                     joinEntity.HasKey(ti => new { ti.Template, ti.User });
+                 });
+
+        modelBuilder.Entity<Operation>()
+            .HasMany(o => o.Users)
+            .WithMany(u => u.Operations)
+            .UsingEntity<Repartition>(
+                right => right.HasOne(r => r.UserFromRepartition).WithMany()
+                    .HasForeignKey(nameof(Repartition.User))
+                    .OnDelete(DeleteBehavior.ClientCascade),
+                left => left.HasOne(r => r.OperationFromRepartition).WithMany()
+                     .HasForeignKey(nameof(Repartition.Operation))
+                     .OnDelete(DeleteBehavior.ClientCascade),
+                joinEntity => {
+                    joinEntity.HasKey(r => new { r.User, r.Operation });
+                });
+
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Operations)
+                .WithMany(o => o.Users)
+                .UsingEntity<Repartition>(
+                    right => right.HasOne(r => r.OperationFromRepartition).WithMany()
+                        .HasForeignKey(nameof(Repartition.Operation))
+                        .OnDelete(DeleteBehavior.ClientCascade),
+                    left => left.HasOne(r => r.UserFromRepartition).WithMany()
+                        .HasForeignKey(nameof(Repartition.User))
+                        .OnDelete(DeleteBehavior.ClientCascade),
+                    joinEntity => {
+                        joinEntity.HasKey(r => new { r.Operation, r.User });
+                    });
+
+
         SeedData(modelBuilder);
 
     }
-    
+   
             private static void SeedData(ModelBuilder modelBuilder) {
 
 
@@ -85,7 +194,7 @@ public class PridContext : DbContextBase {
             Subscription subscription12 = new Subscription(4, 4);
             Subscription subscription13 = new Subscription(4, 5);
             Subscription subscription14 = new Subscription(4, 6);
-            Subscription subscription15 = new Subscription(2, 5);
+
 
             modelBuilder.Entity<Subscription>().HasData(subscription01, subscription02, subscription03, subscription04, subscription05, subscription06, subscription07, subscription08, subscription09, subscription10, subscription11, subscription12, subscription13, subscription14,subscription15);
             

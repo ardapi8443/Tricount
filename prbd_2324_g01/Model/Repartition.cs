@@ -5,22 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace prbd_2324_g01.Model;
 
 public class Repartition : EntityBase<Model> {
-    
-    public int RepartitionId { get; set; }
-    
-    [Required, ForeignKey(nameof(UserEntity))]
-    public int User { get; set; }
-    
-    [Required, ForeignKey(nameof(OperationEntity))]
-    public int Operation { get; set; }
-    public int Weight { get; set; }
-    
-    public virtual User UserEntity { get; set; }
-    public virtual Operation OperationEntity { get; set; }
+    [Required]
+    public int Weight {  get; set; }
+
+    [Required, ForeignKey(nameof(User))]
+    public int User { get; private set; }
+    public virtual User UserFromRepartition { get; private set; }
+
+    [Required, ForeignKey(nameof(Tricount))]
+    public int Operation { get; private set; }
+    public virtual Operation OperationFromRepartition { get; private set; }
+
+
+
 
     public Repartition (int userId, int Operation, int Weight) {
         this.User = userId;
-        this.Operation = Operation;
+        this.Tricount = Tricount;
         this.Weight = Weight;
     }
 

@@ -25,17 +25,23 @@ public class Operation : EntityBase<Model> {
     public DateTime Date { get; private set; } = DateTime.Now; 
 
     [Required, ForeignKey(nameof(User))] 
-    public int Initiator { get; private set; }
+    public int UserId { get; private set; }
+    public virtual User Initiator { get; private set; }
+
+    public virtual ICollection<User> Users { get; private set; } = new HashSet<User>();
 
     [Required, ForeignKey(nameof(User))] 
     public int Tricount { get; private set; } 
 
-    public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>(); 
+    public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>();
+    public virtual Tricount TricountFromOperation { get; private set; }
 
-    
+    public virtual User UserFromOperation { get; private set; }
+
+
     public Operation(int tricount, int initiator, string title, double amount) { 
         Tricount = tricount;
-        Initiator = initiator;
+        UserId = initiator;
         Title = title;
         Amount = amount;
     }
