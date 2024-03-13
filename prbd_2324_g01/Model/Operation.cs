@@ -26,8 +26,8 @@ public class Operation : EntityBase<Model> {
     
     public DateTime OperationDate { get;  set; }
 
-    [Required, ForeignKey(nameof(User))]
-    public int UserId { get; set; }
+    [Required, ForeignKey(nameof(User))] 
+    public int UserId { get;  set; }
     public virtual User Initiator { get;  set; }
 
     public virtual ICollection<User> Users { get; set; } = new HashSet<User>();

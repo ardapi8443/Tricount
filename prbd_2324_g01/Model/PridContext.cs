@@ -216,7 +216,7 @@ public class PridContext : DbContextBase {
         Operation operation11 = new Operation(11, "Decathlon", 6, 199.99, new DateTime(2023, 07, 01), 2);
 
 
-        //modelBuilder.Entity<Operation>().HasData(operation01,operation02,operation03,operation04,operation05,operation06,operation07,operation08,operation09,operation10,operation11);
+        modelBuilder.Entity<Operation>().HasData(operation01,operation02,operation03,operation04,operation05,operation06,operation07,operation08,operation09,operation10,operation11);
 
 
         //Repartition (int userId, int Operation, int Weight
@@ -248,7 +248,7 @@ public class PridContext : DbContextBase {
         Repartition repartition25 = new Repartition(2,11,2);
         Repartition repartition26 = new Repartition(4,11,2);
 
-        modelBuilder.Entity<Operation>().HasData(
+        modelBuilder.Entity<Repartition>().HasData(
             repartition1, repartition2, repartition3, repartition4, repartition5, repartition6, repartition7, repartition8, repartition9, repartition10, 
             repartition11, repartition12, repartition13, repartition14, repartition15, repartition16, repartition17, repartition18, repartition19, repartition20,
             repartition21, repartition22, repartition23, repartition24, repartition25, repartition26);
@@ -256,11 +256,11 @@ public class PridContext : DbContextBase {
 
         //Template(int TemplateId, string Title, int Tricount)
         Template template1 = new Template(1, "Boris paye double", 4);
-        Template template2 = new Template(1, "Boris paye rien", 4);
+        Template template2 = new Template(2, "Boris paye rien", 4);
 
         modelBuilder.Entity<Template>().HasData(
             template1, template2);
-
+        
 
         //TemplateItem(int weight, int User, int Template)
         TemplateItem templateItem1 = new TemplateItem(2, 1, 1);
