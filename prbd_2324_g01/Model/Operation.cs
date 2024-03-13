@@ -1,13 +1,15 @@
 using prbd_2324_g01.Model;
 using PRBD_Framework;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Operation : EntityBase<Model> { 
-    
-    public int OperationId { get; private set; }
+public class Operation : EntityBase<Model> {
+
+    [Key]
+    public int OperationId { get; set; }
     
     private string _title;
     public string Title {
@@ -20,30 +22,31 @@ public class Operation : EntityBase<Model> {
         }
     }
     
-    public double Amount { get; private set; } 
+    public double Amount { get; set; } 
     
-    public DateTime Date { get; private set; } = DateTime.Now; 
+    public DateTime OperationDate { get;  set; }
 
-    [Required, ForeignKey(nameof(User))] 
-    public int UserId { get; private set; }
-    public virtual User Initiator { get; private set; }
+    [Required, ForeignKey(nameof(User))]
+    public int UserId { get; set; }
+    public virtual User Initiator { get;  set; }
 
-    public virtual ICollection<User> Users { get; private set; } = new HashSet<User>();
+    public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
 
-    [Required, ForeignKey(nameof(User))] 
-    public int Tricount { get; private set; } 
+    [Required, ForeignKey(nameof(Tricount))]
+    public int TricountId { get; set; }
 
-    public virtual ICollection<Repartition> Repartitions { get; private set; } = new HashSet<Repartition>();
-    public virtual Tricount TricountFromOperation { get; private set; }
-
-    public virtual User UserFromOperation { get; private set; }
+    //public virtual ICollection<Repartition> Repartitions { get;  set; } = new HashSet<Repartition>();
+    //public virtual Tricount TricountFromOperation { get;  set; }
 
 
-    public Operation(int tricount, int initiator, string title, double amount) { 
-        Tricount = tricount;
-        UserId = initiator;
-        Title = title;
-        Amount = amount;
+
+    public Operation(int id, string title, int tricount, double amount, DateTime operation_date, int initiator) {
+        this.OperationId = id;
+        this.Title = title;
+        this.TricountId = tricount;
+        this.Amount = amount;
+        this.OperationDate = operation_date;
+        this.UserId = initiator;
     }
 
     public Operation() { } 
