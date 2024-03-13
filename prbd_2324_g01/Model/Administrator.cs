@@ -7,9 +7,9 @@ public class Administrator : User {
         Role = Role.Administrator;
     }
 
-    public Administrator(string FullName, string HashedPassword, string email) 
+    public Administrator(int id, string FullName, string HashedPassword, string email) 
         // base == this(); java
-        : base (FullName, HashedPassword, email) {
+        : base (id, FullName, HashedPassword, email) {
             Role = Role.Administrator;    
         }
     }

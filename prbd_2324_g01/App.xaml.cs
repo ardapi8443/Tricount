@@ -31,7 +31,7 @@ public partial class App {
         // Clear database and seed data
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
-        
+
 
         // Cold start
         Console.Write("Cold starting database... ");

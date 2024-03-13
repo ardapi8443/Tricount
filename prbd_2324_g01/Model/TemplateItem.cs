@@ -15,12 +15,12 @@ public class TemplateItem : EntityBase<Model> {
     public int Weight { get; set; }
 
     [Required, ForeignKey(nameof(User))]
-    public int User { get; private set; }
-    public virtual User UserFromTemplateItem { get; private set; }
+    public int User { get; set; }
+    public virtual User UserFromTemplateItem { get; set; }
 
     [Required, ForeignKey(nameof(Template))]
-    public int Template { get; private set; }
-    public virtual Template TemplateFromTemplateItem { get; private set; }
+    public int Template { get; set; }
+    public virtual Template TemplateFromTemplateItem { get; set; }
 
     public TemplateItem(int weight, int User, int Template) { 
         this.Weight = weight;
