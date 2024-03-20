@@ -9,9 +9,6 @@ namespace prbd_2324_g01.Model;
 public class TemplateItem : EntityBase<Model> {
 
     [Required]
-    public int TemplateItemId { get; set; }
-    
-    [Required]
     public int Weight { get; set; }
 
     [Required, ForeignKey(nameof(User))]

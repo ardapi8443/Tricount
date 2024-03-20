@@ -7,10 +7,11 @@ namespace prbd_2324_g01.Model;
 public class Template : EntityBase<Model> {
     
     public int TemplateId {  get; set; }
-    private string Title { get;  set; }
+    public string Title { get;  set; }
     
-    [Required, ForeignKey(nameof(Tricount))]
-    private int Tricount { get; set; }
+    [Required, ForeignKey(nameof(TricountFromTemplate))]
+    public int Tricount { get; set; }
+
     public virtual ICollection<User> Users { get;  set; } = new HashSet<User>();
 
     public virtual Tricount TricountFromTemplate { get; set; }
