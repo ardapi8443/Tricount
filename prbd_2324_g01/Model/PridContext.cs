@@ -69,10 +69,7 @@ public class PridContext : DbContextBase {
             .HasDiscriminator(u => u.Role)
             .HasValue<User>(Role.Viewer)
             .HasValue<Administrator>(Role.Administrator);
-
-<<<<<<< HEAD
- 
-=======
+        
         //modelBuilder.Entity<User>()
         //    .HasMany(u => u.Tricounts)
         //    .WithMany(t => t.Subscribers)
@@ -86,7 +83,6 @@ public class PridContext : DbContextBase {
         //         joinEntity => {
         //             joinEntity.HasKey(s => new { s.TricountId, s.UserId });
         //         });
->>>>>>> e3c7042988d4b98b548549d7e09046e716e414cb
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Tricounts)
