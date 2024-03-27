@@ -68,6 +68,8 @@ public class PridContext : DbContextBase {
             .HasValue<User>(Role.Viewer)
             .HasValue<Administrator>(Role.Administrator);
 
+ 
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Tricounts)
             .WithMany(t => t.Subscribers)
