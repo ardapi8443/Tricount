@@ -20,19 +20,19 @@ public class Tricount : EntityBase<Model> {
     public virtual ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
     //public virtual ICollection<Repartition> Repartitions { get; set; } = new HashSet<Repartition>();
 
-    [Required, ForeignKey(nameof(User))]
+    [Required, ForeignKey(nameof(CreatorFromTricount))]
     public int Creator { get; set; }
 
     //[Required]
     public virtual User CreatorFromTricount { get;  set; }
 
-    public Tricount( string Title, string Description, User Creator) {
-        //this.Id = countTricount++;
-        this.Title = Title;
-        this.Description = Description;
-        this.CreatorFromTricount = Creator;
-        this.CreatedAt = DateTime.Now;
-    }
+    //public Tricount( string Title, string Description, User Creator) {
+    //    //this.Id = countTricount++;
+    //    this.Title = Title;
+    //    this.Description = Description;
+    //    this.CreatorFromTricount = Creator;
+    //    this.CreatedAt = DateTime.Now;
+    //}
 
     public Tricount(int id, string Title, string Description, int Creator, DateTime Created_at) {
         this.Id = id;
