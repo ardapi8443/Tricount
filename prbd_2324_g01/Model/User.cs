@@ -42,4 +42,8 @@ public class User : EntityBase<PridContext> {
         PridContext.Context.Update(this);
         PridContext.Context.SaveChanges();
     }
+
+    public static User UserById(int id) {
+        return PridContext.Context.Users.FirstOrDefault(user => user.UserId == id);
+    }
 }

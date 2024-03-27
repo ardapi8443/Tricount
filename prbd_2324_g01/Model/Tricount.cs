@@ -45,5 +45,9 @@ public class Tricount : EntityBase<PridContext> {
         PridContext.Context.SaveChanges();
     }
 
+    public static List<Tricount> tricountByMember(User user) {
+        return PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
+    }
+
 
 }

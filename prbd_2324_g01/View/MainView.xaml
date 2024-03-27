@@ -5,16 +5,45 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
               xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
               mc:Ignorable="d"
               d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               WindowStartupLocation="CenterScreen"
-              Title="MainView" Height="400" Width="600">
+              Title="MyTricount" Height="400" Width="600">
 
     <Window.DataContext>
         <vm:MainViewModel x:Name="vm" />
     </Window.DataContext>
 
-    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="32"
-           Text="{Binding Title}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
+            <Button Content="Clear" Grid.Column="1" Command="{Binding ClearFilter}" Margin="5,0,0,0" />
+        </Grid>
+        <ListView x:Name="listView" ItemsSource="{Binding Tricounts}" Grid.Row="1" BorderBrush="Transparent" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DisplayMemberDetails}"
+                                           CommandParameter="{Binding ElementName=listView, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
 
+        </ListView>
+    </Grid>
 </f:WindowBase>
+    
+
