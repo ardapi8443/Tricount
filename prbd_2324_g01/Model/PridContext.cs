@@ -70,23 +70,6 @@ public class PridContext : DbContextBase {
             .HasValue<User>(Role.Viewer)
             .HasValue<Administrator>(Role.Administrator);
 
-<<<<<<< HEAD
- 
-=======
-        //modelBuilder.Entity<User>()
-        //    .HasMany(u => u.Tricounts)
-        //    .WithMany(t => t.Subscribers)
-        //    .UsingEntity<Subscription>(
-        //        right => right.HasOne(s => s.TricountFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.TricountId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //        left => left.HasOne(s => s.UserFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.UserId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //         joinEntity => {
-        //             joinEntity.HasKey(s => new { s.TricountId, s.UserId });
-        //         });
->>>>>>> e3c7042988d4b98b548549d7e09046e716e414cb
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Tricounts)

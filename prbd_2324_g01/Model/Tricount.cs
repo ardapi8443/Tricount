@@ -7,6 +7,8 @@ namespace prbd_2324_g01.Model;
 
 public class Tricount : EntityBase<Model> {
 
+    
+
     //private static int countTricount { get; set; } = 1;
 
     [Key]
@@ -42,5 +44,19 @@ public class Tricount : EntityBase<Model> {
         this.CreatedAt = Created_at;
     }
 
+    override
+    public string ToString() {
+        return ($"{this.Title} : {this.Creator}");
+    }
+
     public Tricount() { }   
+
+    public static IOrderedQueryable<Tricount> GetTricountByUser(User user) {
+        var q = from m in Model.Context.Tricounts
+                    //where m.Creator == user.UserId
+                orderby m.CreatedAt
+                select m;
+
+        return q;
+    }
 }

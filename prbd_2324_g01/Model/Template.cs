@@ -9,16 +9,9 @@ public class Template : EntityBase<Model> {
     public int TemplateId {  get; set; }
     public string Title { get;  set; }
     
-<<<<<<< HEAD
-    [Required, ForeignKey(nameof(Tricount))]
-    public int Tricount { get; set; }
-
-
-=======
     [Required, ForeignKey(nameof(TricountFromTemplate))]
     public int Tricount { get; set; }
 
->>>>>>> e3c7042988d4b98b548549d7e09046e716e414cb
     public virtual ICollection<User> Users { get;  set; } = new HashSet<User>();
 
    public virtual Tricount TricountFromTemplate { get; set; }
