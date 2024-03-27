@@ -44,6 +44,18 @@ public partial class App {
     }
 
     private static void TestQueries() {
+ 
+
         
+        foreach(Operation o in Operation.OperationByTricount(4)){
+            Console.WriteLine(o.Title);
+        }
+
+        Console.WriteLine("");
+
+        foreach (Operation o in Operation.OperationByTricount(6)) {
+            Console.WriteLine(o.Title);
+        }
+
     }
 }
