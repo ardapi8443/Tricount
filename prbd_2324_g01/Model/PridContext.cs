@@ -6,7 +6,7 @@ using System.Configuration;
 namespace prbd_2324_g01.Model;
 
 public class PridContext : DbContextBase {
-    public static Model Context { get; private set; } = new Model();
+    public static PridContext Context { get; private set; } = new PridContext();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         base.OnConfiguring(optionsBuilder);
 
@@ -39,20 +39,6 @@ public class PridContext : DbContextBase {
     {
         base.OnModelCreating(modelBuilder);
 
-        //modelBuilder.Entity<Tricount>()
-        //     .HasKey(t => t.Id);
-
-
-        //modelBuilder.Entity<Tricount>()
-        //    .HasMany(t => t.Operations)
-        //    .WithOne(o => o.TricountFromOperation)
-        //    .OnDelete(DeleteBehavior.ClientCascade);
-        //
-        // modelBuilder.Entity<Tricount>()
-        //     .HasMany(t => t.Templates)
-        //     .WithOne(te => te.TricountFromTemplate)
-        //     .OnDelete(DeleteBehavior.ClientCascade);
-
         modelBuilder.Entity<User>()
             .HasMany(u => u.TricountCreated)
             .WithOne(t => t.CreatorFromTricount)
@@ -70,23 +56,6 @@ public class PridContext : DbContextBase {
             .HasValue<User>(Role.Viewer)
             .HasValue<Administrator>(Role.Administrator);
 
-<<<<<<< HEAD
- 
-=======
-        //modelBuilder.Entity<User>()
-        //    .HasMany(u => u.Tricounts)
-        //    .WithMany(t => t.Subscribers)
-        //    .UsingEntity<Subscription>(
-        //        right => right.HasOne(s => s.TricountFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.TricountId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //        left => left.HasOne(s => s.UserFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.UserId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //         joinEntity => {
-        //             joinEntity.HasKey(s => new { s.TricountId, s.UserId });
-        //         });
->>>>>>> e3c7042988d4b98b548549d7e09046e716e414cb
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Tricounts)
@@ -105,21 +74,6 @@ public class PridContext : DbContextBase {
                  });
 
 
-        //modelBuilder.Entity<Tricount>()
-        //    .HasMany(t => t.Subscribers)
-        //    .WithMany(s => s.Tricounts)
-        //    .UsingEntity<Subscription>(
-        //        right => right.HasOne(s => s.UserFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.UserId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //        left => left.HasOne(s => s.TricountFromSubscription).WithMany()
-        //            .HasForeignKey(nameof(Subscription.TricountId))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //         joinEntity => {
-        //             joinEntity.HasKey(s => new { s.UserId, s.TricountId });
-        //         });
-
-
         modelBuilder.Entity<Template>()
                     .HasMany(t => t.Users)
                     .WithMany(u => u.Templates)
@@ -136,20 +90,6 @@ public class PridContext : DbContextBase {
                          });
 
 
-        //modelBuilder.Entity<User>()
-        //    .HasMany(u => u.Templates)
-        //    .WithMany(t => t.Users)
-        //    .UsingEntity<TemplateItem>(
-        //        right => right.HasOne(ti => ti.TemplateFromTemplateItem).WithMany()
-        //            .HasForeignKey(nameof(TemplateItem.Template))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //        left => left.HasOne(ti => ti.UserFromTemplateItem).WithMany()
-        //            .HasForeignKey(nameof(TemplateItem.User))
-        //            .OnDelete(DeleteBehavior.ClientCascade),
-        //         joinEntity => {
-        //             joinEntity.HasKey(ti => new { ti.Template, ti.User });
-        //         });
-
         modelBuilder.Entity<Operation>()
             .HasMany(o => o.Users)
             .WithMany(u => u.Operations)
@@ -163,21 +103,6 @@ public class PridContext : DbContextBase {
                 joinEntity => {
                     joinEntity.HasKey(r => new { r.UserId, r.OperationId });
                 });
-
-
-            //modelBuilder.Entity<User>()
-            //    .HasMany(u => u.Operations)
-            //    .WithMany(o => o.Users)
-            //    .UsingEntity<Repartition>(
-            //        right => right.HasOne(r => r.OperationFromRepartition).WithMany()
-            //            .HasForeignKey(nameof(Repartition.Operation))
-            //            .OnDelete(DeleteBehavior.ClientCascade),
-            //        left => left.HasOne(r => r.UserFromRepartition).WithMany()
-            //            .HasForeignKey(nameof(Repartition.User))
-            //            .OnDelete(DeleteBehavior.ClientCascade),
-            //        joinEntity => {
-            //            joinEntity.HasKey(r => new { r.Operation, r.User });
-            //        });
 
 
         SeedData(modelBuilder);
@@ -296,6 +221,14 @@ public class PridContext : DbContextBase {
         modelBuilder.Entity<TemplateItem>().HasData(
             templateItem1, templateItem2, templateItem3, templateItem4, templateItem5);
     }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Tricount> Tricounts => Set<Tricount>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<Operation> Operations => Set<Operation>();
+    public DbSet<Repartition> Repartitions => Set<Repartition>();
+    public DbSet<Template> Templates => Set<Template>();
+    public DbSet<TemplateItem> TemplateItems => Set<TemplateItem>();
 
 }
     

@@ -1,5 +1,8 @@
 ﻿using PRBD_Framework;
 using System.ComponentModel.DataAnnotations.Schema;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace prbd_2324_g01.Model;
 
@@ -16,8 +19,7 @@ public class User : EntityBase<PridContext> {
     public virtual ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
     public virtual ICollection<Template> Templates { get; set; } = new HashSet<Template>();
 
-    //public virtual ICollection<Subscription> Subscriptions { get; set; } = new HashSet<Subscription>();
-
+  
     public User (int id, string FullName, string HashedPassword, string email) {
         this.UserId = id;
         this.FullName = FullName;
@@ -26,6 +28,18 @@ public class User : EntityBase<PridContext> {
        
     }
 
-    public User() { 
+    public User() {
+    }
+
+    public void UpdatePwd(String str) {
+
+        this.HashedPassword = SecretHasher.Hash(str);
+        this.Persist();
+
+    }
+    public void Persist() {
+
+        PridContext.Context.Update(this);
+        PridContext.Context.SaveChanges();
     }
 }
