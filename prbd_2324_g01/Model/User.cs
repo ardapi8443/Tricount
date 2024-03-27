@@ -1,5 +1,6 @@
 ﻿using PRBD_Framework;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Windows.Controls;
 
 namespace prbd_2324_g01.Model;
 
@@ -27,5 +28,16 @@ public class User : EntityBase<PridContext> {
     }
 
     public User() { 
+    }
+
+    public double getExpenseByTricount(int id) {
+        var q = from o in PridContext.Context.Operations
+                let tricountId = id
+                let userId = this.UserId
+                where o.TricountId == tricountId
+                  &&  o.UserId == userId
+                  select o;
+        return q.Sum(x => x.Amount);
+                
     }
 }

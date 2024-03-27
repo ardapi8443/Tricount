@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Subscription : EntityBase<Model> {
+public class Subscription : EntityBase<PridContext> {
 
     [Required, ForeignKey(nameof(User))]
     public int UserId {  get; set; }

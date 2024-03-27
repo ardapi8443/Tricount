@@ -44,9 +44,12 @@ public partial class App {
     }
 
     private static void TestQueries() {
-        var q = Tricount.GetTricountByUser(new User { UserId = 1 });
+        var q = User.getExpenseByTricount(1);
         foreach (var t in q) {
             Console.WriteLine(t.ToString());
         }
+        //Console.WriteLine(q);
+
+
     }
 }

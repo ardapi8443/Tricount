@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class Operation : EntityBase<Model> {
+public class Operation : EntityBase<PridContext> {
 
     [Key]
     public int OperationId { get; set; }

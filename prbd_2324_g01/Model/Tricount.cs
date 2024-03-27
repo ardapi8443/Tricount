@@ -5,7 +5,7 @@ using System.Diagnostics.Metrics;
 
 namespace prbd_2324_g01.Model;
 
-public class Tricount : EntityBase<Model> {
+public class Tricount : EntityBase<PridContext> {
 
     
 
@@ -51,12 +51,35 @@ public class Tricount : EntityBase<Model> {
 
     public Tricount() { }   
 
-    public static IOrderedQueryable<Tricount> GetTricountByUser(User user) {
-        var q = from m in Model.Context.Tricounts
-                    //where m.Creator == user.UserId
-                orderby m.CreatedAt
-                select m;
+    public static IQueryable<int> GetTricountsIdByUser(User user) {
+        var q = from t in PridContext.Context.Tricounts
+                where t.Creator == user.UserId
+                orderby t.CreatedAt
+                select t.Id;
 
         return q;
     }
+
+    public static dynamic GetTricountDetail(int id) {
+        //manque balance !!!
+        //sous requete à faire à part dans user en envoyant le tricountId en paramètre
+        //int Id = this.Id;
+        int Id = id;
+        var q = from t in PridContext.Context.Tricounts
+                where t.Id == Id
+                let lastOperationDate = t.Operations.OrderByDescending(x => x.OperationDate).FirstOrDefault()
+                let friendsCount = t.Subscribers.Count()
+                let operationsCount = t.Operations.Count()
+                let operationsAmount = t.Operations.Sum(x => x.Amount)
+                //let myExpense = from o in PridContext.Context.Operations
+                //                where o.Initiator == t.CreatorFromTricount
+                //                group o by o.Initiator into a
+                //                let res = a.Sum(x => x.Amount)
+                //                select res
+                select new { t.Title, t.Description, Creator = t.CreatorFromTricount.FullName, t.CreatedAt, 
+                    lastOperationDate, friendsCount , operationsCount, operationsAmount };
+        return q.ToList();
+    }
+
+    
 }
