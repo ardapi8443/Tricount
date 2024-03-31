@@ -1,4 +1,5 @@
-﻿using prbd_2324_g01.Model;
+﻿using Microsoft.IdentityModel.Tokens;
+using prbd_2324_g01.Model;
 using System.Collections.ObjectModel;
 
 namespace prbd_2324_g01.ViewModel;
@@ -18,13 +19,28 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
         get => _filter;
         set => SetProperty(ref _filter, value, ApplyFilterAction);
     }
-
     private void ApplyFilterAction() {
-        IEnumerable<Tricount> tricouts = Tricount.tricountByMember(User.UserById(1));
 
-        Tricounts = new ObservableCollection<Tricount>(tricouts);
+        IEnumerable<Tricount> tricounts = Tricount.tricountByMember(User.UserById(1));
+
+        foreach (var tricount in tricounts) {
+            if (tricount.Description.Length == 0) {
+                tricount.Description = "No Description";
+            }
+            //if (!tricount.Operations.IsNullOrEmpty() && tricount.Operations.Any()) {
+
+            //    var newestOperation = tricount.Operations.OrderByDescending(o => o.OperationDate).First();
+            //    Couille = newestOperation.OperationDate.ToString("dd/MM/yyyy");
+            //}
+
+            
+
+        }
+
+        Tricounts = new ObservableCollection<Tricount>(tricounts);
     }
     public MainViewModel() {
         ApplyFilterAction();
+       
     }
 }

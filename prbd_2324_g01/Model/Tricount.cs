@@ -8,8 +8,6 @@ using System.Linq;
 namespace prbd_2324_g01.Model;
 
 public class Tricount : EntityBase<PridContext> {
-
-
     [Key]
     public int Id { get; set; } 
     public string Title { get; set; }
@@ -22,8 +20,6 @@ public class Tricount : EntityBase<PridContext> {
     [Required, ForeignKey(nameof(CreatorFromTricount))]
     public int Creator { get; set; }
     public virtual User CreatorFromTricount { get;  set; }
-
-
     public Tricount(int id, string Title, string Description, int Creator, DateTime Created_at) {
         this.Id = id;
         this.Title = Title;
@@ -31,23 +27,17 @@ public class Tricount : EntityBase<PridContext> {
         this.Creator = Creator;
         this.CreatedAt = Created_at;
     }
-
     public Tricount() { }
-
     public void Persist() {
 
         PridContext.Context.Update(this);
         PridContext.Context.SaveChanges();
     }
-
     public void delete() {
         PridContext.Context.Remove(this);
         PridContext.Context.SaveChanges();
     }
-
     public static List<Tricount> tricountByMember(User user) {
         return PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
     }
-
-
 }

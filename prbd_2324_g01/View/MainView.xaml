@@ -29,19 +29,35 @@
             <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
             <Button Content="Clear" Grid.Column="1" Command="{Binding ClearFilter}" Margin="5,0,0,0" />
         </Grid>
-        <ListView x:Name="listView" ItemsSource="{Binding Tricounts}" Grid.Row="1" BorderBrush="Transparent" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding DisplayMemberDetails}"
-                                           CommandParameter="{Binding ElementName=listView, Path=SelectedItem}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+        <ListView x:Name="listView" ItemsSource="{Binding MergedCollection}" Grid.Row="1" BorderBrush="Transparent" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock TextAlignment="Center" >
+                            <Run Text="{Binding Title}" FontWeight="Bold"/>
+                            <LineBreak/>
+                            <Run Text="{Binding Description}" FontStyle="Italic"/>
+                        </TextBlock>
+                        <TextBlock Margin="5">
+                            <Run Text="Created by"/>
+                            <Run Text="{Binding CreatorFromTricount.FullName}" FontWeight="Bold" />
+                            <LineBreak/>
+                           <Run Text="on "/>
+                           <Run Text="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Last operation on " />
+                            <LineBreak/>
+                            <Run Text="{Binding }" />
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
     </Grid>
 </f:WindowBase>
