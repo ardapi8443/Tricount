@@ -34,8 +34,26 @@ public class Tricount : EntityBase<PridContext> {
 
     public Tricount() { }
 
-    public void Persist() {
+    public override bool Validate() {
+        //pour add tricount
 
+        ClearErrors();
+
+        if (string.IsNullOrWhiteSpace(Title))
+            AddError(nameof(Title), "required");
+        else if (Description.Length < 3)
+            AddError(nameof(Description), "length must be >= 3");
+        else
+            // On ne vérifie l'unicité du pseudo que si l'entité est en mode détaché ou ajouté, car
+            // dans ces cas-là, il s'agit d'un nouveau membre.
+            if ((IsDetached || IsAdded) && Context.Tricounts.Any(t => t.Title == Title))
+            AddError(nameof(Title), "title already exists");
+
+        return !HasErrors;
+    }
+
+
+    public void Persist() {
         PridContext.Context.Update(this);
         PridContext.Context.SaveChanges();
     }

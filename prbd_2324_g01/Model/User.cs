@@ -32,7 +32,34 @@ public class User : EntityBase<PridContext> {
     public User() {
     }
 
-    public void UpdatePwd(String str) {
+    public override bool Validate() {
+        //pour login
+
+        //comment ne retirer les erreurs que d'un champs particulier ?
+        //      (nameof(Email) => ne fonctionne pas
+        ClearErrors();
+
+        var user = from u in Context.Users
+                   where u.email.Equals(email)
+                   select u.email;
+
+        if (string.IsNullOrEmpty(email))
+            AddError(nameof(email), "required");
+        else if (!email.Contains("@") || !email.Contains("."))
+            AddError(nameof(email), "email not valid");
+        else if (!user.Any())
+            AddError(nameof(email), "does not exist");
+        else
+            // On ne vérifie l'unicité du pseudo que si l'entité est en mode détaché ou ajouté, car
+            // dans ces cas-là, il s'agit d'un nouveau membre.
+            if ((IsDetached || IsAdded) && Context.Users.Any(m => m.email == email))
+            AddError(nameof(email), "email already used");
+
+        return !HasErrors;
+    }
+
+
+    public void UpdatePassword(String str) {
 
         this.HashedPassword = SecretHasher.Hash(str);
         this.Persist();
