@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Windows.Controls;
 
 namespace prbd_2324_g01.Model;
 
@@ -41,5 +42,16 @@ public class User : EntityBase<PridContext> {
 
         PridContext.Context.Update(this);
         PridContext.Context.SaveChanges();
+    }
+
+    public double getExpenseByTricount(int id) {
+        var q = from o in PridContext.Context.Operations
+                let tricountId = id
+                let userId = this.UserId
+                where o.TricountId == tricountId
+                  &&  o.UserId == userId
+                  select o;
+        return q.Sum(x => x.Amount);
+                
     }
 }

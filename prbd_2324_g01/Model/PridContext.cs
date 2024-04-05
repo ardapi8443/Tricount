@@ -7,6 +7,14 @@ namespace prbd_2324_g01.Model;
 
 public class PridContext : DbContextBase {
     public static PridContext Context { get; private set; } = new PridContext();
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Tricount> Tricounts => Set<Tricount>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<Operation> Operations => Set<Operation>();
+    public DbSet<Repartition> Repartitions => Set<Repartition>();
+    public DbSet<Template> Templates => Set<Template>();
+    public DbSet<TemplateItem> TemplateItems => Set<TemplateItem>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         base.OnConfiguring(optionsBuilder);
 
@@ -23,7 +31,7 @@ public class PridContext : DbContextBase {
 
         var connectionString = ConfigurationManager.ConnectionStrings["MsSqlConnectionString"].ConnectionString;
         optionsBuilder.UseSqlServer(connectionString);
-        
+
         ConfigureOptions(optionsBuilder);
     }
 
@@ -221,14 +229,6 @@ public class PridContext : DbContextBase {
         modelBuilder.Entity<TemplateItem>().HasData(
             templateItem1, templateItem2, templateItem3, templateItem4, templateItem5);
     }
-
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Tricount> Tricounts => Set<Tricount>();
-    public DbSet<Subscription> Subscriptions => Set<Subscription>();
-    public DbSet<Operation> Operations => Set<Operation>();
-    public DbSet<Repartition> Repartitions => Set<Repartition>();
-    public DbSet<Template> Templates => Set<Template>();
-    public DbSet<TemplateItem> TemplateItems => Set<TemplateItem>();
 
 }
     

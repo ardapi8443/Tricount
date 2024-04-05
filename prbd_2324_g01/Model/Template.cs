@@ -10,6 +10,7 @@ public class Template : EntityBase<PridContext> {
     public string Title { get;  set; }
     
     [Required, ForeignKey(nameof(Tricount))]
+    //[Required, ForeignKey(nameof(TricountFromTemplate))]
     public int Tricount { get; set; }
 
     public virtual ICollection<User> Users { get;  set; } = new HashSet<User>();

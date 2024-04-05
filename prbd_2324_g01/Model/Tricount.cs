@@ -45,5 +45,39 @@ public class Tricount : EntityBase<PridContext> {
         PridContext.Context.SaveChanges();
     }
 
+    
+    public override string ToString() {
+        return ($"{this.Title} : {this.Creator}");
+    }   
 
+    public static IQueryable<int> GetTricountsIdByUser(User user) {
+        var q = from t in PridContext.Context.Tricounts
+                where t.Creator == user.UserId
+                orderby t.CreatedAt
+                select t.Id;
+
+        return q;
+    }
+
+    public dynamic GetTricountCard() {
+        //manque balance !!!
+        //sous requete à faire à part dans user en envoyant le tricountId en paramètre
+        int Id = this.Id;
+        var q = from t in PridContext.Context.Tricounts
+                where t.Id == Id
+                let lastOperationDate = t.Operations.OrderByDescending(x => x.OperationDate).FirstOrDefault()
+                let friendsCount = t.Subscribers.Count()
+                let operationsCount = t.Operations.Count()
+                let operationsAmount = t.Operations.Sum(x => x.Amount)
+                select new { t.Title, t.Description, Creator = t.CreatorFromTricount.FullName, t.CreatedAt, 
+                    lastOperationDate, friendsCount , operationsCount, operationsAmount };
+        return q.ToList();
+    }
+
+    public static dynamic getTricountOperations(int id) {
+        var q = from o in PridContext.Context.Operations
+                where o.TricountId == id
+                select o;
+        return q;
+    }
 }
