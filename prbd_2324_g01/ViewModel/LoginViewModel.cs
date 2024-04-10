@@ -19,11 +19,17 @@ namespace prbd_2324_g01.ViewModel
 
         public string Email {
             get => _email;
-            set => SetProperty(ref _email, value, () => Validate());
+            set => SetProperty(ref _email, value, () => {
+                Validate();
+                ValidatePassword();
+            });
         }
         public string Password {
             get => _password;
-            set => SetProperty(ref _password, value, () => ValidatePassword());
+            set => SetProperty(ref _password, value, () => {
+                Validate();
+                ValidatePassword();
+            });
         }
 
         public LoginViewModel() : base() {
@@ -33,19 +39,17 @@ namespace prbd_2324_g01.ViewModel
 
         private void LoginAction() {
             if (Validate() && ValidateHashPassword()) {
-                var user = from u in Context.Users
-                           where u.email.Equals(Email)
-                           select u;
-        //surement un meilleur moyen de selectionner le User
-                NotifyColleagues(App.Messages.MSG_LOGIN, user.FirstOrDefault());
+                var user = (from u in Context.Users
+                        where u.email.Equals(Email)
+                        select u).First();
+                
+                NotifyColleagues(App.Messages.MSG_LOGIN, user);
             } else {
                 AddError(nameof(Email), "creditentials not valid");
             }
         }
 
         public override bool Validate() {
-            //comment ne retirer les erreurs que d'un champs particulier ?
-            //      (nameof(Email) => ne fonctionne pas
             ClearErrors();
 
             var user = from u in Context.Users
@@ -54,7 +58,7 @@ namespace prbd_2324_g01.ViewModel
 
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
-            else if (!Email.Contains("@") || !Email.Contains("."))
+            else if (!Email.Contains('@') || !Email.Contains('.'))
                 AddError(nameof(Email), "email not valid");
             else if (!user.Any())
                 AddError(nameof(Email), "does not exist");
@@ -63,26 +67,20 @@ namespace prbd_2324_g01.ViewModel
         }
 
         public bool ValidatePassword() {
-            ClearErrors();
 
             if (string.IsNullOrEmpty(Password))
                 AddError(nameof(Password), "required");
             else if (Password.Length < 3)
                 AddError(nameof(Password), "length must be >= 3");
 
-            // doit on vérifier que le password est valide selon les règles métiers ou s'il est valide pour ce user ?
-            //      (pas super safe déjà que l'on indique si un mail existe ou pas...)
-
             return !HasErrors;
         }
 
         private bool ValidateHashPassword() {
-            var hashPassword = from u in Context.Users
+            var hashPassword = (from u in Context.Users
                                  where u.email.Equals(Email)
-                                 select u.HashedPassword;
-
-            //surement un meilleur moyen de sélectionner directement le string HashedPassword de l'objet User
-            return SecretHasher.Verify(Password, hashPassword.ToList().FirstOrDefault(""));
+                                 select u.HashedPassword).First();
+            return SecretHasher.Verify(Password, hashPassword);
         }
 
 
