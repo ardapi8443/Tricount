@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Login" WindowStartupLocation="CenterScreen"
         FocusManager.FocusedElement="{Binding ElementName=txtMail}" ResizeMode="NoResize"
-        Width="250" Height="200"
+        Width="250" Height="270"
         SizeToContent="WidthAndHeight" >
     <Window.DataContext>
         <vm:LoginViewModel x:Name="vm"/>
@@ -17,6 +17,7 @@
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -25,16 +26,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label x:Name="label" Content="Email" VerticalAlignment="Top" Padding="5" />
-        <TextBox x:Name="txtMail" TextWrapping="Wrap" Grid.Column="1" VerticalAlignment="Center"
+        <TextBox x:Name="txtMail" TextWrapping="Wrap" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center"
                  Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
         <Label Content="Password" Grid.Row="1" VerticalAlignment="Top" Padding="5"/>
         <PasswordBox x:Name="txtPassword"
                      f:PasswordHelper.Attach="True"
                      f:PasswordHelper.Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
-                     Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" />
-        <DockPanel Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
+                     Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" />
+        <DockPanel Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
             <Button x:Name="btnCancel" Content="Cancel" 
                     HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" IsCancel="True" Margin="0,0,10,0" 
                     Click="btnCancel_Click"/>
@@ -42,13 +46,16 @@
                     HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" IsDefault="True" Margin="10,0,0,0" 
                     Command="{Binding LoginCommand}"/>
         </DockPanel>
-        <DockPanel Grid.Row="3" Grid.ColumnSpan="2">
+        <DockPanel Grid.Row="3" Grid.ColumnSpan="3">
             <TextBlock Height="auto" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" Width="220" >
                 <Run Text="If you don't have a login and a password, click"/>
                 <Hyperlink><Run Text="here"/></Hyperlink>
                 <Run Text="to sign-up."/>
             </TextBlock>
         </DockPanel>
-        <!--ajouter grid Row + bouton pour auto login-->
+        <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="5" Content="Login as Benoit (User)" Command="{Binding LoginAsBenoit}"/>
+        <Button Grid.Row="5" Grid.ColumnSpan="3" Margin="5" Content="Login as Boris (User)" Command="{Binding LoginAsBenoit}"/>
+        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="5" Content="Login as Xavier (User)" Command="{Binding LoginAsBenoit}"/>
+        <Button Grid.Row="7" Grid.ColumnSpan="3" Margin="5" Content="Login as Admin (Admin)" Command="{Binding LoginAsBenoit}"/>
     </Grid>
 </f:WindowBase>

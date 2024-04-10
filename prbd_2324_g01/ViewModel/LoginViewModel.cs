@@ -13,6 +13,10 @@ namespace prbd_2324_g01.ViewModel
     internal class LoginViewModel : ViewModelCommon
     {
         public ICommand LoginCommand { get; set; }
+        public ICommand LoginAsBenoit { get; set; }
+        public ICommand LoginAsBoris { get; set; }
+        public ICommand LoginAsXavier { get; set; }
+        public ICommand LoginAsAdmin { get; set; }
 
         private string _email;
         private string _password;
@@ -35,6 +39,10 @@ namespace prbd_2324_g01.ViewModel
         public LoginViewModel() : base() {
             LoginCommand = new RelayCommand(LoginAction,
                 () => _email != null && _password != null && !HasErrors);
+            LoginAsBenoit = new RelayCommand(LoginAsBenoitAction);
+            LoginAsBoris = new RelayCommand(LoginAsBorisAction);
+            LoginAsXavier = new RelayCommand(LoginAsXavierAction);
+            LoginAsAdmin = new RelayCommand(LoginAsAdminAction);
         }
 
         private void LoginAction() {
@@ -81,6 +89,34 @@ namespace prbd_2324_g01.ViewModel
                                  where u.email.Equals(Email)
                                  select u.HashedPassword).First();
             return SecretHasher.Verify(Password, hashPassword);
+        }
+
+        private void LoginAsBenoitAction() {
+            var user = (from u in Context.Users
+                                where u.email.Equals("bepenelle@epfc.eu")
+                                select u).First();
+            NotifyColleagues(App.Messages.MSG_LOGIN, user);
+        }
+
+        private void LoginAsBorisAction() {
+            var user = (from u in Context.Users
+                                where u.email.Equals("boverhaegen@epfc.eu")
+                                select u).First();
+            NotifyColleagues(App.Messages.MSG_LOGIN, user);
+        }
+        
+        private void LoginAsXavierAction() {
+            var user = (from u in Context.Users
+                                where u.email.Equals("xapigeolet@epfc.eu")
+                                select u).First();
+            NotifyColleagues(App.Messages.MSG_LOGIN, user);
+        }
+        
+        private void LoginAsAdminAction() {
+            var user = (from u in Context.Users
+                                where u.email.Equals("admin@epfc.eu")
+                                select u).First();
+            NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
 
 
