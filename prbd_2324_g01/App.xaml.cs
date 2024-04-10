@@ -36,7 +36,7 @@ public partial class App {
 
         Register<User>(this, Messages.MSG_LOGIN, user => {
             Login(user);
-            NavigateTo<MainViewModel, User, PridContext>();
+            NavigateTo<TricountViewModel, User, PridContext>();
         });
 
         NavigateTo<LoginViewModel, User, PridContext>();

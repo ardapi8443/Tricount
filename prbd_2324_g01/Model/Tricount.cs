@@ -92,10 +92,17 @@ public class Tricount : EntityBase<PridContext> {
         return q.ToList();
     }
 
-    public static dynamic getTricountOperations(int id) {
+    public static dynamic GetTricountOperations(int id) {
         var q = from o in PridContext.Context.Operations
                 where o.TricountId == id
                 select o;
         return q;
+    }
+
+    public static dynamic GetTricountById(int id) {
+        var q = from t in PridContext.Context.Tricounts
+                where t.Id == id
+                select t;
+        return q.First();
     }
 }
