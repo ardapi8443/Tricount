@@ -16,38 +16,45 @@
     </Window.DataContext>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="Tricount" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
+        <TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
             <Run Text="{Binding Title}" FontWeight="Bold"/>
             <Run Text=" - "/>
-            <Run Text="{Binding Description}" FontWeight="Light"/>
+            <Run Text="{Binding Description}" FontWeight="Thin" FontStyle="Italic"/>
         </TextBlock>
 
         <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
-        
-            <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
-                      SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
+                          SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <local:OperationCardView />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        <!--<Button x:Name="btnNew" Content="New Member" Command="{Binding NewOperation}" HorizontalAlignment="Left" Margin="10,10" Grid.Row="3" Padding="5,1"/>-->
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            
+                            <local:OperationCardView />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
 
 
     </Grid>

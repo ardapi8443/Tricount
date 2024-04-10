@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
+using PRBD_Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Navigation;
 
 namespace prbd_2324_g01.ViewModel
@@ -14,6 +16,8 @@ namespace prbd_2324_g01.ViewModel
     internal class TricountViewModel: ViewModelCommon {
         private Tricount _tricount;
         private ObservableCollection<OperationCardViewModel> _operations;
+
+        public ICommand NewOperation { get; set; }
         public Tricount Tricount {
             get => _tricount;
             set => SetProperty(ref _tricount, value);
@@ -47,6 +51,13 @@ namespace prbd_2324_g01.ViewModel
                 Console.WriteLine("query = " + q.Title);
             }
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
+
+            NewOperation = new RelayCommand(NewOperationAction);
+        }
+
+        public void NewOperationAction() {
+            //bouton vers une nouvelle opération
+            Console.WriteLine("je suis dans TricountViewModel");
         }
 
     }

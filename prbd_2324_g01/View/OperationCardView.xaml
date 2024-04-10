@@ -9,18 +9,20 @@
                    mc:Ignorable="d"
                    d:DataContext="{d:DesignInstance Type=vm:OperationCardViewModel, IsDesignTimeCreatable=False}"
                    d:DesignHeight="80" d:DesignWidth="auto">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Label Content="{Binding Title}"/>
-        <Label Grid.Row="0" Grid.Column="1" Content="{Binding Amount}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="{Binding PaidBy}"/>
-        <Label Grid.Row="1" Grid.Column="1" Content="{Binding Date}"/>
-    </Grid>
+    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
+        <Grid Background="LightGray" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="{Binding Title}" FontWeight="Heavy" HorizontalAlignment="Left"/>
+            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Amount}" FontWeight="UltraBlack" HorizontalAlignment="Right"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="{Binding PaidBy}" HorizontalAlignment="Left"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding Date}" HorizontalAlignment="Right"/>
+        </Grid>
+    </Border>
 </prbdFramework:UserControlBase>
