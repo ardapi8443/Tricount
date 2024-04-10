@@ -10,108 +10,59 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <StackPanel>
+    <StackPanel >
         <TextBlock TextAlignment="Center" >
-            <Run Text="{Binding tricount.Title}" FontWeight="Bold"/>
+            <Run Text="{Binding Tricount.Title}" FontWeight="Bold"/>
             <LineBreak/>
             <Run Text="{Binding Updated_Description}" FontStyle="Italic"/>
+            <LineBreak/>
         </TextBlock>
             <TextBlock TextAlignment="Center">
             <Run Text="Created by"/>
-            <Run Text="{Binding tricount.CreatorFromTricount.FullName}" FontWeight="Bold" />
-            <LineBreak/>
+            <Run Text="{Binding Tricount.CreatorFromTricount.FullName}" FontWeight="Bold" />
             <Run Text="on "/>
-            <Run Text="{Binding tricount.CreatedAt, StringFormat='dd/MM/yyyy'}"/>
+            <Run Text="{Binding Tricount.CreatedAt, StringFormat='dd/MM/yyyy'}"/>
+            <LineBreak/>
         </TextBlock>
 
         <TextBlock TextAlignment="Center">
             <Run Text="Last Operation on "/>
-            <Run Text="{Binding tricount.LatestOpe, Mode=OneWay, StringFormat='dd/MM/yyyy'}" FontWeight="Bold"/>
+            <Run Text="{Binding Tricount.LatestOpe, Mode=OneWay, StringFormat='dd/MM/yyyy'}" FontWeight="Bold"/>
+            <LineBreak/>
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding tricount.haveOpe}" Value="false">
+                        <DataTrigger Binding="{Binding Tricount.HaveOpe}" Value="false">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBlock.Style>
         </TextBlock>
+        
+        <TextBlock TextAlignment="Center">
+            <Run Text="{Binding FriendMessage}"/>
+        </TextBlock>
+        
+        <TextBlock TextAlignment="Center">
+            <Run Text="{Binding OpeMessage}"/>
+            <LineBreak/>
+        </TextBlock>
+        
+        <TextBlock TextAlignment="Center">
+            <Run Text="Total Expenses:"/>
+            <Run Text="{Binding TotalExp}"/>
+            <LineBreak/>
+            <Run Text="My expenses:"/>
+            <Run Text="{Binding UserExp}"/>
+            <LineBreak/>
+            <Run Text="Balance:"/>
+            <Run Text="{Binding UserBal}"/>
+        </TextBlock>
+        
 
-        <TextBlock Text="{Binding FriendMessage}" TextAlignment="Center"/>
-
-        <!--<TextBlock TextAlignment="Center">
-                         <Run Text="With"/>
-                         <Run Text="{Binding NumFriends}"/>
-                         <Run Text="friend"/>
-                         <TextBlock.Style>
-                             <Style TargetType="TextBlock">
-                                 <Style.Triggers>
-                                     <DataTrigger Binding="{Binding NumFriends}" Value="!0">
-                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                     </DataTrigger>
-                                 </Style.Triggers>
-                             </Style>
-                         </TextBlock.Style>
-                     </TextBlock>-->
-
-                        <!--<TextBlock Text="No operation" TextAlignment="Center">
-                         <TextBlock.Style>
-                             <Style TargetType="TextBlock">
-                                 <Style.Triggers>
-                                     <DataTrigger Binding="{Binding haveOpe}" Value="true">
-                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                     </DataTrigger>
-                                 </Style.Triggers>
-                             </Style>
-                         </TextBlock.Style>
-                     </TextBlock>-->
-
-
-
-                        <!--<TextBlock>
-                        <Run Text="With"/>
-                        <Run Text="{Binding NumFriends, Mode=OneWay}"/>
-                        <Run Text="friends"/>
-                         <TextBlock.Style>
-                             <Style TargetType="TextBlock">
-                                 <Style.Triggers>
-                                     <DataTrigger Binding="{Binding haveFriends}" Value="false">
-                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                     </DataTrigger>
-                                 </Style.Triggers>
-                             </Style>
-                         </TextBlock.Style>
-                     </TextBlock>
-
-                     <TextBlock>
-                        <Run Text="With"/>
-                        <Run Text="no"/>
-                        <Run Text="friend"/>
-                         <TextBlock.Style>
-                             <Style TargetType="TextBlock">
-                                 <Style.Triggers>
-                                     <DataTrigger Binding="{Binding haveFriends}" Value="true">
-                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                     </DataTrigger>
-                                 </Style.Triggers>
-                             </Style>
-                         </TextBlock.Style>
-                     </TextBlock>-->
-
-
-                        <!--<TextBlock Text="coucou">
-                         <TextBlock.Style>
-                             <Style TargetType="TextBlock">
-                                 <Setter Property="Foreground" Value="red"/>
-                                 <Style.Triggers>
-                                     <DataTrigger Binding="{Binding haveOpe}" Value="true">
-                                         <Setter Property="Foreground" Value="Green" />
-                                     </DataTrigger>
-                                 </Style.Triggers>
-                             </Style>
-                         </TextBlock.Style>
-                     </TextBlock>-->
+        
+        
     </StackPanel>
 
 </f:UserControlBase>

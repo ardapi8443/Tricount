@@ -22,17 +22,22 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
     public ObservableCollection<TricountDetailViewModel> TricountsDetailVM { get; set; } = new ();
     private void ApplyFilterAction() {
 
+
+    }
+
+    private void InitiateVM() {
         IEnumerable<Tricount> tricounts = Tricount.tricountByMember(User.UserById(1));
 
         foreach (var tricount in tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,User.UserById(1) ));
         }
 
         Tricounts = new ObservableCollection<Tricount>(tricounts);
     }
     public MainViewModel() {
         ApplyFilterAction();
-       
+        InitiateVM();
+
     }
 
 }

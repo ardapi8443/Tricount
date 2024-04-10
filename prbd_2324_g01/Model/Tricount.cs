@@ -20,7 +20,19 @@ public class Tricount : EntityBase<PridContext> {
     private  bool _haveOpe = false;
 
     [NotMapped]
-    public virtual Boolean haveOpe {
+    public virtual double TotalExp {
+        get {
+            double res = new();
+            foreach (Operation ope in Operations) {
+                res += ope.Amount;
+            }
+
+            return Math.Round(res, 2);
+        }    
+    }
+    
+    [NotMapped]
+    public virtual Boolean HaveOpe {
         get {
             PridContext.Context.Entry(this)
               .Collection(t => t.Operations)
@@ -96,4 +108,42 @@ public class Tricount : EntityBase<PridContext> {
     public static List<Tricount> tricountByMember(User user) {
         return PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
     }
+
+    public double ConnectedUserExp(User user) {
+        
+        double res = new();
+
+        foreach (Operation ope in Operations) {
+            double TotalWeight = PridContext.Context.Repartitions
+                .Where(r => r.OperationId == ope.OperationId)
+                .Sum(r => r.Weight);
+            
+            double UserWeight = PridContext.Context.Repartitions
+                .Where(r => r.OperationId == ope.OperationId && r.UserId == user.UserId)
+                .Sum(r => r.Weight);
+            
+            double ratio = UserWeight / TotalWeight;
+            
+           res =  res + (ope.Amount * ratio);
+           
+        }
+        return Math.Round(res, 2);
+    }
+
+    public double ConnectedUserBal(User user) {
+
+        Double connectedUserExp = ConnectedUserExp(user);
+        Double expenseUserCo = new();
+
+        foreach (Operation ope in user.OperationsCreated) {
+
+            if (ope.TricountId == Id) {
+                expenseUserCo = expenseUserCo + ope.Amount;
+            }
+        }
+        
+        return Math.Round(expenseUserCo - connectedUserExp, 2);
+    }
 }
+
+
