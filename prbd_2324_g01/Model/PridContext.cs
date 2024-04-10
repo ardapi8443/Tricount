@@ -37,7 +37,7 @@ public class PridContext : DbContextBase {
 
     private static void ConfigureOptions(DbContextOptionsBuilder optionsBuilder) {
         optionsBuilder.UseLazyLoadingProxies()
-            .LogTo(Console.WriteLine, LogLevel.Information) // permet de visualiser les requêtes SQL générées par LINQ
+            //.LogTo(Console.WriteLine, LogLevel.Information) // permet de visualiser les requêtes SQL générées par LINQ
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors() // attention : ralentit les requêtes
             ;

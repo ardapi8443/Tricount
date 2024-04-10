@@ -1,4 +1,5 @@
-﻿using Msn.ViewModel;
+﻿using Microsoft.EntityFrameworkCore;
+using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,11 @@ namespace prbd_2324_g01.ViewModel
             set => SetProperty(ref _tricount, value);
         }
 
+        public ObservableCollection<OperationCardViewModel> Operations {
+            get => _operations;
+            set => SetProperty(ref _operations, value);
+        }
+
         public string Title {
             get => Tricount.Title;
             set => SetProperty(Tricount.Title, value, Tricount, (m, v) => m.Title = v);
@@ -32,13 +38,15 @@ namespace prbd_2324_g01.ViewModel
             get => $"Created by {Tricount.CreatorFromTricount.FullName} on {Tricount.CreatedAt.ToShortDateString()}";
         }
 
-        public ObservableCollection<OperationCardViewModel> Operations {
-            get => _operations;
-            set => SetProperty(ref _operations, value);
-        }
-
         public TricountViewModel() {
-            Tricount = Tricount.GetTricountById(1);
+            Tricount = Tricount.GetTricountById(4);
+            var query = from o in PridContext.Context.Operations
+                                        where o.TricountId == Tricount.Id
+                                        select o;
+            foreach (var q in query) {
+                Console.WriteLine("query = " + q.Title);
+            }
+            Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
         }
 
     }

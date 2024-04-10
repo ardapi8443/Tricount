@@ -1,15 +1,26 @@
-﻿<Window x:Class="prbd_2324_g01.View.OperationCardView"
-        x:Name="window"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:prbd_2324_g01.View"
-        xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
-        mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
-        Title="OperationCardView" Height="450" Width="800">
+﻿<prbdFramework:UserControlBase x:Class="prbd_2324_g01.View.OperationCardView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:local="clr-namespace:prbd_2324_g01.View"
+                   xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+                   xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+                   mc:Ignorable="d"
+                   d:DataContext="{d:DesignInstance Type=vm:OperationCardViewModel, IsDesignTimeCreatable=False}"
+                   d:DesignHeight="80" d:DesignWidth="auto">
     <Grid Margin="10">
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="{Binding Title}"/>
+        <Label Grid.Row="0" Grid.Column="1" Content="{Binding Amount}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="{Binding PaidBy}"/>
+        <Label Grid.Row="1" Grid.Column="1" Content="{Binding Date}"/>
     </Grid>
-</Window>
+</prbdFramework:UserControlBase>

@@ -16,7 +16,7 @@
     </Window.DataContext>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -31,22 +31,22 @@
             <Run Text="{Binding Description}" FontWeight="Light"/>
         </TextBlock>
 
-        <Label x:Name="Operations" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
+        <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
+        
+            <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
+                      SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-        <ListView x:Name="listView" ItemsSource="{Binding Operations}" Grid.Row="2" Grid.Column="0" BorderBrush="Transparent" 
-                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:OperationCardView />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:OperationCardView />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         <!--<Button x:Name="btnNew" Content="New Member" Command="{Binding NewOperation}" HorizontalAlignment="Left" Margin="10,10" Grid.Row="3" Padding="5,1"/>-->
 
 
