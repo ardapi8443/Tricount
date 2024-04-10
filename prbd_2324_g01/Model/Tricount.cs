@@ -1,3 +1,4 @@
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using PRBD_Framework;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,61 @@ public class Tricount : EntityBase<PridContext> {
     public virtual ICollection<User> Subscribers { get;  set; } = new HashSet<User>();
     public virtual ICollection<Template> Templates { get;  set; } = new HashSet<Template>();
     public virtual ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
+    private  bool _haveOpe = false;
+
+    [NotMapped]
+    public virtual Boolean haveOpe {
+        get {
+            PridContext.Context.Entry(this)
+              .Collection(t => t.Operations)
+              .Load();
+            if (Operations.Count == 0) {
+                return false;
+            } else { return true; }
+        }
+        set { _haveOpe = value; }
+  
+    }
+    [NotMapped]
+    public virtual DateTime? LatestOpe {
+        
+        get {
+            PridContext.Context.Entry(this)
+             .Collection(t => t.Operations)
+             .Load();
+
+            if (Operations.Count == 0) {
+                return null;
+            } else { 
+                return Operations.OrderByDescending(x => x.OperationDate).First().OperationDate;
+            }
+        }
+    }
+    [NotMapped]
+    public virtual int NumFriends {
+
+        get {
+            PridContext.Context.Entry(this)
+           .Collection(t => t.Subscribers)
+           .Load();
+
+            if(Subscribers.Count == 1) return 0;
+            return Subscribers.Count - 1;
+        }
+    }
+    [NotMapped]
+    public virtual Boolean haveFriends {
+        get {
+            PridContext.Context.Entry(this)
+              .Collection(t => t.Subscribers)
+              .Load();
+            if(Subscribers.Count == 1) return false;
+            return true;
+        }
+    }
+
+    [NotMapped]
+    public virtual string FriendMessage { get; set; }
 
     [Required, ForeignKey(nameof(CreatorFromTricount))]
     public int Creator { get; set; }

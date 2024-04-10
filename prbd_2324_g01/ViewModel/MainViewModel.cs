@@ -19,22 +19,13 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
         get => _filter;
         set => SetProperty(ref _filter, value, ApplyFilterAction);
     }
+    public ObservableCollection<TricountDetailViewModel> TricountsDetailVM { get; set; } = new ();
     private void ApplyFilterAction() {
 
         IEnumerable<Tricount> tricounts = Tricount.tricountByMember(User.UserById(1));
 
         foreach (var tricount in tricounts) {
-            if (tricount.Description.Length == 0) {
-                tricount.Description = "No Description";
-            }
-            //if (!tricount.Operations.IsNullOrEmpty() && tricount.Operations.Any()) {
-
-            //    var newestOperation = tricount.Operations.OrderByDescending(o => o.OperationDate).First();
-            //    Couille = newestOperation.OperationDate.ToString("dd/MM/yyyy");
-            //}
-
-            
-
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
         }
 
         Tricounts = new ObservableCollection<Tricount>(tricounts);
@@ -43,4 +34,5 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
         ApplyFilterAction();
        
     }
+
 }
