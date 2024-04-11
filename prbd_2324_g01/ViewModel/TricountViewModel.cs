@@ -17,6 +17,7 @@ namespace prbd_2324_g01.ViewModel
         private Tricount _tricount;
         private ObservableCollection<OperationCardViewModel> _operations;
         private Dictionary<User, double> _map;
+        private ObservableCollection<UserAmountViewModel> _mapEntries;
 
         public ICommand NewOperation { get; set; }
         
@@ -49,6 +50,10 @@ namespace prbd_2324_g01.ViewModel
             get => _map;
             set => SetProperty(ref _map, value);
         }
+        public ObservableCollection<UserAmountViewModel> MapEntries {
+            get => _mapEntries; 
+            set => SetProperty(ref _mapEntries, value); 
+        }
 
         //constructeur
 //doit recevoir le Tricount au double clique dans l'UC list_tricounts
@@ -74,6 +79,10 @@ namespace prbd_2324_g01.ViewModel
                 User user = User.GetUserById(q.UserId);
                 Map.Add(user, Tricount.ConnectedUserBal(user));
             }
+
+            MapEntries = new ObservableCollection<UserAmountViewModel>(
+                Map.Select(entry => new UserAmountViewModel(entry.Key, entry.Value))
+            );
             
             //attribution des actions aux boutons
             NewOperation = new RelayCommand(NewOperationAction);

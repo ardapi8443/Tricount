@@ -14,6 +14,11 @@
     <Window.DataContext>
         <vm:TricountViewModel x:Name="vm"/>
     </Window.DataContext>
+    
+    <!-- <Window.Resources> -->
+    <!--     <vm:SignConverter x:Key="SignConverter"/> -->
+    <!-- </Window.Resources> -->
+    
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -34,27 +39,52 @@
         </TextBlock>
 
         <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
-                <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
-                          SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            
-                            <local:OperationCardView />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                
+        <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:OperationCardView />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
         <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
+        
+        <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MapEntries}" BorderBrush="Transparent" 
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:UserAmountView />
+                    <!-- <DataTemplate.Triggers> -->
+                    <!--     <DataTrigger Binding="{Binding Amount, Converter={StaticResource SignConverter}}" Value="-1"> -->
+                    <!--         <Setter TargetName="name" Property="Grid.Column" Value="1"/> -->
+                    <!--         <Setter TargetName="amount" Property="Grid.Column" Value="0"/> -->
+                    <!--     </DataTrigger> -->
+                    <!-- </DataTemplate.Triggers> -->
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
 
     </Grid>
