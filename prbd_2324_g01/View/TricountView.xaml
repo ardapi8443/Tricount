@@ -15,10 +15,6 @@
         <vm:TricountViewModel x:Name="vm"/>
     </Window.DataContext>
     
-    <!-- <Window.Resources> -->
-    <!--     <vm:SignConverter x:Key="SignConverter"/> -->
-    <!-- </Window.Resources> -->
-    
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

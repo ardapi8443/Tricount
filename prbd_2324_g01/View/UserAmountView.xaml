@@ -10,7 +10,11 @@
              d:DataContext="{d:DesignInstance Type=vm:UserAmountViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="80" d:DesignWidth="auto">
     
-        <Grid Margin="5" HorizontalAlignment="Stretch">
+    <prbdFramework:UserControlBase.Resources>
+        <vm:SignConverter x:Key="SignConverter"/>
+    </prbdFramework:UserControlBase.Resources>
+    
+    <Grid Margin="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -23,7 +27,5 @@
             <TextBlock Grid.Column="1" x:Name="amount" Text="{Binding Amount}"/>
                 
         </Grid>
-    
-    
     
 </prbdFramework:UserControlBase>

@@ -22,7 +22,7 @@ namespace prbd_2324_g01.ViewModel
         public ICommand NewOperation { get; set; }
         
         //get && set des variables utilisées dans la vue
-        public Tricount Tricount {
+        private Tricount Tricount {
             get => _tricount;
             set => SetProperty(ref _tricount, value);
         }
@@ -69,6 +69,7 @@ namespace prbd_2324_g01.ViewModel
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
 
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
+//manque les users qui n'ont pas fait d'opérations mais qui ont souscrit au tricount
             Map = new Dictionary<User, double>();
             var query2 = from o in PridContext.Context.Operations
                                             where o.TricountId == Tricount.Id
