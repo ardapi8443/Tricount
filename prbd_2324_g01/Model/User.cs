@@ -32,6 +32,13 @@ public class User : EntityBase<PridContext> {
     public User() {
     }
 
+    public static User GetUserById(int id) {
+        var q = from u in PridContext.Context.Users
+            where u.UserId == id
+            select u;
+        return q.First();
+    }
+
     public override bool Validate() {
         //pour login
 

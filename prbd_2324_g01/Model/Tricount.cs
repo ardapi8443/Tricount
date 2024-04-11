@@ -44,8 +44,8 @@ public class Tricount : EntityBase<PridContext> {
         else if (Description.Length < 3)
             AddError(nameof(Description), "length must be >= 3");
         else
-            // On ne vérifie l'unicité du pseudo que si l'entité est en mode détaché ou ajouté, car
-            // dans ces cas-là, il s'agit d'un nouveau membre.
+            // On ne vï¿½rifie l'unicitï¿½ du pseudo que si l'entitï¿½ est en mode dï¿½tachï¿½ ou ajoutï¿½, car
+            // dans ces cas-lï¿½, il s'agit d'un nouveau membre.
             if ((IsDetached || IsAdded) && Context.Tricounts.Any(t => t.Title == Title))
             AddError(nameof(Title), "title already exists");
 
@@ -79,7 +79,7 @@ public class Tricount : EntityBase<PridContext> {
 
     public dynamic GetTricountCard() {
         //manque balance !!!
-        //sous requete à faire à part dans user en envoyant le tricountId en paramètre
+        //sous requete ï¿½ faire ï¿½ part dans user en envoyant le tricountId en paramï¿½tre
         int Id = this.Id;
         var q = from t in PridContext.Context.Tricounts
                 where t.Id == Id
@@ -104,5 +104,41 @@ public class Tricount : EntityBase<PridContext> {
                 where t.Id == id
                 select t;
         return q.First();
+    }
+    
+    public double ConnectedUserExp(User user) {
+        
+        double res = new();
+
+        foreach (Operation ope in Operations) {
+            double TotalWeight = PridContext.Context.Repartitions
+                .Where(r => r.OperationId == ope.OperationId)
+                .Sum(r => r.Weight);
+            
+            double UserWeight = PridContext.Context.Repartitions
+                .Where(r => r.OperationId == ope.OperationId && r.UserId == user.UserId)
+                .Sum(r => r.Weight);
+            
+            double ratio = UserWeight / TotalWeight;
+            
+            res =  res + (ope.Amount * ratio);
+           
+        }
+        return Math.Round(res, 2);
+    }
+    
+    public double ConnectedUserBal(User user) {
+
+        Double connectedUserExp = ConnectedUserExp(user);
+        Double expenseUserCo = new();
+
+        foreach (Operation ope in user.OperationsCreated) {
+
+            if (ope.TricountId == Id) {
+                expenseUserCo = expenseUserCo + ope.Amount;
+            }
+        }
+        
+        return Math.Round(expenseUserCo - connectedUserExp, 2);
     }
 }
