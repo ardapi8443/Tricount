@@ -11,6 +11,8 @@ namespace prbd_2324_g01.View
         public UserAmountView() {
             InitializeComponent();
             Loaded += OnLoaded;
+            
+            // Console.WriteLine(name.Width);
         }
         
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -18,8 +20,18 @@ namespace prbd_2324_g01.View
             if (DataContext is UserAmountViewModel viewModel) {
                 if (viewModel.Amount < 0) {
                     Grid.SetColumn(name, 1);
-                    Grid.SetColumn(amount, 0);
-                }
+                    Grid.SetColumn(border, 0);
+                    
+                    name.HorizontalAlignment = HorizontalAlignment.Left;
+                    border.HorizontalAlignment = HorizontalAlignment.Right;
+                    amount.HorizontalAlignment = HorizontalAlignment.Right;
+                    
+                    border.Background = Brushes.Red;
+                    
+                } 
+// à recalculer en fonction du montant total des opérations, du poids et expenses du user
+// do we ??
+                border.Width = Math.Abs(viewModel.Amount)*2;
             }
         }
     }

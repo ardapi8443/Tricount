@@ -12,19 +12,22 @@
     
     <prbdFramework:UserControlBase.Resources>
         <vm:SignConverter x:Key="SignConverter"/>
+        <vm:SignConverter x:Key="WidthConverter"/>
     </prbdFramework:UserControlBase.Resources>
     
     <Grid Margin="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock x:Name="name" Text="{Binding User.FullName}" FontWeight="Bold"/>
-            <TextBlock Grid.Column="1" x:Name="amount" Text="{Binding Amount}"/>
+            <TextBlock x:Name="name" Text="{Binding UserName}" HorizontalAlignment="Right"/>
+            <Border Grid.Column="1" x:Name="border" Background="Green" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left" Width="100">
+                <TextBlock x:Name="amount" Text="{Binding Amount}" HorizontalAlignment="Left" FontWeight="Bold"/>
+            </Border>
                 
         </Grid>
     

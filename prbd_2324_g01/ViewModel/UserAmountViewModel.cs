@@ -4,12 +4,12 @@ using PRBD_Framework;
 
 namespace prbd_2324_g01.ViewModel {
     public class UserAmountViewModel : ViewModelCommon {
-        private User _user;
+        private string _userName;
         private double _amount;
 
-        public User User {
-            get { return _user; }
-            set { SetProperty(ref _user, value); }
+        public string UserName {
+            get { return _userName; }
+            set { SetProperty(ref _userName, value); }
         }
 
         public double Amount {
@@ -18,14 +18,15 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public UserAmountViewModel(User user, double amount) {
-            User = user;
+            if (user.UserId == CurrentUser.UserId) {
+                UserName = user.FullName + " (me)";
+            } else {
+                UserName = user.FullName;   
+            }
             Amount = amount;
             
-            Console.WriteLine("User = " + User.FullName + " amount = " + Amount);
+            // Console.WriteLine("User = " + UserName + " amount = " + Amount);
         }
 
-        public UserAmountViewModel() {
-            Console.WriteLine("coucou");
-        }
     }
 }
