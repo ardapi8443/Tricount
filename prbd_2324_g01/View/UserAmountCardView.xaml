@@ -10,11 +10,6 @@
              d:DataContext="{d:DesignInstance Type=vm:UserAmountCardViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="80" d:DesignWidth="auto">
     
-    <prbdFramework:UserControlBase.Resources>
-        <vm:SignConverter x:Key="SignConverter"/>
-        <vm:SignConverter x:Key="WidthConverter"/>
-    </prbdFramework:UserControlBase.Resources>
-    
     <Grid Margin="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
