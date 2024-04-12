@@ -6,9 +6,9 @@ using System.Windows.Media;
 
 namespace prbd_2324_g01.View
 {
-    public partial class UserAmountView : UserControlBase
+    public partial class UserAmountCardView : UserControlBase
     {
-        public UserAmountView() {
+        public UserAmountCardView() {
             InitializeComponent();
             Loaded += OnLoaded;
             
@@ -17,7 +17,7 @@ namespace prbd_2324_g01.View
         
         private void OnLoaded(object sender, RoutedEventArgs e) {
             // Check the value of Amount and adjust Grid.Column accordingly
-            if (DataContext is UserAmountViewModel viewModel) {
+            if (DataContext is UserAmountCardViewModel viewModel) {
                 if (viewModel.Amount < 0) {
                     Grid.SetColumn(name, 1);
                     Grid.SetColumn(border, 0);

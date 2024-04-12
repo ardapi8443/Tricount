@@ -17,12 +17,13 @@ namespace prbd_2324_g01.ViewModel
         private Tricount _tricount;
         private ObservableCollection<OperationCardViewModel> _operations;
         private Dictionary<User, double> _map;
-        private ObservableCollection<UserAmountViewModel> _mapEntries;
+        private ObservableCollection<UserAmountCardViewModel> _mapEntries;
         
         //boutons
         public ICommand NewOperation { get; set; }
         public ICommand EditTricount { get; set; }
         public ICommand DeleteTricount { get; set; }
+        public ICommand DisplayOperation { get; set; }
         
         //get && set des variables utilisées dans la vue
         private Tricount Tricount {
@@ -53,7 +54,7 @@ namespace prbd_2324_g01.ViewModel
             get => _map;
             set => SetProperty(ref _map, value);
         }
-        public ObservableCollection<UserAmountViewModel> MapEntries {
+        public ObservableCollection<UserAmountCardViewModel> MapEntries {
             get => _mapEntries; 
             set => SetProperty(ref _mapEntries, value); 
         }
@@ -84,14 +85,18 @@ namespace prbd_2324_g01.ViewModel
                 Map.Add(user, Tricount.ConnectedUserBal(user));
             }
 
-            MapEntries = new ObservableCollection<UserAmountViewModel>(
-                Map.Select(entry => new UserAmountViewModel(entry.Key, entry.Value))
+            MapEntries = new ObservableCollection<UserAmountCardViewModel>(
+                Map.Select(entry => new UserAmountCardViewModel(entry.Key, entry.Value))
             );
             
             //attribution des actions aux boutons
             NewOperation = new RelayCommand(NewOperationAction);
             EditTricount = new RelayCommand(EditTricountAction);
             DeleteTricount = new RelayCommand(DeleteTricountAction);
+            //on vient définir l'action au double clic sur une operation
+            DisplayOperation = new RelayCommand<OperationCardViewModel>(vm => {
+                NotifyColleagues(App.Messages.MSG_DISPLAY_OPERATION, vm.Operation);
+            });
         }
 
         public void NewOperationAction() {
@@ -99,10 +104,12 @@ namespace prbd_2324_g01.ViewModel
             Console.WriteLine("je suis dans TricountViewModel");
         }
 
+//bouton vers l'édition d'un tricount
         public void EditTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
         }
 
+//bouton vers la suppression d'un tricount
         public void DeleteTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
         }

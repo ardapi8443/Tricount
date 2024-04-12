@@ -3,7 +3,7 @@ using prbd_2324_g01.Model;
 using PRBD_Framework;
 
 namespace prbd_2324_g01.ViewModel {
-    public class UserAmountViewModel : ViewModelCommon {
+    public class UserAmountCardViewModel : ViewModelCommon {
         private string _userName;
         private double _amount;
 
@@ -17,7 +17,7 @@ namespace prbd_2324_g01.ViewModel {
             set { SetProperty(ref _amount, value); }
         }
 
-        public UserAmountViewModel(User user, double amount) {
+        public UserAmountCardViewModel(User user, double amount) {
             if (user.UserId == CurrentUser.UserId) {
                 UserName = user.FullName + " (me)";
             } else {

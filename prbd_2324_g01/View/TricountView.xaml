@@ -38,6 +38,15 @@
                 
         <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
                   SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+<!-- on vient ici définir l'action pour un double clic sur une opération -->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DisplayOperation}"
+                                           CommandParameter="{Binding ElementName=listView, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
@@ -56,7 +65,7 @@
         </ListView>
         
         <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MapEntries}" BorderBrush="Transparent" 
-                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsHitTestVisible="False">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel/>
@@ -69,7 +78,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <local:UserAmountView />
+                    <local:UserAmountCardView />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
