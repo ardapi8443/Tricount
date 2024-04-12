@@ -55,8 +55,6 @@
             </ListView.ItemTemplate>
         </ListView>
         
-        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
-        
         <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MapEntries}" BorderBrush="Transparent" 
                   SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
@@ -72,16 +70,16 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <local:UserAmountView />
-                    <!-- <DataTemplate.Triggers> -->
-                    <!--     <DataTrigger Binding="{Binding Amount, Converter={StaticResource SignConverter}}" Value="-1"> -->
-                    <!--         <Setter TargetName="name" Property="Grid.Column" Value="1"/> -->
-                    <!--         <Setter TargetName="amount" Property="Grid.Column" Value="0"/> -->
-                    <!--     </DataTrigger> -->
-                    <!-- </DataTemplate.Triggers> -->
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
+        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
+        
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Width="50" Content="Edit" Command="{Binding EditTricount}"/>
+            <Button Margin="5" Width="50" Content="Delete" Command="{Binding DeleteTricount}"/>
+        </StackPanel>
 
     </Grid>
 </f:WindowBase>

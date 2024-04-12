@@ -18,8 +18,11 @@ namespace prbd_2324_g01.ViewModel
         private ObservableCollection<OperationCardViewModel> _operations;
         private Dictionary<User, double> _map;
         private ObservableCollection<UserAmountViewModel> _mapEntries;
-
+        
+        //boutons
         public ICommand NewOperation { get; set; }
+        public ICommand EditTricount { get; set; }
+        public ICommand DeleteTricount { get; set; }
         
         //get && set des variables utilisées dans la vue
         private Tricount Tricount {
@@ -87,10 +90,20 @@ namespace prbd_2324_g01.ViewModel
             
             //attribution des actions aux boutons
             NewOperation = new RelayCommand(NewOperationAction);
+            EditTricount = new RelayCommand(EditTricountAction);
+            DeleteTricount = new RelayCommand(DeleteTricountAction);
         }
 
         public void NewOperationAction() {
 //bouton vers une nouvelle opération
+            Console.WriteLine("je suis dans TricountViewModel");
+        }
+
+        public void EditTricountAction() {
+            Console.WriteLine("je suis dans TricountViewModel");
+        }
+
+        public void DeleteTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
         }
 
