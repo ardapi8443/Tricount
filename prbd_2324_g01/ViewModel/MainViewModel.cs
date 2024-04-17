@@ -34,10 +34,11 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
 
         Tricounts = new ObservableCollection<Tricount>(tricounts);
     }
+
+
     public MainViewModel() {
         ApplyFilterAction();
         InitiateVM();
-
     }
 
 }

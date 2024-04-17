@@ -106,7 +106,41 @@ public class Tricount : EntityBase<PridContext> {
         PridContext.Context.SaveChanges();
     }
     public static List<Tricount> tricountByMember(User user) {
-        return PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
+        
+        List<Tricount> res = PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
+
+        res.Sort(
+            (tricount1, tricount2) => {
+
+                if (tricount1.HaveOpe && tricount2.HaveOpe) {
+
+                    var latestOperationDate1 = tricount1.Operations.Max(operation => operation.OperationDate);
+                    var latestOperationDate2 = tricount2.Operations.Max(operation => operation.OperationDate);
+
+                    return latestOperationDate2.CompareTo(latestOperationDate1);
+
+                } else if (tricount1.HaveOpe) {
+
+                    var latestOperationDate1 = tricount1.Operations.Max(operation => operation.OperationDate);
+                    var creationTricount2 = tricount2.CreatedAt;
+
+                    return creationTricount2.CompareTo(latestOperationDate1);
+
+                } else if (tricount2.HaveOpe) {
+
+                    var creationTricount1 = tricount1.CreatedAt;
+                    var latestOperationDate2 = tricount2.Operations.Max(operation => operation.OperationDate);
+
+                    return latestOperationDate2.CompareTo(creationTricount1);
+
+                } else {
+                    return tricount2.CreatedAt.CompareTo(tricount1.CreatedAt);
+                }
+
+            });
+   
+        
+        return res;
     }
 
     public double ConnectedUserExp(User user) {
