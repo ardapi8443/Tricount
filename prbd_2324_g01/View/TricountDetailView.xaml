@@ -58,6 +58,15 @@
             <LineBreak/>
             <Run Text="Balance:"/>
             <Run Text="{Binding UserBal}"/>
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Tricount.HaveOpe}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
         </TextBlock>
         
 
