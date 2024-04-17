@@ -7,6 +7,17 @@ using System.Globalization;
 namespace prbd_2324_g01;
 
 public partial class App {
+
+    public enum Messages
+    {
+        MSG_NEW_TRICOUNT,
+        MSG_TRICOUNT_CHANGED,
+        MSG_DISPLAY_TRICOUNT,
+        MSG_DISPLAY_OPERATION,
+        MSG_CLOSE_TAB,
+        MSG_LOGIN
+    }
+
     public App() {
         var ci = new CultureInfo("fr-BE") {
             DateTimeFormat = {
@@ -24,7 +35,12 @@ public partial class App {
         PrepareDatabase();
         TestQueries();
 
-        NavigateTo<MainViewModel, User, PridContext>();
+        Register<User>(this, Messages.MSG_LOGIN, user => {
+            Login(user);
+            NavigateTo<MainViewModel, User, PridContext>();
+        });
+
+        NavigateTo<LoginViewModel, User, PridContext>();
     }
 
     private static void PrepareDatabase() {

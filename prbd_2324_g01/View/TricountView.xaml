@@ -1,0 +1,94 @@
+﻿<f:WindowBase x:Class="prbd_2324_g01.View.TricountView"
+        x:Name="window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:prbd_2324_g01.View"
+        xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+        xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+        mc:Ignorable="d"
+        Title="Login" WindowStartupLocation="CenterScreen"
+        d:DesignHeight="450" d:DesignWidth="800">
+    <Window.DataContext>
+        <vm:TricountViewModel x:Name="vm"/>
+    </Window.DataContext>
+    
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
+            <Run Text="{Binding Title}" FontWeight="Bold"/>
+            <Run Text=" - "/>
+            <Run Text="{Binding Description}" FontWeight="Thin" FontStyle="Italic"/>
+        </TextBlock>
+
+        <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
+                
+        <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+<!-- on vient ici définir l'action pour un double clic sur une opération -->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DisplayOperation}"
+                                           CommandParameter="{Binding ElementName=listView, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:OperationCardView />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding MapEntries}" BorderBrush="Transparent" 
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsHitTestVisible="False">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:UserAmountCardView />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
+        
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Width="50" Content="Edit" Command="{Binding EditTricount}"/>
+            <Button Margin="5" Width="50" Content="Delete" Command="{Binding DeleteTricount}"/>
+        </StackPanel>
+
+    </Grid>
+</f:WindowBase>

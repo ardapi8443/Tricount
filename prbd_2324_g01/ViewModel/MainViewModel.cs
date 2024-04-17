@@ -1,12 +1,17 @@
-﻿using Microsoft.IdentityModel.Tokens;
+
+using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.Model;
 using System.Collections.ObjectModel;
+using Msn.ViewModel;
+using prbd_2324_g01.Model;
+
 
 namespace prbd_2324_g01.ViewModel;
 
-public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
+public class MainViewModel : ViewModelCommon
 {
     public string Title => "My Tricount";
+    
 
     private ObservableCollection<Tricount> _tricounts;
     public ObservableCollection<Tricount> Tricounts {
@@ -26,10 +31,10 @@ public class MainViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
     }
 
     private void InitiateVM() {
-        IEnumerable<Tricount> tricounts = Tricount.tricountByMember(User.UserById(1));
+        IEnumerable<Tricount> tricounts = Tricount.tricountByMember(App.CurrentUser);
 
         foreach (var tricount in tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,User.UserById(1) ));
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,App.CurrentUser));
         }
 
         Tricounts = new ObservableCollection<Tricount>(tricounts);
