@@ -5,16 +5,65 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
               xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+              xmlns:local="clr-namespace:prbd_2324_g01.View"
+              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib"
               mc:Ignorable="d"
               d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
               WindowStartupLocation="CenterScreen"
-              Title="MainView" Height="400" Width="600">
+              Title="MyTricount" Height="400" Width="600">
 
     <Window.DataContext>
         <vm:MainViewModel x:Name="vm" />
     </Window.DataContext>
 
-    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="32"
-           Text="{Binding Title}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
+            <Button Content="Clear" Grid.Column="1" Command="{Binding ClearFilter}" Margin="5,0,0,0" />
+        </Grid>
 
+        
+        <ListView x:Name="listView" VerticalContentAlignment="Top" Height="Auto" ItemsSource="{Binding TricountsDetailVM}" Grid.Row="1" BorderBrush="Transparent" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    
+                    <local:TricountDetailView/>
+                   
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+ 
+            <Button VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Width="100" Height="20" Content="New Tricount" ></Button>
+            <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock Width="125">
+                    <Run Background="Gray"    Text="     "/>
+                    <Run Text="Null Balance"/>
+                </TextBlock>
+                <TextBlock Width="125">
+                    <Run Background="Green" Text="     "/>
+                    <Run Text="Positive Balance"/>
+                </TextBlock>
+                <TextBlock Width="125">
+                    <Run Background="Red" Text="     "/>
+                    <Run Text="Negative Balance"/>
+                </TextBlock>
+            </WrapPanel>
+
+    </Grid>
 </f:WindowBase>
