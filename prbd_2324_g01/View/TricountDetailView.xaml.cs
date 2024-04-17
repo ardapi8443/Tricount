@@ -1,4 +1,5 @@
-﻿using prbd_2324_g01.ViewModel;
+﻿using prbd_2324_g01.Model;
+using prbd_2324_g01.ViewModel;
 using PRBD_Framework;
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,36 @@ using System.Windows.Shapes;
 
 namespace prbd_2324_g01.View
 {
-    /// <summary>
-    /// Interaction logic for TricountDetailView.xaml
-    /// </summary>
+  
     public partial class TricountDetailView : UserControlBase
     {
         public TricountDetailViewModel ViewModel { get; set; }
+        
         public TricountDetailView()
         {
             InitializeComponent();
+            Loaded += Onloaded;
+            
         }
+
+        private void Onloaded(object sender, RoutedEventArgs e) {
+            ColorUserBal();
+        }
+        private void ColorUserBal() {
+            
+            if (DataContext is TricountDetailViewModel viewModel) {
+                if (viewModel.Tricount.ConnectedUserBal(viewModel.ConnectedUSer) > 0) {
+                    UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 200, 125));
+                    FullCard.Background = new SolidColorBrush(Color.FromArgb(128, 60, 179, 113));
+                } else if (viewModel.Tricount.ConnectedUserBal(viewModel.ConnectedUSer) < 0) {
+                    UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 220, 20, 60));
+                    FullCard.Background = new SolidColorBrush(Color.FromArgb(128, 220, 20, 60));
+                } else {
+                    FullCard.Background = Brushes.Gray;
+                }
+            }
+        }
+        
+        
     }
 }

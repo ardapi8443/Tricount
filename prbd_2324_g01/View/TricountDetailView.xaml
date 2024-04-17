@@ -10,8 +10,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <StackPanel >
-        <TextBlock TextAlignment="Center" >
+    <StackPanel x:Name="FullCard">
+        <TextBlock TextAlignment="Center">
             <Run Text="{Binding Tricount.Title}" FontWeight="Bold"/>
             <LineBreak/>
             <Run Text="{Binding Updated_Description}" FontStyle="Italic"/>
@@ -56,8 +56,8 @@
             <Run Text="My expenses:"/>
             <Run Text="{Binding UserExp}"/>
             <LineBreak/>
-            <Run Text="Balance:"/>
-            <Run Text="{Binding UserBal}"/>
+            <Run Text="My Balance:"/>
+            <Run x:Name="UserBal" Text="{Binding UserBal}"/>
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Style.Triggers>
