@@ -37,6 +37,8 @@ public partial class App {
 
         Register<User>(this, Messages.MSG_LOGIN, user => {
             Login(user);
+            Console.WriteLine("changer la vue charger après le login dans App.xaml.cs");
+//ICI
             NavigateTo<TricountViewModel, User, PridContext>();
         });
 

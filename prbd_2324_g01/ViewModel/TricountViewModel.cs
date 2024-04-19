@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
+using prbd_2324_g01.View;
 using PRBD_Framework;
 using System;
 using System.Collections.Generic;
@@ -100,8 +101,8 @@ namespace prbd_2324_g01.ViewModel
         }
 
         public void NewOperationAction() {
-//bouton vers une nouvelle opération
-            Console.WriteLine("je suis dans TricountViewModel");
+            DialogWindowBase dialog = new AddEditOperationView();
+            dialog.ShowDialog();
         }
 
 //bouton vers l'édition d'un tricount
