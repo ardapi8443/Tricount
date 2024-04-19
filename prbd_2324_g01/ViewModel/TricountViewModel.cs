@@ -60,10 +60,9 @@ namespace prbd_2324_g01.ViewModel
         }
 
         //constructeur
-//doit recevoir le Tricount au double clique dans l'UC list_tricounts
-        public TricountViewModel() {
-// à remplacer par le Tricount recu en paramètre
-            Tricount = Tricount.GetTricountById(4);
+        public TricountViewModel(Tricount tricount) {
+            Tricount = tricount;
+            Console.WriteLine(Tricount.Title);
             
             //on va chercher les opérations lié au Tricount en DB
             var query = from o in PridContext.Context.Operations

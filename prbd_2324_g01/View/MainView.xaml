@@ -1,69 +1,30 @@
-﻿<f:WindowBase x:Class="prbd_2324_g01.View.MainView"
+<f:WindowBase x:Class="prbd_2324_g01.View.MainView"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
-              xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
-              xmlns:local="clr-namespace:prbd_2324_g01.View"
-              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+              xmlns:viewModel="clr-namespace:prbd_2324_g01.ViewModel"
+              xmlns:view="clr-namespace:prbd_2324_g01.View"
               mc:Ignorable="d"
-              d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
-              WindowStartupLocation="CenterScreen"
-              Title="MyTricount" Height="400" Width="600">
-
+              Title="{Binding Title}" Height="768" Width="1024" WindowStartupLocation="CenterScreen">
+              <!-- KeyDown="WindowBase_KeyDown"> -->
     <Window.DataContext>
-        <vm:MainViewModel x:Name="vm" />
+        <viewModel:MainViewModel/>
     </Window.DataContext>
-
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
-            <Button Content="Clear" Grid.Column="1" Command="{Binding ClearFilter}" Margin="5,0,0,0" />
-        </Grid>
-
-        
-        <ListView x:Name="listView" VerticalContentAlignment="Top" Height="Auto" ItemsSource="{Binding TricountsDetailVM}" Grid.Row="1" BorderBrush="Transparent" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    
-                    <local:TricountDetailView/>
-                   
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        
- 
-            <Button VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Width="100" Height="20" Content="New Tricount" ></Button>
-            <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <TextBlock Width="125">
-                    <Run Background="Gray"    Text="     "/>
-                    <Run Text="Null Balance"/>
-                </TextBlock>
-                <TextBlock Width="125">
-                    <Run Background="Green" Text="     "/>
-                    <Run Text="Positive Balance"/>
-                </TextBlock>
-                <TextBlock Width="125">
-                    <Run Background="Red" Text="     "/>
-                    <Run Text="Negative Balance"/>
-                </TextBlock>
-            </WrapPanel>
-
+        <!-- <Menu> -->
+        <!--     <MenuItem Header="Logout" Click="MenuLogout_Click"/> -->
+        <!--     <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" /> -->
+        <!-- </Menu> -->
+        <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
+            <TabItem x:Name="tricountsTab" Header="Tricounts" Tag="Tricounts">
+                <view:TricountsView/>
+            </TabItem>
+        </f:MyTabControl>
     </Grid>
 </f:WindowBase>

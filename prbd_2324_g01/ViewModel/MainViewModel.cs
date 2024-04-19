@@ -1,49 +1,30 @@
-
-using Microsoft.IdentityModel.Tokens;
-using prbd_2324_g01.Model;
-using System.Collections.ObjectModel;
 using Msn.ViewModel;
-using prbd_2324_g01.Model;
-
+using System.Windows.Input;
+using prbd_2324_g01;
+using PRBD_Framework;
+using prbd_2324_g01;
 
 namespace prbd_2324_g01.ViewModel;
 
-public class MainViewModel : ViewModelCommon
-{
-    public string Title => "My Tricount";
-    
+public class MainViewModel : ViewModelCommon {
+    public ICommand ReloadDataCommand { get; set; }
 
-    private ObservableCollection<Tricount> _tricounts;
-    public ObservableCollection<Tricount> Tricounts {
-        get => _tricounts;
-        set => SetProperty(ref _tricounts, value);
+    public MainViewModel() : base() {
+        ReloadDataCommand = new RelayCommand(() => {
+            // refuser un reload s'il y a des changements en cours
+            if (Context.ChangeTracker.HasChanges()) return;
+            // permet de renouveller le contexte EF
+            App.ClearContext();
+            // notifie tout le monde qu'il faut rafraîchir les données
+            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+        });
     }
 
-    private string _filter;
-    public string Filter {
-        get => _filter;
-        set => SetProperty(ref _filter, value, ApplyFilterAction);
-    }
-    public ObservableCollection<TricountDetailViewModel> TricountsDetailVM { get; set; } = new ();
-    private void ApplyFilterAction() {
-
-
+    public static string Title {
+        get => $"Tricount of ({CurrentUser?.FullName})";
     }
 
-    private void InitiateVM() {
-        IEnumerable<Tricount> tricounts = Tricount.tricountByMember(App.CurrentUser);
-
-        foreach (var tricount in tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,App.CurrentUser));
-        }
-
-        Tricounts = new ObservableCollection<Tricount>(tricounts);
+    protected override void OnRefreshData() {
+        // pour plus tard
     }
-
-
-    public MainViewModel() {
-        ApplyFilterAction();
-        InitiateVM();
-    }
-
 }

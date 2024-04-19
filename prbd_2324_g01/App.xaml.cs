@@ -60,7 +60,11 @@ public partial class App {
     }
 
     private static void TestQueries() {
- 
+        var user = (from u in Context.Users
+            where u.email.Equals("xapigeolet@epfc.eu")
+            select u).First();
+        
+        Console.WriteLine(user.FullName);
 
     }
 }
