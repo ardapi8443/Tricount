@@ -1,20 +1,30 @@
-﻿<f:WindowBase x:Class="prbd_2324_g01.View.MainView"
+<f:WindowBase x:Class="prbd_2324_g01.View.MainView"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
-              xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+              xmlns:viewModel="clr-namespace:prbd_2324_g01.ViewModel"
+              xmlns:view="clr-namespace:prbd_2324_g01.View"
               mc:Ignorable="d"
-              d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
-              WindowStartupLocation="CenterScreen"
-              Title="MainView" Height="400" Width="600">
-
+              Title="{Binding Title}" Height="768" Width="1024" WindowStartupLocation="CenterScreen">
+              <!-- KeyDown="WindowBase_KeyDown"> -->
     <Window.DataContext>
-        <vm:MainViewModel x:Name="vm" />
+        <viewModel:MainViewModel/>
     </Window.DataContext>
-
-    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="32"
-           Text="{Binding Title}" />
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <!-- <Menu> -->
+        <!--     <MenuItem Header="Logout" Click="MenuLogout_Click"/> -->
+        <!--     <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" /> -->
+        <!-- </Menu> -->
+        <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
+            <TabItem x:Name="tricountsTab" Header="Tricounts" Tag="Tricounts">
+                <view:TricountsView/>
+            </TabItem>
+        </f:MyTabControl>
+    </Grid>
 </f:WindowBase>

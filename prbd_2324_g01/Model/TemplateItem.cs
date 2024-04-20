@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prbd_2324_g01.Model;
 
-public class TemplateItem : EntityBase<Model> {
+public class TemplateItem : EntityBase<PridContext> {
 
     [Required]
     public int Weight { get; set; }
