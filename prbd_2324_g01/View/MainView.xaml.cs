@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Input;
 using prbd_2324_g01;
@@ -6,7 +6,6 @@ using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using prbd_2324_g01.ViewModel;
 using PRBD_Framework;
-using prbd_2324_g01;
 
 namespace prbd_2324_g01.View;
 

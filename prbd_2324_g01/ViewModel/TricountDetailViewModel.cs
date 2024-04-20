@@ -47,9 +47,10 @@ namespace prbd_2324_g01.ViewModel
                 OpeMessage = Tricount.Operations.Count + " operations";
             }
 
-            TotalExp = Tricount.TotalExp.ToString() + " €";
-            UserExp = Tricount.ConnectedUserExp(this.ConnectedUSer) + " €";
-            UserBal = Tricount.ConnectedUserBal(this.ConnectedUSer) + " €";
+            TotalExp = Tricount.TotalExp.ToString("0.00") + " €";
+            UserExp = Tricount.UserExpenses(this.ConnectedUSer) + " €";
+            var userBalance = Tricount.ConnectedUserBal(ConnectedUSer);
+            UserBal = $"{(userBalance < 0 ? " - " : " ")}{Math.Abs(userBalance):0.00} €";
         }
         
         

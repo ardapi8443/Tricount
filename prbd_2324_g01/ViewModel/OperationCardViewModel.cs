@@ -21,11 +21,11 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public string Amount {
-            get => Operation.Amount.ToString();
+            get => Math.Round(Operation.Amount, 2).ToString("0.00"+ " €");
         }
 
         public string PaidBy {
-            get => Operation.Initiator.FullName;
+            get => "Paid by " + Operation.Initiator.FullName;
         }
 
         public string Date {

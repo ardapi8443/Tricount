@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Security.AccessControl;
 
 namespace prbd_2324_g01.Model;
 
@@ -163,7 +164,7 @@ public class Tricount : EntityBase<PridContext> {
         return res;
     }
 
-    public double ConnectedUserExp(User user) {
+    public double UserBalance(User user) {
         
         double res = new();
 
@@ -183,10 +184,19 @@ public class Tricount : EntityBase<PridContext> {
         }
         return Math.Round(res, 2);
     }
+    
+    public double UserExpenses(User user) {
+        var myExpenses = user.OperationsCreated
+            .Where(o => o.Initiator.UserId == user.UserId && o.TricountId == Id)
+            .Sum(o => o.Amount);
+        
+        return myExpenses;
 
+    }
+    
     public double ConnectedUserBal(User user) {
 
-        Double connectedUserExp = ConnectedUserExp(user);
+        Double connectedUserExp = UserBalance(user);
         Double expenseUserCo = new();
 
         foreach (Operation ope in user.OperationsCreated) {

@@ -68,17 +68,30 @@ namespace prbd_2324_g01.ViewModel
             var query = from o in PridContext.Context.Operations
                                         where o.TricountId == Tricount.Id
                                         select o;
-            query = query.OrderByDescending(x => x.OperationDate);
+            query = query.OrderByDescending(x => x.OperationDate)
+                .ThenByDescending(x => x.Title);
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
 
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
 //manque les users qui n'ont pas fait d'opérations mais qui ont souscrit au tricount
             Map = new Dictionary<User, double>();
-            var query2 = from o in PridContext.Context.Operations
-                                            where o.TricountId == Tricount.Id
-                                            group o by o.UserId into g
-                                            orderby g.Key
-                                            select new { UserId = g.Key, Amount = g.Sum(x => x.Amount) };
+            var operations = from o in PridContext.Context.Operations
+                where o.TricountId == Tricount.Id
+                group o by o.UserId into g
+                orderby g.Key
+                select new {
+                    UserId = g.Key,
+                    Amount = g.Sum(x => x.Amount)
+                };
+            var query2 = from user in tricount.Subscribers
+                join op in operations on user.UserId equals op.UserId into operationDetails
+                from subOp in operationDetails.DefaultIfEmpty()
+                orderby user.FullName
+                select new {
+                    UserId = user.UserId,
+                    Amount = subOp != null ? subOp.Amount : 0.00 
+                };
+            
             foreach (var q in query2) {
                 User user = User.GetUserById(q.UserId);
                 Map.Add(user, Tricount.ConnectedUserBal(user));

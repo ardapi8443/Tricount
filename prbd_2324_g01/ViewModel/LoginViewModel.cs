@@ -60,15 +60,13 @@ namespace prbd_2324_g01.ViewModel
         public override bool Validate() {
             ClearErrors();
 
-            var user = from u in Context.Users
-                       where u.email.Equals(Email)
-                       select u.email;
+            var user = Context.Users.Find(Email);
 
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
             else if (!Email.Contains('@') || !Email.Contains('.'))
                 AddError(nameof(Email), "email not valid");
-            else if (!user.Any())
+            else if (user == null)
                 AddError(nameof(Email), "does not exist");
 
             return !HasErrors;
