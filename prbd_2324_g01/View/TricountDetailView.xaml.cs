@@ -45,11 +45,7 @@ namespace prbd_2324_g01.View
                 } else {
                     FullCard.Background = Brushes.Gray;
                 }
-
-                
             }
         }
-        
-        
     }
 }

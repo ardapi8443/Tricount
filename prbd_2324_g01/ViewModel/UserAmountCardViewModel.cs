@@ -29,7 +29,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             Amount = amount;
             
-            // Console.WriteLine("User = " + UserName + " amount = " + Amount);
+           //  Console.WriteLine("User = " + UserName + " amount = " + Amount);
         }
 
     }

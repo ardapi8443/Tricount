@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
+using prbd_2324_g01.View;
 using PRBD_Framework;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-namespace prbd_2324_g01.ViewModel
-{
+namespace prbd_2324_g01.ViewModel {
     internal class TricountViewModel: ViewModelCommon {
         private Tricount _tricount;
         private ObservableCollection<OperationCardViewModel> _operations;
@@ -69,7 +69,7 @@ namespace prbd_2324_g01.ViewModel
                                         where o.TricountId == Tricount.Id
                                         select o;
             query = query.OrderByDescending(x => x.OperationDate)
-                .ThenByDescending(x => x.Title);
+                .ThenBy(x => x.Title);
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
 
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
@@ -119,12 +119,13 @@ namespace prbd_2324_g01.ViewModel
 //bouton vers l'édition d'un tricount
         public void EditTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
+            NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, Tricount);
         }
 
 //bouton vers la suppression d'un tricount
         public void DeleteTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
         }
-
+        
     }
 }

@@ -18,6 +18,9 @@ public partial class MainView : WindowBase {
 
         Register<Tricount>(App.Messages.MSG_DISPLAY_TRICOUNT,
             member => DoDisplayTricount(member, false));
+        
+        Register<Tricount>(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT,
+            member => DoDisplayEditTricount(member, false));
 
         // Register<Tricount>(App.Messages.MSG_PSEUDO_CHANGED,
         //     member => DoRenameTab(string.IsNullOrEmpty(member.Pseudo) ? "<New Member>" : member.Pseudo));
@@ -29,6 +32,13 @@ public partial class MainView : WindowBase {
     private void DoDisplayTricount(Tricount tricount, bool isNew) {
         if (tricount != null)
             OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new TricountView(tricount));
+    }
+    
+    private void DoDisplayEditTricount(Tricount tricount, bool isNew) {
+        if (tricount != null) {
+            DoCloseTab(tricount);
+            OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
+        }
     }
 
     private void OpenTab(string header, string tag, Func<UserControlBase> createView) {
@@ -51,7 +61,7 @@ public partial class MainView : WindowBase {
     }
 
     private void MenuLogout_Click(object sender, System.Windows.RoutedEventArgs e) {
-        // NotifyColleagues(App.Messages.MSG_LOGOUT);
+         NotifyColleagues(App.Messages.MSG_LOGOUT);
     }
 
     private void WindowBase_KeyDown(object sender, KeyEventArgs e) {
