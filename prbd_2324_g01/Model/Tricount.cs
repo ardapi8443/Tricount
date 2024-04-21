@@ -164,7 +164,7 @@ public class Tricount : EntityBase<PridContext> {
         return res;
     }
 
-    public double UserBalance(User user) {
+    public double UserExpenses(User user) {
         
         double res = new();
 
@@ -185,18 +185,9 @@ public class Tricount : EntityBase<PridContext> {
         return Math.Round(res, 2);
     }
     
-    public double UserExpenses(User user) {
-        var myExpenses = user.OperationsCreated
-            .Where(o => o.Initiator.UserId == user.UserId && o.TricountId == Id)
-            .Sum(o => o.Amount);
-        
-        return myExpenses;
-
-    }
-    
     public double ConnectedUserBal(User user) {
 
-        Double connectedUserExp = UserBalance(user);
+        Double connectedUserExp = UserExpenses(user);
         Double expenseUserCo = new();
 
         foreach (Operation ope in user.OperationsCreated) {

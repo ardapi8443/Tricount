@@ -1,11 +1,5 @@
 ﻿using Msn.ViewModel;
-using prbd_2324_g01.Model;
 using PRBD_Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel
@@ -60,13 +54,15 @@ namespace prbd_2324_g01.ViewModel
         public override bool Validate() {
             ClearErrors();
 
-            var user = Context.Users.Find(Email);
+            var user = from u in Context.Users
+                       where u.email.Equals(Email)
+                       select u.email;
 
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
             else if (!Email.Contains('@') || !Email.Contains('.'))
                 AddError(nameof(Email), "email not valid");
-            else if (user == null)
+            else if (!user.Any())
                 AddError(nameof(Email), "does not exist");
 
             return !HasErrors;
