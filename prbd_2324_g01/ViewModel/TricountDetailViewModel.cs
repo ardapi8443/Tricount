@@ -12,23 +12,22 @@ namespace prbd_2324_g01.ViewModel
     {
         public Tricount Tricount { get; set; }
         public User ConnectedUSer { get; set; }
-        public string Updated_Description { get; set; }
-
+        public string UpdatedDescription { get; set; }
         public string FriendMessage { get; set; }
         public string OpeMessage { get; set; }
         public string TotalExp { get; set; }
         public string UserExp { get; set; }
         public string UserBal { get; set; }
 
-        public TricountDetailViewModel(Tricount Tricount, User ConnectedUSer) {
+        public TricountDetailViewModel(Tricount tricount, User connectedUser) {
 
-            this.Tricount = Tricount;
-            this.ConnectedUSer = ConnectedUSer;
+            Tricount = tricount;
+            ConnectedUSer = connectedUser;
 
             if(Tricount.Description.Length == 0 ) {
-                Updated_Description = "No Description";
+                UpdatedDescription = "No Description";
             } else {
-                Updated_Description = Tricount.Description;
+                UpdatedDescription = Tricount.Description;
             }
             
             if (!Tricount.haveFriends) {
@@ -52,7 +51,6 @@ namespace prbd_2324_g01.ViewModel
             var userBalance = Tricount.ConnectedUserBal(ConnectedUSer);
             UserBal = $"{(userBalance < 0 ? " - " : " ")}{Math.Abs(userBalance):0.00} €";
         }
-        
         
     }
 }

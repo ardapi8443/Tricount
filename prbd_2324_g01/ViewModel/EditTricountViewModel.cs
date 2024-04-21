@@ -9,12 +9,20 @@ namespace prbd_2324_g01.ViewModel
         
         private Tricount _tricount;
         
+        private DateTime? _date;
+        
         public ObservableCollection<ParticipantViewModel> Participants { get; private set; }
+        public ObservableCollection<TemplateViewModel> Templates { get; private set; }
         
         public Tricount Tricount {
             get => _tricount;
             set => SetProperty(ref _tricount, value);
         }
+        
+        public string FormattedDate {
+            get => _date?.ToShortDateString();
+        }
+
 
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
@@ -34,14 +42,25 @@ namespace prbd_2324_g01.ViewModel
                     Tricount.CreatorFromTricount.UserId 
                 ))
             );
+
+            var templates = PridContext.Context.Templates.ToList();
+            
+            Templates = new ObservableCollection<TemplateViewModel>(
+                templates.Select(t => new TemplateViewModel(t.Title)));
         }
 
         public string Creation {
             get => $"Created by {Tricount.CreatorFromTricount.FullName} on {Tricount.CreatedAt.ToShortDateString()}";
         }
 
-        public string Date {
-            get => Tricount.CreatedAt.ToShortDateString();
+        public DateTime? Date {
+            get => DateTime.Today;
+            set {
+                if (_date != value) {
+                    _date = value;
+                    SetProperty(ref _date, value);
+                }
+            }
         }
     }
 }
