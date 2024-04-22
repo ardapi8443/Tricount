@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
+using prbd_2324_g01.View;
+using PRBD_Framework;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel
 {
@@ -10,6 +13,8 @@ namespace prbd_2324_g01.ViewModel
         private Tricount _tricount;
         
         private DateTime? _date;
+
+        public ICommand AddTemplateCommand { get; private set; }
         
         public ObservableCollection<ParticipantViewModel> Participants { get; private set; }
         public ObservableCollection<TemplateViewModel> Templates { get; private set; }
@@ -26,6 +31,7 @@ namespace prbd_2324_g01.ViewModel
 
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
+            AddTemplateCommand = new RelayCommand(AddTemplate);
 
             var subscriptions = PridContext.Context.Subscriptions
                 .Include(sub => sub.UserFromSubscription)
@@ -54,13 +60,15 @@ namespace prbd_2324_g01.ViewModel
         }
 
         public DateTime? Date {
-            get => DateTime.Today;
-            set {
-                if (_date != value) {
-                    _date = value;
-                    SetProperty(ref _date, value);
-                }
-            }
+            get => Tricount.CreatedAt;
+            set => SetProperty(ref _date, value);
+        }
+
+        private void AddTemplate() {
+            var addTemplateDialog = new AddTemplateView {
+                Owner = App.Current.MainWindow
+            };
+            addTemplateDialog.ShowDialog();
         }
     }
 }

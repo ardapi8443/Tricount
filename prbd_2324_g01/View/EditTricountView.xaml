@@ -93,7 +93,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Button Content="New Template"/>
+                <Button Content="New Template" Command="{Binding AddTemplateCommand}"/>
             </StackPanel>
         </Grid>
     </Grid>

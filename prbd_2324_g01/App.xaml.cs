@@ -17,6 +17,7 @@ public partial class App {
         MSG_DISPLAY_OPERATION,
         MSG_CLOSE_TAB,
         MSG_LOGIN,
+        MSG_ADD_TEMPLATE,
         MSG_LOGOUT
     }
 
