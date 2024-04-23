@@ -7,26 +7,47 @@
     <Window.DataContext>
         <vm:AddTemplateViewModel x:Name="vm"/>
     </Window.DataContext>
+
     <StackPanel Margin="10">
+        <!-- Title Entry -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Title: " VerticalAlignment="Center"/>
-            <TextBox x:Name="TitleTextBox" Width="200"/>
+            <TextBlock Text="Title: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBox x:Name="TitleTextBox" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
         </StackPanel>
         
+        <!-- User List with Weight Controls -->
         <ListView x:Name="UsersListView" ItemsSource="{Binding TemplateItems}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="False" Content="{Binding UserName}" />
-                        <TextBox  Width="50" />
-                    </StackPanel>
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="Auto"/> 
+                            <ColumnDefinition Width="Auto"/> 
+                            <ColumnDefinition Width="Auto"/> 
+                        </Grid.ColumnDefinitions>
+                        
+                        <CheckBox Content="{Binding UserName}" IsChecked="{Binding IsSelected}" 
+                                  VerticalAlignment="Center" Grid.Column="0"
+                                  Margin="5,0"/>
+                        
+                        <Button Content="-" Command="{Binding DecrementCommand}" 
+                                Width="20" Margin="5,0" Grid.Column="1"/>
+                
+                        <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="30" TextAlignment="Center" Margin="5,0" Grid.Column="2"/>
+                        
+                        <Button Content="+" Command="{Binding IncrementCommand}" 
+                                Width="20" Margin="5,0" Grid.Column="3"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
+        
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button x:Name="AddButton" Content="Add" Width="75" Margin="0,0,5,0" />
-            <Button x:Name="CancelButton" Content="Cancel" Width="75" />
+            <Button Content="Add" Command="{Binding AddTemplateDbCommand}" Width="75" Margin="0,0,5,0" />
+            <Button Content="Cancel" Width="75" />
         </StackPanel>
     </StackPanel>
 </Window>

@@ -11,13 +11,24 @@ namespace prbd_2324_g01.ViewModel
     public class EditTricountViewModel : ViewModelCommon {
         
         private Tricount _tricount;
+
+        private Template _template;
         
         private DateTime? _date;
 
         public ICommand AddTemplateCommand { get; private set; }
         
         public ObservableCollection<ParticipantViewModel> Participants { get; private set; }
-        public ObservableCollection<TemplateViewModel> Templates { get; private set; }
+        private ObservableCollection<TemplateViewModel> _templates;
+        public ObservableCollection<TemplateViewModel> Templates {
+            get => _templates;
+            set {
+                if (_templates != value) {
+                    _templates = value;
+                    RaisePropertyChanged(nameof(Templates));
+                }
+            }
+        }
         
         public Tricount Tricount {
             get => _tricount;
@@ -32,7 +43,9 @@ namespace prbd_2324_g01.ViewModel
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
             AddTemplateCommand = new RelayCommand(AddTemplate);
-
+            
+            Register<Template>(App.Messages.MSG_ADD_TEMPLATE, (template) => OnRefreshData());
+            
             var subscriptions = PridContext.Context.Subscriptions
                 .Include(sub => sub.UserFromSubscription)
                 .ThenInclude(ope => ope.OperationsCreated)
@@ -70,5 +83,11 @@ namespace prbd_2324_g01.ViewModel
             };
             addTemplateDialog.ShowDialog();
         }
+        protected override void OnRefreshData() {
+            var templates = PridContext.Context.Templates.ToList();
+            Templates = new ObservableCollection<TemplateViewModel>(
+                templates.Select(t => new TemplateViewModel(t.Title)));
+        }
+        
     }
 }

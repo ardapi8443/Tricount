@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using prbd_2324_g01.ViewModel;
+using System.Windows;
 
 namespace prbd_2324_g01.View
 {
@@ -6,6 +7,12 @@ namespace prbd_2324_g01.View
     {
         public AddTemplateView() {
             InitializeComponent();
+            var viewModel = new AddTemplateViewModel();
+            viewModel.RequestClose += (dialogResult) => {
+                this.DialogResult = dialogResult;
+            };
+
+            DataContext = viewModel;
         }
     }
 }
