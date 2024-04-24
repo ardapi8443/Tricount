@@ -12,7 +12,6 @@ namespace prbd_2324_g01.ViewModel
         
         private Tricount _tricount;
 
-        private Template _template;
         
         private DateTime? _date;
 

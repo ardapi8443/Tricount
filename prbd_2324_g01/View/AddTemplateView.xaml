@@ -27,7 +27,7 @@
                             <ColumnDefinition Width="Auto"/> 
                         </Grid.ColumnDefinitions>
                         
-                        <CheckBox Content="{Binding UserName}" IsChecked="{Binding IsSelected}" 
+                        <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding UserName}" 
                                   VerticalAlignment="Center" Grid.Column="0"
                                   Margin="5,0"/>
                         

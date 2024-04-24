@@ -15,6 +15,14 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _weight, value);
             
         }
+        
+        private bool _isChecked;
+
+        public bool IsChecked {
+            get => _isChecked;
+            set => SetProperty(ref _isChecked, value);
+            
+        }
 
 
         public UserTemplateItemViewModel(string userName, int weight) {

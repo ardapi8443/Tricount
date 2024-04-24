@@ -49,25 +49,24 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
-            Console.WriteLine("nice try");
             var template = new Template {
                 Title = title,
-                Tricount = tricountId 
+                Tricount = tricountId
             };
             
-            foreach (var userItem in userItems) {
+            foreach (var userItem in userItems.Where(u => u.IsChecked)) {
                 var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
                 if (user != null) {
                     var templateItem = new TemplateItem {
-                        User = user.UserId,  
+                        User = user.UserId,
                         Weight = userItem.Weight,
-                        TemplateFromTemplateItem = template 
+                        TemplateFromTemplateItem = template
                     };
 
                     Context.TemplateItems.Add(templateItem);
                 }
             }
-            
+    
             Context.Templates.Add(template);
             Context.SaveChanges();
             NotifyColleagues(App.Messages.MSG_ADD_TEMPLATE, template);
