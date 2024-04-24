@@ -54,8 +54,8 @@
             </TextBlock>
         </DockPanel>
         <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="5" Content="Login as Benoit (User)" Command="{Binding LoginAsBenoit}"/>
-        <Button Grid.Row="5" Grid.ColumnSpan="3" Margin="5" Content="Login as Boris (User)" Command="{Binding LoginAsBenoit}"/>
-        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="5" Content="Login as Xavier (User)" Command="{Binding LoginAsBenoit}"/>
-        <Button Grid.Row="7" Grid.ColumnSpan="3" Margin="5" Content="Login as Admin (Admin)" Command="{Binding LoginAsBenoit}"/>
+        <Button Grid.Row="5" Grid.ColumnSpan="3" Margin="5" Content="Login as Boris (User)" Command="{Binding LoginAsBoris}"/>
+        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="5" Content="Login as Xavier (User)" Command="{Binding LoginAsXavier}"/>
+        <Button Grid.Row="7" Grid.ColumnSpan="3" Margin="5" Content="Login as Admin (Admin)" Command="{Binding LoginAsAdmin}"/>
     </Grid>
 </f:WindowBase>
