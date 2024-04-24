@@ -18,11 +18,12 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void EditTemplate() {
-            // Edit template logic
+            Console.WriteLine("Je suis dans TemplateViewModel");
         }
         
         private void DeleteTemplate() {
             // Delete template logic
+            Console.WriteLine("Je suis dans TemplateViewModel");
         }
     }
 
