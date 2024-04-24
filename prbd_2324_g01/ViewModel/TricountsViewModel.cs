@@ -33,7 +33,7 @@ public class TricountsViewModel : ViewModelCommon {
     public ICommand DisplayTricountDetails { get; set; }
     private void ApplyFilterAction() {
         
-        IEnumerable<Tricount> query = Tricount.tricountByMember(CurrentUser);;
+        IEnumerable<Tricount> query = Tricount.tricountByMember(CurrentUser);
         
         if (!string.IsNullOrEmpty(Filter)) {
             query = from t in Tricounts
