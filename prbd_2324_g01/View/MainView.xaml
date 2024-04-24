@@ -17,12 +17,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <!-- <Menu> -->
-        <!--     <MenuItem Header="Logout" Click="MenuLogout_Click"/> -->
-        <!--     <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" /> -->
-        <!-- </Menu> -->
+        <Menu>
+            <MenuItem Header="Logout" Click="MenuLogout_Click"/>
+            <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" />
+        </Menu>
         <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
-            <TabItem x:Name="tricountsTab" Header="Tricounts" Tag="Tricounts">
+            <TabItem x:Name="tricountsTab" Header="My Tricounts" Tag="Tricounts">
                 <view:TricountsView/>
             </TabItem>
         </f:MyTabControl>

@@ -20,8 +20,8 @@
             </Grid.RowDefinitions>
             
             <TextBlock x:Name="name" Text="{Binding UserName}" HorizontalAlignment="Right"/>
-            <Border Grid.Column="1" x:Name="border" Background="Green" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left" Width="100">
-                <TextBlock x:Name="amount" Text="{Binding Amount}" HorizontalAlignment="Left" FontWeight="Bold"/>
+            <Border Grid.Column="1" x:Name="border" Background="Green" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left" MinWidth="75" MaxWidth="230">
+                <TextBlock x:Name="amount" Text="{Binding FormattedAmount}" TextWrapping="Wrap" Margin="5,2,5,2"  HorizontalAlignment="Left" FontWeight="Heavy" Width="Auto"/>
             </Border>
                 
         </Grid>

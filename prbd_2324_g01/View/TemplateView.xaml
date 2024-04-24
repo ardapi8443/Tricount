@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="prbd_2324_g01.View.TemplateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:prbd_2324_g01.View"
+             xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:TemplateViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+        <DockPanel>
+            <TextBlock Text="{Binding TemplateTitle}" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="5"/>
+            <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Content="🗑" ToolTip="Delete" Margin="5"/>
+            <Button Command="{Binding EditCommand}" DockPanel.Dock="Right" Content="✎" ToolTip="Edit" Margin="5"/>
+        </DockPanel>
+</UserControl>
