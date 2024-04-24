@@ -7,11 +7,15 @@ using PRBD_Framework;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace prbd_2324_g01.ViewModel
-{
+namespace prbd_2324_g01.ViewModel {
     public class EditTricountViewModel : ViewModelCommon {
         
         private Tricount _tricount;
+
+        public string UpdatedTitle { get; set; }
+
+        public string UpdatedDescription { get; set; }
+
         
         private DateTime? _date;
 
@@ -67,6 +71,14 @@ namespace prbd_2324_g01.ViewModel
             CancelCommand = new RelayCommand(CancelAction,CanCancelAction);
             
             LinqToXaml();
+            
+            if (tricount.IsNew) {
+                UpdatedTitle = "<New Tricount>";
+                UpdatedDescription = "No Description";
+            } else {
+                UpdatedTitle = tricount.Title;
+                UpdatedDescription = tricount.Description;
+            }
         }
 
         private void AddEveryBody() {
@@ -95,21 +107,24 @@ namespace prbd_2324_g01.ViewModel
 
         private void AddMySelfInParticipant() {
             var user = CurrentUser;
-            var query = Context.Subscriptions.Where(u => u.UserId == user.UserId);
+            var alreadySubscribed = Context.Subscriptions
+                .Any(s => s.UserId == user.UserId && s.TricountId == Tricount.Id);
 
-            if (query.IsNullOrEmpty()) {
+            if (!alreadySubscribed) {
                 var newSub = new Subscription() {
                     UserId = user.UserId,
                     TricountId = Tricount.Id
                 };
                 Context.Subscriptions.Add(newSub);
+                Context.SaveChanges();
+                OnRefreshData();
+            } else {
+                Console.WriteLine("déja sub");
             }
-            Console.WriteLine("déja sub");
+           
         }
 
-        private void CancelEditTricount() {
-            
-        }
+        private void CancelEditTricount() { }
 
         public override void SaveAction() {
             Context.Add(Tricount);

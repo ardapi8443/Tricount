@@ -18,7 +18,8 @@ public partial class App {
         MSG_CLOSE_TAB,
         MSG_LOGIN,
         MSG_ADD_TEMPLATE,
-        MSG_LOGOUT
+        MSG_LOGOUT,
+
     }
 
     public App() {

@@ -55,7 +55,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <Button VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Width="100"
-                Height="20" Content="New Tricount">
+                Height="20" Content="New Tricount"  Command="{Binding AddTricount}">
         </Button>
         <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
             <TextBlock Width="125">
