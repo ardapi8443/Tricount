@@ -7,7 +7,8 @@
         xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         mc:Ignorable="d"
-        Title="AddEditOperation" Height="450" Width="800">
+        Title="AddEditOperation" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance vm:AddEditOperationViewModel}">
     <Window.DataContext>
         <vm:AddEditOperationViewModel x:Name="vm"/>
     </Window.DataContext>
@@ -35,13 +36,17 @@
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Amount}"/>
         
         <Label Grid.Row="2" Content="Initiator:"/>
-        <!--<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Items="{Binding Users}"/>-->
+        <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+                  ItemsSource="{Binding Initiators}" DisplayMemberPath="FullName"
+                  SelectedItem="{Binding SelectedUser}"/>
         
         <Label Grid.Row="3" Content="Date:"/>
         <DatePicker Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayDate="{Binding Date}"/>
         
         <Label Grid.Row="4" Content="Template"/>
-        <!--<ComboBox Grid.Row="4" Grid.Column="1" Items="{Binding Templates}"/>-->
+        <ComboBox Grid.Row="4" Grid.Column="1" 
+                  ItemsSource="{Binding Templates}" DisplayMemberPath="Title"
+                  SelectedItem="{Binding SelectedTemplate}"/>
         <Button Grid.Row="4" Grid.Column="2" Content="Apply" Command="{Binding ApplyTemplate}"/>
         
         <Grid Grid.Row="5" Grid.ColumnSpan="2">

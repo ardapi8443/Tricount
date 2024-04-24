@@ -17,9 +17,9 @@ namespace prbd_2324_g01.ViewModel {
         private string _title;
         private double _amount;
         //combobox !!
-        private ObservableCollection<User> _users;
+        private ObservableCollectionFast<User> _users;
         private DateTime _date;
-        private ObservableCollection<Template> _templates;
+        private ObservableCollectionFast<Template> _templates;
 
         public Operation Operation {
             get => _operation;
@@ -36,7 +36,7 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _amount, value);
         }
 
-        public ObservableCollection<User> Users {
+        public ObservableCollectionFast<User> Users {
             get => _users;
             set => SetProperty(ref _users, value);
         }
@@ -46,7 +46,7 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _date, value);
         }
 
-        public ObservableCollection<Template> Templates {
+        public ObservableCollectionFast<Template> Templates {
             get => _templates;
             set => SetProperty(ref _templates, value);
         }
@@ -58,7 +58,9 @@ namespace prbd_2324_g01.ViewModel {
             Amount = operation.Amount;
             Date = operation.OperationDate;
         }
-        
-        public AddEditOperationViewModel() {}
+
+        public AddEditOperationViewModel() {
+            Users = 
+        }
     }
 }

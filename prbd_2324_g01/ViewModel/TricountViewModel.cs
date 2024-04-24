@@ -100,8 +100,8 @@ namespace prbd_2324_g01.ViewModel
         }
 
         public void NewOperationAction() {
-            DialogWindowBase dialog = new AddEditOperationView();
-            dialog.ShowDialog();
+            //DialogWindowBase dialog = new AddEditOperationView();
+            //dialog.ShowDialog();
         }
 
 //bouton vers l'édition d'un tricount
