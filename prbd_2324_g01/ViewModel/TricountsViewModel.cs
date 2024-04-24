@@ -11,7 +11,8 @@ namespace prbd_2324_g01.ViewModel;
 
 public class TricountsViewModel : ViewModelCommon {
     
-
+    public ICommand AddTricount { get; set; }
+    
     private ObservableCollection<Tricount> _tricounts;
     public ObservableCollection<Tricount> Tricounts {
         get => _tricounts;
@@ -68,6 +69,8 @@ public class TricountsViewModel : ViewModelCommon {
 
     public TricountsViewModel() {
         
+        AddTricount = new RelayCommand(AddTricountAction);
+        
         ClearFilter = new RelayCommand(() => Filter = "");
         InitiateVM();
         ApplyFilterAction();
@@ -75,6 +78,12 @@ public class TricountsViewModel : ViewModelCommon {
         DisplayTricountDetails = new RelayCommand<TricountDetailViewModel>(vm => {
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, vm.Tricount);
         });
+    }
+    
+    public void AddTricountAction() {
+        
+        NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, new Tricount(true, DateTime.Now));
+       
     }
 
 }

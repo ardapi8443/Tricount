@@ -12,6 +12,9 @@ namespace prbd_2324_g01.ViewModel
         
         private Tricount _tricount;
 
+        public string UpdatedTitle { get; set; }
+
+        public string UpdatedDescription { get; set; }
         
         private DateTime? _date;
 
@@ -65,6 +68,14 @@ namespace prbd_2324_g01.ViewModel
             
             Templates = new ObservableCollection<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t.Title)));
+
+            if (tricount.IsNew) {
+                UpdatedTitle = "<New Tricount>";
+                UpdatedDescription = "No Description";
+            } else {
+                UpdatedTitle = tricount.Title;
+                UpdatedDescription = tricount.Description;
+            }
         }
 
         public string Creation {

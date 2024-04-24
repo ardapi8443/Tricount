@@ -85,6 +85,9 @@ public class Tricount : EntityBase<PridContext> {
 
     [NotMapped]
     public virtual string FriendMessage { get; set; }
+    
+    [NotMapped]
+    public virtual bool IsNew { get; set; }
 
     [Required, ForeignKey(nameof(CreatorFromTricount))]
     public int Creator { get; set; }
@@ -97,6 +100,12 @@ public class Tricount : EntityBase<PridContext> {
         this.CreatedAt = Created_at;
     }
     public Tricount() { }
+
+    public Tricount(bool IsNew, DateTime Created_at) {
+        this.IsNew = IsNew;
+        this.CreatedAt = Created_at;
+    }
+
 
 
     public override bool Validate() {

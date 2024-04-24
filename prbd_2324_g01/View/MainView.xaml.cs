@@ -20,7 +20,7 @@ public partial class MainView : WindowBase {
             member => DoDisplayTricount(member, false));
         
         Register<Tricount>(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT,
-            member => DoDisplayEditTricount(member, false));
+            member => DoDisplayEditTricount(member));
         
         // Register<Tricount>(App.Messages.MSG_PSEUDO_CHANGED,
         //     member => DoRenameTab(string.IsNullOrEmpty(member.Pseudo) ? "<New Member>" : member.Pseudo));
@@ -34,13 +34,14 @@ public partial class MainView : WindowBase {
             OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new TricountView(tricount));
     }
     
-    private void DoDisplayEditTricount(Tricount tricount, bool isNew) {
+    private void DoDisplayEditTricount(Tricount tricount) {
+
         if (tricount != null) {
             DoCloseTab(tricount);
-            OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
+            OpenTab(tricount.IsNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
         }
     }
-
+    
     private void OpenTab(string header, string tag, Func<UserControlBase> createView) {
         var tab = tabControl.FindByTag(tag);
         if (tab == null)

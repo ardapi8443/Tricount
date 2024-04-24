@@ -19,7 +19,7 @@ public partial class App {
         MSG_LOGIN,
         MSG_ADD_TEMPLATE,
         MSG_LOGOUT,
-        MSG_FILTER_TRICOUNTS
+
     }
 
     public App() {
