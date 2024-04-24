@@ -28,8 +28,11 @@ namespace prbd_2324_g01.View
                     
                     border.Background = Brushes.Red;
                     
-                } 
-// à recalculer en fonction du montant total des opérations, du poids et expenses du user
+                }
+
+                if (viewModel.Amount == 0) {
+                    border.Background = Brushes.Transparent;
+                } // à recalculer en fonction du montant total des opérations, du poids et expenses du user
 // do we ??
                 border.Width = Math.Abs(viewModel.Amount)*2;
             }

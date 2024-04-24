@@ -66,7 +66,6 @@ public class PridContext : DbContextBase {
             .HasValue<User>(Role.Viewer)
             .HasValue<Administrator>(Role.Administrator);
 
-
         modelBuilder.Entity<User>()
             .HasMany(u => u.Tricounts)
             .WithMany(t => t.Subscribers)
@@ -172,11 +171,9 @@ public class PridContext : DbContextBase {
         Operation operation09 = new Operation(9, "PV parking", 5, 15.50, new DateTime(2023, 10, 16), 3);
         Operation operation10 = new Operation(10, "Tickets", 6, 220.00, new DateTime(2023, 06, 08), 1);
         Operation operation11 = new Operation(11, "Decathlon", 6, 199.99, new DateTime(2023, 07, 01), 2);
-
-
+        
         modelBuilder.Entity<Operation>().HasData(operation01,operation02,operation03,operation04,operation05,operation06,operation07,operation08,operation09,operation10,operation11);
-
-
+        
         //Repartition (int userId, int Operation, int Weight
 
         Repartition repartition1 = new Repartition(1, 1, 1);

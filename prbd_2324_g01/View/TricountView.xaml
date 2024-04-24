@@ -9,8 +9,9 @@
                    xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
                    xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
                    mc:Ignorable="d"
+                   d:DataContext="{d:DesignInstance Type=vm:TricountViewModel, IsDesignTimeCreatable=True}"
                    d:DesignHeight="450" d:DesignWidth="800">
-    
+                    
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -25,12 +26,12 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
-            <Run Text="{Binding Title}" FontWeight="Bold"/>
+            <Run Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
             <Run Text=" - "/>
-            <Run Text="{Binding Description}" FontWeight="Thin" FontStyle="Italic"/>
+            <Run Text="{Binding Description}" FontWeight="Thin" FontStyle="Italic" FontSize="18"/>
         </TextBlock>
 
-        <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" HorizontalAlignment="Center"/>
+        <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
                 
         <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
                   SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -79,7 +80,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" HorizontalAlignment="Center"/>
+        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" Padding="5,-5,5,0" Margin="0,20,0,0" FontSize="30" FontWeight="ExtraBlack" HorizontalAlignment="Center"/>
         
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="5" Width="50" Content="Edit" Command="{Binding EditTricount}"/>

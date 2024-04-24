@@ -36,7 +36,7 @@
             <TextBlock Grid.Row="0" TextAlignment="Center">
                 <Run Text="{Binding Tricount.Title}" FontWeight="Bold"/>
                 <LineBreak/>
-                <Run Text="{Binding Updated_Description}" FontStyle="Italic"/>
+                <Run Text="{Binding UpdatedDescription}" FontStyle="Italic"/>
                 <LineBreak/>
             </TextBlock>
                 <TextBlock Grid.Row="1" TextAlignment="Center">
