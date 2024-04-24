@@ -12,10 +12,14 @@ public partial class App {
     {
         MSG_NEW_TRICOUNT,
         MSG_TRICOUNT_CHANGED,
+        MSG_DISPLAY_EDIT_TRICOUNT,
         MSG_DISPLAY_TRICOUNT,
         MSG_DISPLAY_OPERATION,
         MSG_CLOSE_TAB,
-        MSG_LOGIN
+        MSG_LOGIN,
+        MSG_ADD_TEMPLATE,
+        MSG_LOGOUT,
+        MSG_NEW_OPERATION
     }
 
     public App() {
@@ -39,6 +43,11 @@ public partial class App {
             Login(user);
 
             NavigateTo<MainViewModel, User, PridContext>();
+        });
+        
+        Register(this, Messages.MSG_LOGOUT, () => {
+            Logout();
+            NavigateTo<LoginViewModel, User, PridContext>();
         });
 
         NavigateTo<LoginViewModel, User, PridContext>();

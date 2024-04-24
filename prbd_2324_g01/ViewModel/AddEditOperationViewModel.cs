@@ -1,5 +1,3 @@
-using Azure;
-using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
@@ -16,8 +14,9 @@ namespace prbd_2324_g01.ViewModel {
         private Operation _operation;
         private string _title;
         private double _amount;
+        private User _selectedUser;
         //combobox !!
-        private ObservableCollectionFast<User> _users;
+        private ObservableCollectionFast<User> _users = new ObservableCollectionFast<User>();
         private DateTime _date;
         private ObservableCollectionFast<Template> _templates;
 
@@ -41,6 +40,11 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _users, value);
         }
 
+        public User SelectedUser {
+            get => _selectedUser;
+            set => SetProperty(ref _selectedUser, value); 
+        }
+        
         public DateTime Date {
             get => _date;
             set => SetProperty(ref _date, value);
@@ -51,16 +55,26 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _templates, value);
         }
 
-        public AddEditOperationViewModel(Operation operation) {
+        public AddEditOperationViewModel(Operation operation, bool isNew) {
 //voir new member
             Operation = operation;
-            Title = operation.Title;
-            Amount = operation.Amount;
-            Date = operation.OperationDate;
+            Title = isNew ? "" : operation.Title;
+            Amount = isNew ? 0.00 : operation.Amount;
+            Date = isNew ? DateTime.Today : operation.OperationDate;
+            SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
+            var query = from o in PridContext.Context.Operations
+                where o.OperationId == operation.OperationId
+                select o.Users;
+            var user = query.First();
+            foreach (var row in user) {
+                Users.Add(row);
+            }
+
+            Cancel = new RelayCommand(CancelAction);
         }
 
-        public AddEditOperationViewModel() {
-            Users = 
+        public override void CancelAction() {
+            DialogResult = null;
         }
     }
 }

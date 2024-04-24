@@ -4,6 +4,7 @@
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:f="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
               xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
               xmlns:local="clr-namespace:prbd_2324_g01.View"
               d:DataContext="{d:DesignInstance Type=vm:TricountDetailViewModel, IsDesignTimeCreatable=True}"
@@ -11,6 +12,12 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <StackPanel VerticalAlignment="Stretch" x:Name="FullCard">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="MouseDoubleClick">
+                <i:InvokeCommandAction Command="{Binding TricountViewModel}"
+                                       CommandParameter="{Binding ElementName=tricount, Path=SelectedItem}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
         <Grid VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -29,7 +36,7 @@
             <TextBlock Grid.Row="0" TextAlignment="Center">
                 <Run Text="{Binding Tricount.Title}" FontWeight="Bold"/>
                 <LineBreak/>
-                <Run Text="{Binding Updated_Description}" FontStyle="Italic"/>
+                <Run Text="{Binding UpdatedDescription}" FontStyle="Italic"/>
                 <LineBreak/>
             </TextBlock>
                 <TextBlock Grid.Row="1" TextAlignment="Center">

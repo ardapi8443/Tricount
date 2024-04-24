@@ -1,8 +1,8 @@
 using Msn.ViewModel;
 using System.Windows.Input;
 using prbd_2324_g01;
+using prbd_2324_g01.Model;
 using PRBD_Framework;
-using prbd_2324_g01;
 
 namespace prbd_2324_g01.ViewModel;
 
@@ -18,7 +18,9 @@ public class MainViewModel : ViewModelCommon {
             // notifie tout le monde qu'il faut rafraîchir les données
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         });
+
     }
+    
 
     public static string Title {
         get => $"Tricount of ({CurrentUser?.FullName})";
@@ -27,4 +29,5 @@ public class MainViewModel : ViewModelCommon {
     protected override void OnRefreshData() {
         // pour plus tard
     }
+    
 }

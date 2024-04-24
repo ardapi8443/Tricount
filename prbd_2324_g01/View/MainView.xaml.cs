@@ -7,7 +7,6 @@ using prbd_2324_g01.View;
 using prbd_2324_g01.ViewModel;
 using PRBD_Framework;
 using prbd_2324_g01;
-using Operation = Azure.Operation;
 
 namespace prbd_2324_g01.View;
 
@@ -23,7 +22,13 @@ public partial class MainView : WindowBase {
 
         Register<Operation>(App.Messages.MSG_DISPLAY_OPERATION,
             operation => DoDisplayOperation(operation, false));
-
+        
+        Register<Operation>(App.Messages.MSG_NEW_OPERATION,
+            operation => DoDisplayOperation(operation, true));
+        
+        Register<Tricount>(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT,
+            member => DoDisplayEditTricount(member, false));
+        
         // Register<Tricount>(App.Messages.MSG_PSEUDO_CHANGED,
         //     member => DoRenameTab(string.IsNullOrEmpty(member.Pseudo) ? "<New Member>" : member.Pseudo));
 
@@ -35,9 +40,16 @@ public partial class MainView : WindowBase {
         if (tricount != null)
             OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new TricountView(tricount));
     }
-    
+
     private void DoDisplayOperation(Operation operation, bool isNew) {
-        App.ShowDialog<AddEditOperationViewModel, Operation, PridContext>(operation);
+        App.ShowDialog<AddEditOperationViewModel, Operation, PridContext>(operation, isNew);
+    }
+
+    private void DoDisplayEditTricount(Tricount tricount, bool isNew) {
+        if (tricount != null) {
+            DoCloseTab(tricount);
+            OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
+        }
     }
 
     private void OpenTab(string header, string tag, Func<UserControlBase> createView) {
@@ -60,7 +72,7 @@ public partial class MainView : WindowBase {
     }
 
     private void MenuLogout_Click(object sender, System.Windows.RoutedEventArgs e) {
-        // NotifyColleagues(App.Messages.MSG_LOGOUT);
+         NotifyColleagues(App.Messages.MSG_LOGOUT);
     }
 
     private void WindowBase_KeyDown(object sender, KeyEventArgs e) {
