@@ -37,9 +37,8 @@ public partial class App {
 
         Register<User>(this, Messages.MSG_LOGIN, user => {
             Login(user);
-            Console.WriteLine("changer la vue charger après le login dans App.xaml.cs");
-//ICI
-            NavigateTo<TricountViewModel, User, PridContext>();
+
+            NavigateTo<MainViewModel, User, PridContext>();
         });
 
         NavigateTo<LoginViewModel, User, PridContext>();
@@ -62,18 +61,11 @@ public partial class App {
     }
 
     private static void TestQueries() {
- 
-
+        var user = (from u in Context.Users
+            where u.email.Equals("xapigeolet@epfc.eu")
+            select u).First();
         
-        foreach(Operation o in Operation.OperationByTricount(4)){
-            Console.WriteLine(o.Title);
-        }
-
-        Console.WriteLine("");
-
-        foreach (Operation o in Operation.OperationByTricount(6)) {
-            Console.WriteLine(o.Title);
-        }
+        Console.WriteLine(user.FullName);
 
     }
 }
