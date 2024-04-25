@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         xmlns:view="clr-namespace:prbd_2324_g01.View"
-        Title="" Height="300" Width="300" WindowStartupLocation="CenterScreen">
+        Title="" Height="300" Width="300" WindowStartupLocation="CenterScreen"
+        DataContext="{Binding AddTemplateViewModel}">
     <!-- DateContext In View.xaml.cs -->
     <StackPanel Margin="10">
      
@@ -23,8 +24,8 @@
 
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Add" Command="{Binding AddTemplateDbCommand}" Width="75" Margin="0,0,5,0" />
-            <Button Content="Cancel" Width="75" />
+            <Button x:Name="AddButton" Content="{Binding AddButtonText}" Command="{Binding AddTemplateDbCommand}" Width="75" Margin="0,0,5,0" />
+            <Button x:Name="CancelButton" Content="Cancel" Width="75" />
         </StackPanel>
     </StackPanel>
 </Window>

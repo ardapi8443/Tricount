@@ -5,6 +5,7 @@ using System.Windows;
 namespace prbd_2324_g01.View {
     public partial class AddTemplateView : Window {
         public AddTemplateView(Tricount tricount, Template template, bool isNew) {
+            
             InitializeComponent();
 
             var viewModel = new AddTemplateViewModel(tricount, template, isNew); 
