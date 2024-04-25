@@ -33,9 +33,10 @@ namespace prbd_2324_g01.ViewModel {
         
         public ICommand AddTemplateDbCommand { get; }
 
-        public AddTemplateViewModel() {
+
+        public AddTemplateViewModel(Tricount tricount) {
             Title = "New Template"; 
-            AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, 4, TemplateItems));
+            AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
 
             var distinctUsers = PridContext.Context.Users
                 .Where(u => u.Role == Role.Viewer)

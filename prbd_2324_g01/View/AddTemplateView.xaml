@@ -4,10 +4,6 @@
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         Title="Add Template" Height="300" Width="300" WindowStartupLocation="CenterScreen">
     
-    <Window.DataContext>
-        <vm:AddTemplateViewModel x:Name="vm"/>
-    </Window.DataContext>
-
     <StackPanel Margin="10">
         <!-- Title Entry -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">

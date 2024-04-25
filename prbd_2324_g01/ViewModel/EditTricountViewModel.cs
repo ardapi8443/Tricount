@@ -143,7 +143,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void AddTemplate() {
-            var addTemplateDialog = new AddTemplateView {
+            var addTemplateDialog = new AddTemplateView(Tricount) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();
@@ -166,7 +166,9 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void LinqToXaml() {
-            var templates = PridContext.Context.Templates.ToList();
+            var templates = PridContext.Context.Templates
+                .Where(t => t.Tricount == Tricount.Id)
+                .ToList();
             
             Templates = new ObservableCollection<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t.Title)));
