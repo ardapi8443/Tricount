@@ -12,6 +12,8 @@ namespace prbd_2324_g01.ViewModel {
         
         private Tricount _tricount;
 
+        public bool IsNew { get; set; }
+
         public string UpdatedTitle { get; set; }
 
         public string UpdatedDescription { get; set; }
@@ -28,8 +30,8 @@ namespace prbd_2324_g01.ViewModel {
         /*public ICommand SaveCommand { get; private set; }*/
         public ICommand CancelCommand { get; private set; }
 
-        private ObservableCollection<ParticipantViewModel> _participants;
-        public ObservableCollection<ParticipantViewModel> Participants {
+        private ObservableCollectionFast<ParticipantViewModel> _participants;
+        public ObservableCollectionFast<ParticipantViewModel> Participants {
             get => _participants;
             set {
                 if (_participants != value) {
@@ -38,8 +40,8 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
-        private ObservableCollection<TemplateViewModel> _templates;
-        public ObservableCollection<TemplateViewModel> Templates {
+        private ObservableCollectionFast<TemplateViewModel> _templates;
+        public ObservableCollectionFast<TemplateViewModel> Templates {
             get => _templates;
             set {
                 if (_templates != value) {
@@ -64,6 +66,9 @@ namespace prbd_2324_g01.ViewModel {
             
             Register<Template>(App.Messages.MSG_ADD_TEMPLATE, (template) => OnRefreshData());
             
+            Register<Template>(App.Messages.MSG_DELETE_TEMPLATE, (template) => { DeleteTemplate(template);
+            });
+            
             Register<Template>(App.Messages.MSG_EDIT_TEMPLATE, (template) => { AddTemplate(Tricount, template, false);
             }); 
             
@@ -82,6 +87,11 @@ namespace prbd_2324_g01.ViewModel {
                 UpdatedTitle = tricount.Title;
                 UpdatedDescription = tricount.Description;
             }
+        }
+
+        private void DeleteTemplate(Template template) {
+            template.Deleted();
+            OnRefreshData();
         }
 
         private void AddEveryBody() {
@@ -146,7 +156,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void AddTemplate(Tricount tricount, Template template, bool isNew) {
-
+            IsNew = isNew;
             var addTemplateDialog = new AddTemplateView(tricount, template, isNew) {
                 Owner = App.Current.MainWindow
             };
@@ -154,6 +164,7 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         protected override void OnRefreshData() {
+            /*if (IsNew || Tricount == null) return;*/
             LinqToXaml();
         }
         
@@ -175,7 +186,7 @@ namespace prbd_2324_g01.ViewModel {
                 .Where(t => t.Tricount == Tricount.Id)
                 .ToList();
             
-            Templates = new ObservableCollection<TemplateViewModel>(
+            Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t,true)));
             
             var subscriptions = PridContext.Context.Subscriptions
@@ -185,7 +196,7 @@ namespace prbd_2324_g01.ViewModel {
                 .OrderBy(sub => sub.UserFromSubscription.FullName)
                 .ToList();
 
-            Participants = new ObservableCollection<ParticipantViewModel>(
+            Participants = new ObservableCollectionFast<ParticipantViewModel>(
                 subscriptions.Select(sub => {
                     var user = sub.UserFromSubscription;
                     var numberOfExpenses = PridContext.Context.Repartitions

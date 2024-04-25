@@ -31,7 +31,7 @@ namespace prbd_2324_g01.ViewModel {
             IncrementCommand = new RelayCommand(IncreaseWeight);
             DecrementCommand = new RelayCommand(DecreaseWeight);
 
-            if (!isNew) {
+            if (!isNew && Weight > 0) {
                 IsChecked = true;
             }
         }

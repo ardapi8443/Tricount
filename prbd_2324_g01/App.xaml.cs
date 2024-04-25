@@ -20,7 +20,7 @@ public partial class App {
         MSG_LOGIN,
         MSG_ADD_TEMPLATE,
         MSG_LOGOUT,
-
+        MSG_DELETE_TEMPLATE
     }
 
     public App() {
