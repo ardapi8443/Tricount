@@ -175,6 +175,7 @@ namespace prbd_2324_g01.ViewModel {
         public override void CancelAction() {
             if (!Tricount.IsModified) {
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+                NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
             } else {
                 Tricount.Reload();
                 RaisePropertyChanged();
