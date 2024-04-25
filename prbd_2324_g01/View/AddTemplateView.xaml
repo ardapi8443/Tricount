@@ -2,10 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+        xmlns:view="clr-namespace:prbd_2324_g01.View"
         Title="Add Template" Height="300" Width="300" WindowStartupLocation="CenterScreen">
-    
+        <!-- DateContext In View.xaml.cs -->
     <StackPanel Margin="10">
-        <!-- Title Entry -->
+     
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Title: " VerticalAlignment="Center" Margin="0,0,5,0"/>
             <TextBox x:Name="TitleTextBox" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
@@ -15,27 +16,7 @@
         <ListView x:Name="UsersListView" ItemsSource="{Binding TemplateItems}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="Auto"/> 
-                            <ColumnDefinition Width="Auto"/> 
-                            <ColumnDefinition Width="Auto"/> 
-                        </Grid.ColumnDefinitions>
-                        
-                        <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding UserName}" 
-                                  VerticalAlignment="Center" Grid.Column="0"
-                                  Margin="5,0"/>
-                        
-                        <Button Content="-" Command="{Binding DecrementCommand}" 
-                                Width="20" Margin="5,0" Grid.Column="1"/>
-                
-                        <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" 
-                                 Width="30" TextAlignment="Center" Margin="5,0" Grid.Column="2"/>
-                        
-                        <Button Content="+" Command="{Binding IncrementCommand}" 
-                                Width="20" Margin="5,0" Grid.Column="3"/>
-                    </Grid>
+                    <view:UserTemplateItemView />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
