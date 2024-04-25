@@ -64,7 +64,10 @@ namespace prbd_2324_g01.ViewModel {
             
             Register<Template>(App.Messages.MSG_ADD_TEMPLATE, (template) => OnRefreshData());
             
-            AddTemplateCommand = new RelayCommand(AddTemplate);
+            Register<Template>(App.Messages.MSG_EDIT_TEMPLATE, (template) => { AddTemplate(Tricount, template, false);
+            }); 
+            
+            AddTemplateCommand = new RelayCommand (()  => AddTemplate(Tricount ,new Template(), true));
             AddEvryBodyCommand = new RelayCommand(AddEveryBody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
             /*SaveCommand = new RelayCommand(SaveAction);*/
@@ -142,12 +145,14 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _date, value);
         }
 
-        private void AddTemplate() {
-            var addTemplateDialog = new AddTemplateView(Tricount) {
+        private void AddTemplate(Tricount tricount, Template template, bool isNew) {
+
+            var addTemplateDialog = new AddTemplateView(tricount, template, isNew) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();
         }
+        
         protected override void OnRefreshData() {
             LinqToXaml();
         }
@@ -171,7 +176,7 @@ namespace prbd_2324_g01.ViewModel {
                 .ToList();
             
             Templates = new ObservableCollection<TemplateViewModel>(
-                templates.Select(t => new TemplateViewModel(t.Title)));
+                templates.Select(t => new TemplateViewModel(t,true)));
             
             var subscriptions = PridContext.Context.Subscriptions
                 .Include(sub => sub.UserFromSubscription)

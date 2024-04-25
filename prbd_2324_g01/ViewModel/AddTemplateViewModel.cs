@@ -34,19 +34,33 @@ namespace prbd_2324_g01.ViewModel {
         public ICommand AddTemplateDbCommand { get; }
 
 
-        public AddTemplateViewModel(Tricount tricount) {
-            Title = "New Template"; 
-            AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
-
-            var distinctUsers = PridContext.Context.Users
-                .Where(u => u.Role == Role.Viewer)
-                .OrderBy(u => u.FullName)
-                .GroupBy(u => u.FullName)
-                .Select(g => g.First())
-                .ToList();
-
-            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName,0)));
+        public AddTemplateViewModel(Tricount tricount,Template template, bool isNew) {
+            
+            if (!isNew) {
+                Title = template.Title;
+                
+                var templateItems = PridContext.Context.TemplateItems
+                    .Where(ti => ti.Template == template.TemplateId) // Filter by the TemplateId
+                    .Include(ti => ti.UserFromTemplateItem) // Include the User navigation property
+                    .ToList();
+                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                    templateItems.Select(ti => new UserTemplateItemViewModel(ti.UserFromTemplateItem.FullName, ti.Weight)));
+                
+            } else {
+                var distinctUsers = PridContext.Context.Users
+                    .Where(u => u.Role == Role.Viewer)
+                    .OrderBy(u => u.FullName)
+                    .GroupBy(u => u.FullName)
+                    .Select(g => g.First())
+                    .ToList();
+                
+                Title = "New Template";
+                
+                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                    distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName, 0)));
+            
+                AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
+            }
         }
 
         public void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {

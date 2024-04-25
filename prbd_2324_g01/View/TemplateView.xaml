@@ -10,7 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
         <DockPanel>
-            <TextBlock Text="{Binding TemplateTitle}" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="5"/>
+            <TextBlock Text="{Binding Template.Title}" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="5"/>
             <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Content="🗑" ToolTip="Delete" Margin="5"/>
             <Button Command="{Binding EditCommand}" DockPanel.Dock="Right" Content="✎" ToolTip="Edit" Margin="5"/>
         </DockPanel>
