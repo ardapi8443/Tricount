@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PRBD_Framework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,4 +32,8 @@ public class Template : EntityBase<PridContext> {
         
     }
 
+    public void Deleted() {
+        Context.Templates.Remove(this);
+        Context.SaveChanges();
+    }
 }

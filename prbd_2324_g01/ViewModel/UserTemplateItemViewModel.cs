@@ -25,11 +25,15 @@ namespace prbd_2324_g01.ViewModel {
         }
 
 
-        public UserTemplateItemViewModel(string userName, int weight) {
+        public UserTemplateItemViewModel(string userName, int weight, bool isNew) {
             UserName = userName;
             Weight = weight;
             IncrementCommand = new RelayCommand(IncreaseWeight);
             DecrementCommand = new RelayCommand(DecreaseWeight);
+
+            if (!isNew && Weight > 0) {
+                IsChecked = true;
+            }
         }
 
         private void IncreaseWeight() {

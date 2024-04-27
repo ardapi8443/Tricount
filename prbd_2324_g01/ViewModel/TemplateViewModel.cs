@@ -38,7 +38,7 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void DeleteTemplate() {
-            // Delete template logic
+            NotifyColleagues(App.Messages.MSG_DELETE_TEMPLATE,Template);
             Console.WriteLine("Je suis dans TemplateViewModel");
         }
     }

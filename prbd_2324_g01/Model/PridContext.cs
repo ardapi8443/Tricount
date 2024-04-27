@@ -89,10 +89,10 @@ public class PridContext : DbContextBase {
                     .UsingEntity<TemplateItem>(
                         right => right.HasOne(ti => ti.UserFromTemplateItem).WithMany()
                             .HasForeignKey(nameof(TemplateItem.User))
-                            .OnDelete(DeleteBehavior.ClientCascade),
+                            .OnDelete(DeleteBehavior.Cascade),
                         left => left.HasOne(ti => ti.TemplateFromTemplateItem).WithMany()
                             .HasForeignKey(nameof(TemplateItem.Template))
-                            .OnDelete(DeleteBehavior.ClientCascade),
+                            .OnDelete(DeleteBehavior.Cascade),
                          joinEntity =>
                          {
                              joinEntity.HasKey(ti => new { ti.User, ti.Template });

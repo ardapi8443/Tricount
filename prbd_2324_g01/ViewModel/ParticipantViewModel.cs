@@ -1,8 +1,12 @@
 ﻿using Msn.ViewModel;
+using PRBD_Framework;
+using System.Windows;
+using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel
 {
     public class ParticipantViewModel : ViewModelCommon {
+        public ICommand DeleteCommand { get; set; }
         public string Name { get; private set; }
         
         private int _numberOfExpenses;
@@ -12,9 +16,12 @@ namespace prbd_2324_g01.ViewModel
                 _numberOfExpenses = value;
                 RaisePropertyChanged(nameof(NumberOfExpenses));
                 RaisePropertyChanged(nameof(ExpensesDisplay));
+                RaisePropertyChanged(nameof(TrashCanVisibility));
             }
         }
         
+        public Visibility TrashCanVisibility => NumberOfExpenses == 0 ? Visibility.Visible : Visibility.Collapsed;
+
         private bool _isCreator;
 
         public bool IsCreator {
@@ -33,7 +40,12 @@ namespace prbd_2324_g01.ViewModel
             Name = name;
             NumberOfExpenses = numberOfExpenses;
             IsCreator = isCreator;
+            
+            DeleteCommand = new RelayCommand(DeleteParticipant);
         }
-        
+
+        private void DeleteParticipant() {
+            Console.WriteLine("je suis dans ParticipantViewModel");
+        }
     }
 }
