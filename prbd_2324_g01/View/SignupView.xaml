@@ -10,9 +10,10 @@
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=vm:SignupViewModel, IsDesignTimeCreatable=False}"
             FocusManager.FocusedElement="{Binding ElementName=fullNameBox}" ResizeMode="NoResize"
-            Title="Signup" WindowStartupLocation="CenterScreen" Height="350" Width="350">
+            Title="Signup" WindowStartupLocation="CenterScreen" Height="370" Width="350">
     <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -69,6 +70,7 @@
                          f:PasswordHelper.Password="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
         
-        <Button Content="Sign Up !" Grid.Row="5" Command="{Binding SignupCommand}" Margin="50,0,50,10"/>
+        <Button Content="Sign Up !" Grid.Row="5" Command="{Binding SignupCommand}" Margin="50,0,50,0"/>
+        <Button Content="Cancel" Grid.Row="6" Command="{Binding CancelCommand}" Margin="50,25,50,-10"></Button>
     </Grid>
 </f:WindowBase>

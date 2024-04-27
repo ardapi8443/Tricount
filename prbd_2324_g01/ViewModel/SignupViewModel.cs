@@ -81,8 +81,8 @@ namespace prbd_2324_g01.ViewModel {
             return !HasErrors && !string.IsNullOrWhiteSpace(ConfirmPassword);
         }
 
-        private void CancelAction() {
-            
+        public override void CancelAction() {
+            NotifyColleagues(App.Messages.MSG_LOGOUT);
         }
         
         private bool ValidateConfirmPassword() {
