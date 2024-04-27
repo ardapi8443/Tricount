@@ -45,6 +45,7 @@ namespace prbd_2324_g01.ViewModel
         }
 
         private void DeleteParticipant() {
+            
             Console.WriteLine("je suis dans ParticipantViewModel");
         }
     }
