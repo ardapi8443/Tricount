@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         xmlns:view="clr-namespace:prbd_2324_g01.View"
         Title="" Height="300" Width="300" WindowStartupLocation="CenterScreen"
+        FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}" ResizeMode="NoResize"
         DataContext="{Binding AddTemplateViewModel}">
     <!-- DateContext In View.xaml.cs -->
     <StackPanel Margin="10">

@@ -1,17 +1,9 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
-using Msn.ViewModel;
+﻿using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace prbd_2324_g01.ViewModel {
     internal class TricountViewModel: ViewModelCommon {
