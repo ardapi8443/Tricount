@@ -4,16 +4,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+             xmlns:fa6="http://schemas.fontawesome.com/icons/svg"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:ParticipantViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="100" d:DesignWidth="300">
-    <Border Padding="10" Background="LightGray">
+    <Border Padding="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="410"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
         
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5"/>
-            <TextBlock Text="{Binding ExpensesDisplay}" Margin="5"/>
-            <TextBlock Text="{Binding CreatorStatusDisplay}" FontStyle="Italic" Margin="5"/>
-        </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5"/>
+                <TextBlock Text="{Binding ExpensesDisplay}" Margin="5"/>
+                <TextBlock Text="{Binding CreatorStatusDisplay}" FontStyle="Italic" Margin="5"/>
+            </StackPanel>
+            
+            <Button Command="{Binding DeleteCommand}" Visibility="{Binding TrashCanVisibility}"
+                    ToolTip="Delete" Style="{StaticResource FlatButtonStyle}" 
+                    Grid.Column="1" Margin="0,0,0,0">
+                <fa6:ImageAwesome Icon="Regular_TrashCan" PrimaryColor="Red" Width="15" Height="20"/>
+            </Button>
+        </Grid>
     </Border>
 </UserControl>
 

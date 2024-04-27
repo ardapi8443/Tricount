@@ -5,13 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:prbd_2324_g01.View"
              xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
+             xmlns:fa6="http://schemas.fontawesome.com/icons/svg"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:TemplateViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
-
-        <DockPanel>
-            <TextBlock Text="{Binding Template.Title}" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="5"/>
-            <Button Command="{Binding DeleteCommand}" DockPanel.Dock="Right" Content="🗑" ToolTip="Delete" Margin="5"/>
-            <Button Command="{Binding EditCommand}" DockPanel.Dock="Right" Content="✎" ToolTip="Edit" Margin="5"/>
-        </DockPanel>
+    <Grid Margin="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="410"/> 
+            <ColumnDefinition Width="Auto"/> 
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock Text="{Binding Template.Title}" VerticalAlignment="Center" Grid.Column="0"/>
+        
+        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" >
+            <Button Command="{Binding EditCommand}" ToolTip="Edit" Margin="0,0,8,0"
+                    Style="{StaticResource FlatButtonStyle}">
+                <fa6:ImageAwesome Icon="Solid_Pencil" Width="15" Height="20" />
+            </Button>
+            
+            <Button Command="{Binding DeleteCommand}" ToolTip="Delete" 
+                    Style="{StaticResource FlatButtonStyle}">
+                <fa6:ImageAwesome Icon="Regular_TrashCan" PrimaryColor="Red" Width="15" Height="20"/>
+            </Button>
+        </StackPanel>
+    </Grid>
 </UserControl>

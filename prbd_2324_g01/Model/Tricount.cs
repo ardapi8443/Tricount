@@ -137,8 +137,9 @@ public class Tricount : EntityBase<PridContext> {
     }
     public static List<Tricount> tricountByMember(User user) {
         
-        List<Tricount> res = PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
-
+        List<Tricount> res;
+        
+        res = user.Role == Role.Administrator ? PridContext.Context.Tricounts.ToList() : PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
         res.Sort(
             (tricount1, tricount2) => {
 
