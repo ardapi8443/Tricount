@@ -12,9 +12,9 @@ public class AddTemplateViewModel : ViewModelCommon {
 
     public event Action<bool?> RequestClose;
 
-    private ObservableCollectionFast<UserTemplateItemViewModel> _templateItems;
+    private ObservableCollection<UserTemplateItemViewModel> _templateItems;
 
-    public ObservableCollectionFast<UserTemplateItemViewModel> TemplateItems {
+    public ObservableCollection<UserTemplateItemViewModel> TemplateItems {
         get => _templateItems;
         set {
             if (_templateItems != value) {
@@ -147,7 +147,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             Title = template.Title;
             AddButtonText = "Save";
             
-            TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
+            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                 users.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
                     false)));
