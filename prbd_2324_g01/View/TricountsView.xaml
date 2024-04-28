@@ -9,7 +9,7 @@
                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                    mc:Ignorable="d"
-                   d:DataContext="{d:DesignInstance Type=vm:TricountsViewModel, IsDesignTimeCreatable=True}" Height="450" Width="800">
+                   d:DataContext="{d:DesignInstance Type=vm:TricountsViewModel, IsDesignTimeCreatable=True}" Height="700" Width="800">
 
     <f:UserControlBase.DataContext>
         <vm:TricountsViewModel x:Name="vm" />
@@ -18,21 +18,22 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="110" />
         </Grid.RowDefinitions>
-        <Grid Margin="10">
+        <Grid Grid.Row="0" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
             <Button Content="Clear" Grid.Column="1" Command="{Binding ClearFilter}" Margin="5,0,0,0" />
         </Grid>
 
 
-        <ListView x:Name="listView" VerticalContentAlignment="Top" Height="Auto"
+        <ListView x:Name="listView"
                   ItemsSource="{Binding TricountsDetailVM}" Grid.Row="1" BorderBrush="Transparent"
+                 
                   SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
@@ -48,16 +49,14 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-
-                    <local:TricountDetailView />
-
+                    <local:TricountDetailView VerticalAlignment="Top"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Width="100"
+        <Button VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Width="100" Margin="-40,0,0,10"
                 Height="20" Content="New Tricount"  Command="{Binding AddTricount}">
         </Button>
-        <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-40,10">
             <TextBlock Width="125">
                 <Run Background="Gray" Text="     " />
                 <Run Text="Null Balance" />

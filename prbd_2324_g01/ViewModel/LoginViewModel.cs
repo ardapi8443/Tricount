@@ -1,12 +1,13 @@
 ﻿using Msn.ViewModel;
+using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel
 {
-    internal class LoginViewModel : ViewModelCommon
-    {
+    internal class LoginViewModel : ViewModelCommon {
         public ICommand LoginCommand { get; set; }
+        public ICommand SignupCommand { get; set; }
         public ICommand LoginAsBenoit { get; set; }
         public ICommand LoginAsBoris { get; set; }
         public ICommand LoginAsXavier { get; set; }
@@ -37,12 +38,17 @@ namespace prbd_2324_g01.ViewModel
             LoginAsBoris = new RelayCommand(LoginAsBorisAction);
             LoginAsXavier = new RelayCommand(LoginAsXavierAction);
             LoginAsAdmin = new RelayCommand(LoginAsAdminAction);
+            SignupCommand = new RelayCommand(SignupAction);
+        }
+
+        private void SignupAction() {
+            NotifyColleagues(App.Messages.MSG_SIGNUP, new User());
         }
 
         private void LoginAction() {
             if (Validate() && ValidateHashPassword()) {
                 var user = (from u in Context.Users
-                        where u.email.Equals(Email)
+                        where u.Email.Equals(Email)
                         select u).First();
                 
                 NotifyColleagues(App.Messages.MSG_LOGIN, user);
@@ -55,8 +61,8 @@ namespace prbd_2324_g01.ViewModel
             ClearErrors();
 
             var user = from u in Context.Users
-                       where u.email.Equals(Email)
-                       select u.email;
+                       where u.Email.Equals(Email)
+                       select u.Email;
 
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
@@ -80,35 +86,35 @@ namespace prbd_2324_g01.ViewModel
 
         private bool ValidateHashPassword() {
             var hashPassword = (from u in Context.Users
-                                 where u.email.Equals(Email)
+                                 where u.Email.Equals(Email)
                                  select u.HashedPassword).First();
             return SecretHasher.Verify(Password, hashPassword);
         }
 
         private void LoginAsBenoitAction() {
             var user = (from u in Context.Users
-                                where u.email.Equals("bepenelle@epfc.eu")
+                                where u.Email.Equals("bepenelle@epfc.eu")
                                 select u).First();
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
 
         private void LoginAsBorisAction() {
             var user = (from u in Context.Users
-                                where u.email.Equals("boverhaegen@epfc.eu")
+                                where u.Email.Equals("boverhaegen@epfc.eu")
                                 select u).First();
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsXavierAction() {
             var user = (from u in Context.Users
-                                where u.email.Equals("xapigeolet@epfc.eu")
+                                where u.Email.Equals("xapigeolet@epfc.eu")
                                 select u).First();
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsAdminAction() {
             var user = (from u in Context.Users
-                                where u.email.Equals("admin@epfc.eu")
+                                where u.Email.Equals("admin@epfc.eu")
                                 select u).First();
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }

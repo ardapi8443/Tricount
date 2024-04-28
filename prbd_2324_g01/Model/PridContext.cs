@@ -72,10 +72,10 @@ public class PridContext : DbContextBase {
             .UsingEntity<Subscription>(
                 right => right.HasOne(s => s.TricountFromSubscription).WithMany()
                     .HasForeignKey(nameof(Subscription.TricountId))
-                    .OnDelete(DeleteBehavior.ClientCascade),
+                    .OnDelete(DeleteBehavior.Cascade),
                 left => left.HasOne(s => s.UserFromSubscription).WithMany()
                     .HasForeignKey(nameof(Subscription.UserId))
-                    .OnDelete(DeleteBehavior.ClientCascade),
+                    .OnDelete(DeleteBehavior.Cascade),
                     
                  joinEntity => {
                      joinEntity.ToTable("Subscription"); // Rename the join table if necessary
@@ -105,10 +105,10 @@ public class PridContext : DbContextBase {
             .UsingEntity<Repartition>(
                 right => right.HasOne(r => r.UserFromRepartition).WithMany()
                     .HasForeignKey(nameof(Repartition.UserId))
-                    .OnDelete(DeleteBehavior.ClientCascade),
+                    .OnDelete(DeleteBehavior.Cascade),
                 left => left.HasOne(r => r.OperationFromRepartition).WithMany()
                      .HasForeignKey(nameof(Repartition.OperationId))
-                     .OnDelete(DeleteBehavior.ClientCascade),
+                     .OnDelete(DeleteBehavior.Cascade),
                 joinEntity => {
                     joinEntity.HasKey(r => new { r.UserId, r.OperationId });
                 });

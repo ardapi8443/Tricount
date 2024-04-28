@@ -69,12 +69,14 @@ public class TricountsViewModel : ViewModelCommon {
 
     public TricountsViewModel() {
         
+        Register<Tricount>(App.Messages.MSG_REFRESH_TRICOUNT, (tricount) => ApplyFilterAction());
+        
         AddTricount = new RelayCommand(AddTricountAction);
         
         ClearFilter = new RelayCommand(() => Filter = "");
         InitiateVM();
         ApplyFilterAction();
-
+        
         DisplayTricountDetails = new RelayCommand<TricountDetailViewModel>(vm => {
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, vm.Tricount);
         });

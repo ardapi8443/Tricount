@@ -12,7 +12,7 @@ public class User : EntityBase<PridContext> {
     public  string FullName { get; set; }
     public string HashedPassword { get; set; }
     public Role Role { get; set; } = Role.Viewer;
-    public string email {  get; set; }
+    public string Email {  get; set; }
     public virtual ICollection<Tricount> TricountCreated { get; set; } = new HashSet<Tricount>();
     public virtual ICollection<Tricount> Tricounts { get; set; }= new HashSet<Tricount>();
     public virtual ICollection<Operation> OperationsCreated { get; set; } = new HashSet<Operation>();
@@ -22,7 +22,7 @@ public class User : EntityBase<PridContext> {
         this.UserId = id;
         this.FullName = FullName;
         this.HashedPassword = HashedPassword;
-        this.email = email;
+        this.Email = email;
        
     }
     public User() {
@@ -45,20 +45,20 @@ public class User : EntityBase<PridContext> {
         ClearErrors();
 
         var user = from u in Context.Users
-                   where u.email.Equals(email)
-                   select u.email;
+                   where u.Email.Equals(Email)
+                   select u.Email;
 
-        if (string.IsNullOrEmpty(email))
-            AddError(nameof(email), "required");
-        else if (!email.Contains("@") || !email.Contains("."))
-            AddError(nameof(email), "email not valid");
-        else if (!user.Any())
-            AddError(nameof(email), "does not exist");
+        if (string.IsNullOrEmpty(Email))
+            AddError(nameof(Email), "required");
+        else if (!Email.Contains("@") || !Email.Contains("."))
+            AddError(nameof(Email), "email not valid");
+        /*else if (!user.Any())
+            AddError(nameof(Email), "does not exist");*/
         else
             // On ne vérifie l'unicité du pseudo que si l'entité est en mode détaché ou ajouté, car
             // dans ces cas-là, il s'agit d'un nouveau membre.
-            if ((IsDetached || IsAdded) && Context.Users.Any(m => m.email == email))
-            AddError(nameof(email), "email already used");
+            if ((IsDetached || IsAdded) && Context.Users.Any(m => m.Email == Email))
+            AddError(nameof(Email), "email already used");
 
         return !HasErrors;
     }

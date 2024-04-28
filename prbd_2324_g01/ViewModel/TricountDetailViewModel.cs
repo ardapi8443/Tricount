@@ -1,4 +1,5 @@
-﻿using prbd_2324_g01.Model;
+﻿using Msn.ViewModel;
+using prbd_2324_g01.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace prbd_2324_g01.ViewModel
 {
-   public class TricountDetailViewModel : PRBD_Framework.ViewModelBase<User, PridContext>
+   public class TricountDetailViewModel : ViewModelCommon
     {
         public Tricount Tricount { get; set; }
         public User ConnectedUSer { get; set; }
