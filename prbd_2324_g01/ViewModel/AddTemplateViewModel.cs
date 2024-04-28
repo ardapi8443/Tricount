@@ -166,7 +166,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             Title = "New Template";
             AddButtonText = "Add";
                 
-            TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
+            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                 distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName, 0,true)));
             
         }
