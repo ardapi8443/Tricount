@@ -17,7 +17,6 @@ namespace prbd_2324_g01.ViewModel {
         public string UpdatedTitle { get; set; }
 
         public string UpdatedDescription { get; set; }
-
         
         private DateTime? _date;
 
@@ -79,6 +78,7 @@ namespace prbd_2324_g01.ViewModel {
             CancelCommand = new RelayCommand(CancelAction,CanCancelAction);
             
             LinqToXaml();
+            
             
             if (tricount.IsNew) {
                 UpdatedTitle = "<New Tricount>";
@@ -211,5 +211,7 @@ namespace prbd_2324_g01.ViewModel {
                 })
             );
         }
+
     }
+    
 }

@@ -20,7 +20,7 @@ namespace prbd_2324_g01.ViewModel
             }
         }
         
-        public Visibility TrashCanVisibility => NumberOfExpenses == 0 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator) ? Visibility.Visible : Visibility.Collapsed;
 
         private bool _isCreator;
 
