@@ -98,14 +98,17 @@ namespace prbd_2324_g01.ViewModel {
 
         private void AddOperationAction() {
 //!!répartitions
-            if (_isNew) {
-                Context.Add(Operation);
-                var newOperation = new Operation();
-                Operation.Title = Title;
-                Operation.Amount = Amount;
-                Operation.OperationDate = Date;
-                Operation.Initiator = SelectedUser;
-
+           
+            Operation.Title = Title;
+            Operation.Amount = Amount;
+            Operation.OperationDate = Date;
+                
+             if (_isNew) {    
+                 // to prevent InvalidOperationException, we need bind the selected user to the context
+                 var user = Context.Users.Find(SelectedUser.UserId);
+                 Operation.Initiator = user;
+                
+                Context.Operations.Add(Operation);
                 
             } else {
                 Operation.Title = Title;
