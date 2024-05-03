@@ -11,5 +11,6 @@ namespace prbd_2324_g01.View {
             DataContext = new EditTricountViewModel(tricount);
         }
         
+        
     }
 }

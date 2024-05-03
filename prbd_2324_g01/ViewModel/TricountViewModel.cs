@@ -1,16 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Msn.ViewModel;
+﻿using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace prbd_2324_g01.ViewModel {
     internal class TricountViewModel: ViewModelCommon {
@@ -127,8 +120,18 @@ namespace prbd_2324_g01.ViewModel {
 
 //bouton vers la suppression d'un tricount
         public void DeleteTricountAction() {
+            
+            var confirmationDialog = new ConfirmationDialogView();
+            bool? dialogResult = confirmationDialog.ShowDialog();
+
+            if (dialogResult == true && Tricount != null) {
+                Console.WriteLine("Vous venez de delete le Tricount : " + Tricount.Title );
+                Tricount.delete();
+                NotifyColleagues(App.Messages.MSG_CLOSE_TAB,Tricount);
+                NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
+            }
+            
             Console.WriteLine("je suis dans TricountViewModel");
         }
-        
     }
 }

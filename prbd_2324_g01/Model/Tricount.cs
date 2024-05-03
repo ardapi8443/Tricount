@@ -85,6 +85,9 @@ public class Tricount : EntityBase<PridContext> {
 
     [NotMapped]
     public virtual string FriendMessage { get; set; }
+    
+    [NotMapped]
+    public virtual bool IsNew { get; set; }
 
     [Required, ForeignKey(nameof(CreatorFromTricount))]
     public int Creator { get; set; }
@@ -97,6 +100,12 @@ public class Tricount : EntityBase<PridContext> {
         this.CreatedAt = Created_at;
     }
     public Tricount() { }
+
+    public Tricount(bool IsNew, DateTime Created_at) {
+        this.IsNew = IsNew;
+        this.CreatedAt = Created_at;
+    }
+
 
 
     public override bool Validate() {
@@ -128,8 +137,9 @@ public class Tricount : EntityBase<PridContext> {
     }
     public static List<Tricount> tricountByMember(User user) {
         
-        List<Tricount> res = PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
-
+        List<Tricount> res;
+        
+        res = user.Role == Role.Administrator ? PridContext.Context.Tricounts.ToList() : PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
         res.Sort(
             (tricount1, tricount2) => {
 
