@@ -122,13 +122,13 @@ namespace prbd_2324_g01.ViewModel {
             }
             
             // we popullate the TemplateItems
-            var userTemplateItemss = PridContext.Context.Repartitions
-                .Where(r => r.OperationId == Operation.OperationId)
-                .Select(u => u.UserId)
-                // .Select(u => PridContext.Context.Users.Find(u))
-                .ToList();
-            
-            var userTemplateItems = userTemplateItemss.Select(u => PridContext.Context.Users.Find(u)).ToList();
+            var queryUsersID = from s in PridContext.Context.Subscriptions
+                where s.TricountId == tricount.Id
+                select s.UserId;
+            //transform the list of user ids to a list of users
+            var userTemplateItems = queryUsersID.ToList().Select(u => PridContext.Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
+            foreach (var u in userTemplateItems) {
+            }
             
             if (!isNew) {
                 // Fetch the information from the Repartition table
@@ -139,13 +139,11 @@ namespace prbd_2324_g01.ViewModel {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName,
                         repartitionItems.FirstOrDefault(ri => ri.UserId == u.UserId)?.Weight ?? 0,
-                        isNew)));
+                        false)));
             } else {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, isNew)));
+                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true)));
             }
-             
-            
                
             //we define the buttons
             Cancel = new RelayCommand(CancelAction);
@@ -193,8 +191,9 @@ namespace prbd_2324_g01.ViewModel {
                 .ToList();
                         
             var userTemplateItems = PridContext.Context.Tricounts
-                .Where(t => t.Id == _tricount.Id)
+                .Where(t => t.Id == Operation.TricountId)
                 .SelectMany(t => t.Subscribers)
+                .OrderBy(t => t.FullName)
                 .ToList();
                         
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
