@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
@@ -17,10 +19,12 @@ namespace prbd_2324_g01.ViewModel {
         private string _title;
         private double _amount;
         private User _selectedUser;
+        private Template _selectedTemplate;
         //combobox !!
-        private ObservableCollectionFast<User> _users = new ObservableCollectionFast<User>();
+        private ObservableCollectionFast<User> _users = new();
         private DateTime _date;
-        private ObservableCollectionFast<Template> _templates;
+        private ObservableCollectionFast<Template> _templates = new();
+        private ObservableCollection<UserTemplateItemViewModel> _templateItems;
 
         public Operation Operation {
             get => _operation;
@@ -47,6 +51,11 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _selectedUser, value); 
         }
         
+        public Template SelectedTemplate {
+            get => _selectedTemplate;
+            set => SetProperty(ref _selectedTemplate, value); 
+        }
+        
         public DateTime Date {
             get => _date;
             set => SetProperty(ref _date, value);
@@ -55,6 +64,16 @@ namespace prbd_2324_g01.ViewModel {
         public ObservableCollectionFast<Template> Templates {
             get => _templates;
             set => SetProperty(ref _templates, value);
+        }
+        
+        public ObservableCollection<UserTemplateItemViewModel> TemplateItems {
+            get => _templateItems;
+            set {
+                if (_templateItems != value) {
+                    _templateItems = value;
+                    RaisePropertyChanged(nameof(TemplateItems));
+                }
+            }
         }
 
         public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
@@ -68,6 +87,7 @@ namespace prbd_2324_g01.ViewModel {
             Amount = isNew ? 0.00 : operation.Amount;
             Date = isNew ? DateTime.Today : operation.OperationDate;
 
+            //we populate the Users Combobox
             IQueryable<ICollection<User>> query;
             if (!isNew) {
                 query = from o in PridContext.Context.Operations
@@ -85,11 +105,53 @@ namespace prbd_2324_g01.ViewModel {
                 Users.Add(row);
             }
                             
-            //selected user must be a user from the combobox(=> from Users)
+            //default selected user must be a user from the combobox(=> from Users)
             SelectedUser = isNew ? Users.FirstOrDefault(u => u.UserId == App.CurrentUser.UserId) : operation.Initiator;
+            
+            //we populate the Templates Combobox
+            var q2 = from t in PridContext.Context.Templates
+                where t.Tricount == tricount.Id
+                select t;
+            var templates = q2.ToList();
+            
 
+            if (!templates.IsNullOrEmpty()) {
+               foreach (var row in templates) { 
+               Templates.Add(row);
+               }
+            }
+            
+            // we popullate the TemplateItems
+            var userTemplateItemss = PridContext.Context.Repartitions
+                .Where(r => r.OperationId == Operation.OperationId)
+                .Select(u => u.UserId)
+                // .Select(u => PridContext.Context.Users.Find(u))
+                .ToList();
+            
+            var userTemplateItems = userTemplateItemss.Select(u => PridContext.Context.Users.Find(u)).ToList();
+            
+            if (!isNew) {
+                // Fetch the information from the Repartition table
+                var repartitionItems = PridContext.Context.Repartitions
+                    .Where(r => r.OperationId == operation.OperationId)
+                    .ToList();
+
+                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName,
+                        repartitionItems.FirstOrDefault(ri => ri.UserId == u.UserId)?.Weight ?? 0,
+                        isNew)));
+            } else {
+                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, isNew)));
+            }
+             
+            
+               
+            //we define the buttons
             Cancel = new RelayCommand(CancelAction);
             AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
+            ApplyTemplate = new RelayCommand(ApplyTemplateAction);
+            //don't forget the delete button when editing
         }
 
         public override void CancelAction() {
@@ -120,6 +182,25 @@ namespace prbd_2324_g01.ViewModel {
             Context.SaveChanges();
             CancelAction();
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+        }
+        
+        public void ApplyTemplateAction() {
+            var templateItems = PridContext.Context.TemplateItems
+                .AsNoTracking() 
+                .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
+                .Include(ti => ti.UserFromTemplateItem) 
+                .DefaultIfEmpty()
+                .ToList();
+                        
+            var userTemplateItems = PridContext.Context.Tricounts
+                .Where(t => t.Id == _tricount.Id)
+                .SelectMany(t => t.Subscribers)
+                .ToList();
+                        
+            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 
+                    templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
+                    _isNew)));
         }
     }
 }

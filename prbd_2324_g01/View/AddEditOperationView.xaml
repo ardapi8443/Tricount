@@ -7,7 +7,7 @@
         xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         mc:Ignorable="d"
-        Title="Edit Operation" Height="500" Width="350"
+        Title="Edit Operation" Height="700" Width="350"
         d:DataContext="{d:DesignInstance vm:AddEditOperationViewModel}">
     
     <Grid Margin="5">
@@ -17,7 +17,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -47,12 +47,19 @@
         <Label Grid.Row="4" Content="Template" Margin="15"/>
         <ComboBox Grid.Row="4" Grid.Column="1" Margin="15"
                   ItemsSource="{Binding Templates}" DisplayMemberPath="Title"
-                  SelectedItem="{Binding SelectedTemplate}"/>
+                  SelectedItem="{Binding SelectedTemplate}" Text="--Choose a template--"/>
         <Button Grid.Row="4" Grid.Column="2" Margin="15"  
                 Content="Apply" Command="{Binding ApplyTemplate}"/>
         
-        <Grid Grid.Row="5" Grid.ColumnSpan="2">
-            <!-- aller chercher dans Template, attendre que David divise sa vue -->
+        <Grid Grid.Row="5" Grid.ColumnSpan="3">
+            <!-- User List with Weight Controls -->
+            <ListView x:Name="UsersListView" ItemsSource="{Binding TemplateItems}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:UserTemplateItemView />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
         
         <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="15" Content="Save as New Template" 
