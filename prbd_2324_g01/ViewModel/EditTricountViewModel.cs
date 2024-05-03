@@ -11,14 +11,48 @@ namespace prbd_2324_g01.ViewModel {
     public class EditTricountViewModel : ViewModelCommon {
         
         private Tricount _tricount;
-
-        public bool IsNew { get; set; }
-
-        public string UpdatedTitle { get; set; }
-
-        public string UpdatedDescription { get; set; }
+        private bool _isNew;
+        private string _updatedTitle;
+        private string _updatedDescription;
         
-        private DateTime? _date;
+        public bool IsNew{ 
+            get => _isNew;
+            set => SetProperty(ref _isNew, value);
+        }
+
+        public string UpdatedTitle {
+            get => _updatedTitle;
+            set {
+                if (_updatedTitle != value) {
+                    _updatedTitle = value;
+                    RaisePropertyChanged(nameof(UpdatedTitle));
+                    Validate();
+                }
+            }
+        }
+
+        public string UpdatedDescription {
+            get => _updatedDescription;
+            set {
+                if (_updatedDescription != value) {
+                    _updatedDescription = value;
+                    RaisePropertyChanged(nameof(UpdatedDescription));
+                    Validate();
+                }
+            }
+        }
+        
+        private DateTime _date;
+
+        public DateTime Date {
+            get => _date;
+            set {
+                if (_date != value) {
+                    SetProperty(ref _date, value);
+                    RaisePropertyChanged(nameof(Date));
+                }
+            }
+        }
 
         public ICommand AddTemplateCommand { get; private set; }
         
@@ -26,7 +60,7 @@ namespace prbd_2324_g01.ViewModel {
         public ICommand AddEvryBodyCommand { get; private set; }
         
         //not working
-        /*public ICommand SaveCommand { get; private set; }*/
+        public ICommand SaveCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
         private ObservableCollectionFast<ParticipantViewModel> _participants;
@@ -56,13 +90,14 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public string FormattedDate {
-            get => _date?.ToShortDateString();
+            get => _date.ToShortDateString();
         }
 
 
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
-            
+            Date = tricount.CreatedAt;
+
             Register<Template>(App.Messages.MSG_ADD_TEMPLATE, (template) => OnRefreshData());
             
             Register<Template>(App.Messages.MSG_DELETE_TEMPLATE, (template) => { DeleteTemplate(template);
@@ -74,15 +109,26 @@ namespace prbd_2324_g01.ViewModel {
             AddTemplateCommand = new RelayCommand (()  => AddTemplate(Tricount ,new Template(), true));
             AddEvryBodyCommand = new RelayCommand(AddEveryBody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
-            /*SaveCommand = new RelayCommand(SaveAction);*/
+            SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
             CancelCommand = new RelayCommand(CancelAction,CanCancelAction);
             
             LinqToXaml();
             
             
             if (tricount.IsNew) {
-                UpdatedTitle = "<New Tricount>";
-                UpdatedDescription = "No Description";
+                tricount.Title = "<New Tricount>";
+                tricount.Description = "No Description";
+                /*
+                 Cela fonctionne mais a voir si le process est correct
+                 tricount.CreatorFromTricount = CurrentUser;
+                var sub = new Subscription() {
+                    TricountFromSubscription = tricount,
+                    UserFromSubscription = CurrentUser,
+                    TricountId = tricount.Id,
+                    UserId = CurrentUser.UserId
+                };
+                Context.Subscriptions.Add(sub);
+                Context.SaveChanges();*/
             } else {
                 UpdatedTitle = tricount.Title;
                 UpdatedDescription = tricount.Description;
@@ -140,20 +186,30 @@ namespace prbd_2324_g01.ViewModel {
         private void CancelEditTricount() { }
 
         public override void SaveAction() {
-            Context.Add(Tricount);
+            Tricount.Title = UpdatedTitle;
+            Tricount.Description = UpdatedDescription;
+            Tricount.CreatedAt = Date;
+            if (IsNew)
+                Context.Add(Tricount);
             Context.SaveChanges();
-            RaisePropertyChanged();
+            NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+            NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
+            NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
+        }
+
+        public bool CanSaveAction() {
+            /*Tricount IsModified n est jamais à true meme après avoir changé le titre/desciption 
+            if (IsNew)
+                return Tricount.Validate() && !HasErrors;
+            return Tricount != null && Tricount.IsModified && !HasErrors;*/
+            return !HasErrors && !string.IsNullOrEmpty(UpdatedTitle);
         }
 
         public string Creation {
             get => $"Created by {Tricount.CreatorFromTricount.FullName} on {Tricount.CreatedAt.ToShortDateString()}";
         }
-
-        public DateTime? Date {
-            get => Tricount.CreatedAt;
-            set => SetProperty(ref _date, value);
-        }
+        
 
         private void AddTemplate(Tricount tricount, Template template, bool isNew) {
             IsNew = isNew;
@@ -169,11 +225,12 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private bool CanCancelAction() {
-            return Tricount != null;
+            return Tricount != null && (IsNew || !Tricount.IsModified);
         }
         
         public override void CancelAction() {
             if (!Tricount.IsModified) {
+                ClearErrors();
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
                 NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
             } else {
@@ -183,14 +240,14 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void LinqToXaml() {
-            var templates = PridContext.Context.Templates
+            var templates = Context.Templates
                 .Where(t => t.Tricount == Tricount.Id)
                 .ToList();
             
             Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t,true)));
             
-            var subscriptions = PridContext.Context.Subscriptions
+            var subscriptions = Context.Subscriptions
                 .Include(sub => sub.UserFromSubscription)
                 .ThenInclude(user => user.OperationsCreated)
                 .Where(sub => sub.TricountId == Tricount.Id)
@@ -200,7 +257,7 @@ namespace prbd_2324_g01.ViewModel {
             Participants = new ObservableCollectionFast<ParticipantViewModel>(
                 subscriptions.Select(sub => {
                     var user = sub.UserFromSubscription;
-                    var numberOfExpenses = PridContext.Context.Repartitions
+                    var numberOfExpenses = Context.Repartitions
                         .Count(rep => rep.UserId == user.UserId && rep.OperationFromRepartition.TricountId == Tricount.Id);
 
                     return new ParticipantViewModel(
@@ -211,7 +268,24 @@ namespace prbd_2324_g01.ViewModel {
                 })
             );
         }
+        
+        public override bool Validate() {
+            ClearErrors();
+            
+            bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id);
 
+            if (string.IsNullOrEmpty(UpdatedDescription) || UpdatedDescription.Length < 3) {
+                AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
+            }
+            if (string.IsNullOrEmpty(UpdatedTitle)) {
+                AddError(nameof(UpdatedTitle), "Title is required.");
+            } else if (titleExist) {
+                AddError(nameof(UpdatedTitle), "Title must be unique.");
+            }
+    
+            return !HasErrors;
+        }
+        
     }
     
 }

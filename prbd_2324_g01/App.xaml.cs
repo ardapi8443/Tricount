@@ -22,7 +22,8 @@ public partial class App {
         MSG_LOGOUT,
         MSG_DELETE_TEMPLATE,
         MSG_REFRESH_TRICOUNT,
-        MSG_SIGNUP
+        MSG_SIGNUP,
+        MSG_TITLE_CHANGED
     }
 
     public App() {

@@ -6,6 +6,7 @@
                                xmlns:local="clr-namespace:prbd_2324_g01.View"
                                xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
                                xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
+                               xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                                mc:Ignorable="d"
                                d:DataContext="{d:DesignInstance Type=vm:EditTricountViewModel, IsDesignTimeCreatable=False}"
                                d:DesignHeight="80" d:DesignWidth="auto">
@@ -21,14 +22,14 @@
         
         <!-- Title & Description Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding UpdatedTitle}" 
+            <TextBlock Text="{Binding Tricount.Title}" 
                        FontSize="18" 
                        FontWeight="Bold" 
                        Margin="0,0,10,0"/>
             <TextBlock Text="-" 
                        FontSize="18" 
                        Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding UpdatedDescription}" 
+            <TextBlock Text="{Binding Tricount.Description}" 
                        FontStyle="Italic" 
                        FontSize="18"/>
         </StackPanel>
@@ -44,7 +45,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Title:" VerticalAlignment="Center" Grid.Column="0"/>
-            <TextBox Text="{Binding Tricount.Title}" Grid.Column="1"/>
+            <TextBox Text="{Binding UpdatedTitle, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1"/>
         </Grid>
 
         <Grid Grid.Row="3" Margin="0,0,0,8">
@@ -53,7 +54,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Description:" VerticalAlignment="Center" Grid.Column="0"/>
-            <TextBox Text="{Binding Tricount.Description}" Grid.Column="1" AcceptsReturn="True"/>
+            <TextBox Text="{Binding UpdatedDescription}" Grid.Column="1" AcceptsReturn="True"/>
         </Grid>
         
         <Grid Grid.Row="4" >
@@ -62,7 +63,7 @@
                 <ColumnDefinition Width="*"/> 
             </Grid.ColumnDefinitions>
             <TextBlock Text="Creation Date:" VerticalAlignment="Center" Grid.Column="0" Margin="0,0,10,0"/>
-            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" />
+            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" DisplayDateEnd="{x:Static sys:DateTime.Today}" Grid.Column="1" VerticalAlignment="Center" />
         </Grid>
         
         <Grid Grid.Row="5">
