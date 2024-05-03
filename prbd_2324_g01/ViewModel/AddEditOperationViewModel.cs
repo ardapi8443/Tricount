@@ -11,6 +11,8 @@ namespace prbd_2324_g01.ViewModel {
         public ICommand Cancel { get; set; }
         public ICommand AddOperation { get; set; }
 
+        private Tricount _tricount { get; set; }
+        private bool _isNew { get; set; }
         private Operation _operation;
         private string _title;
         private double _amount;
@@ -55,26 +57,66 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _templates, value);
         }
 
-        public AddEditOperationViewModel(Operation operation, bool isNew) {
+        public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
 //voir new member
+            _isNew = isNew;
             Operation = operation;
+            if (isNew) {
+                Operation.TricountId = tricount.Id;   
+            }
             Title = isNew ? "" : operation.Title;
             Amount = isNew ? 0.00 : operation.Amount;
             Date = isNew ? DateTime.Today : operation.OperationDate;
-            SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
-            var query = from o in PridContext.Context.Operations
-                where o.OperationId == operation.OperationId
-                select o.Users;
+
+            IQueryable<ICollection<User>> query;
+            if (!isNew) {
+                query = from o in PridContext.Context.Operations
+                    where o.OperationId == operation.OperationId
+                    select o.Users;
+                  
+            } else {
+                query = from t in PridContext.Context.Tricounts
+                    where t.Id == tricount.Id
+                    select t.Subscribers;
+            }
             var user = query.First();
+            
             foreach (var row in user) {
                 Users.Add(row);
             }
+                            
+            //selected user must be a user from the combobox(=> from Users)
+            SelectedUser = isNew ? Users.FirstOrDefault(u => u.UserId == App.CurrentUser.UserId) : operation.Initiator;
 
             Cancel = new RelayCommand(CancelAction);
+            AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
         }
 
         public override void CancelAction() {
             DialogResult = null;
+        }
+
+        private void AddOperationAction() {
+            if (_isNew) {
+                var newOperation = new Operation();
+                newOperation.Title = Title;
+                newOperation.TricountId = Operation.TricountId;
+                newOperation.Amount = Amount;
+                newOperation.OperationDate = Date;
+                newOperation.UserId = SelectedUser.UserId;
+
+                Context.Add(newOperation);
+            } else {
+                Operation.Title = Title;
+                Operation.Amount = Amount;
+                Operation.OperationDate = Date;
+                Operation.UserId = SelectedUser.UserId;
+                
+                Context.Update(Operation);
+            }
+            
+            Context.SaveChanges();
+            CancelAction();
         }
     }
 }

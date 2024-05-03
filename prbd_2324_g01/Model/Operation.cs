@@ -49,7 +49,16 @@ public class Operation : EntityBase<PridContext> {
         this.UserId = initiator;
     }
 
-    public Operation() { } 
+    public Operation() { }
+
+    public void save(bool isNew) {
+        if (isNew) {
+            PridContext.Context.Operations.Add(this);    
+        } else {
+            PridContext.Context.Operations.Update(this);   
+        }
+        PridContext.Context.SaveChanges();
+    }
 
     public static List<Operation> OperationByTricount(int tricount) {
         return PridContext.Context.Operations.Where(ope => ope.TricountId == tricount).ToList();

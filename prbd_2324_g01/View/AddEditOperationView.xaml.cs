@@ -7,11 +7,15 @@ namespace prbd_2324_g01.View
 {
     public partial class AddEditOperationView : DialogWindowBase
     {
-        public AddEditOperationView(Operation operation, bool isNew) {
+        public AddEditOperationView(Operation operation, Tricount tricount, bool isNew) {
             InitializeComponent();
-            DataContext = new AddEditOperationViewModel(operation, isNew);
-
-            initiator.SelectedIndex = 0;
+            if (isNew) {
+                Title = "Add operation";
+                saveadd.Content = "Add";
+            }
+            DataContext = new AddEditOperationViewModel(operation, tricount, isNew);
         }
+        
+        
     }
 }
