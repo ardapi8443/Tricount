@@ -80,7 +80,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" Padding="5,-5,5,0" Margin="0,20,0,0" FontSize="30" FontWeight="ExtraBlack" HorizontalAlignment="Center"/>
+        <Button Grid.Row="3" x:Name="btnNewOperation" Content="+" Command="{Binding NewOperation}" 
+                Padding="5,-5,5,0" Margin="0,20,0,0" FontSize="30" FontWeight="ExtraBlack" HorizontalAlignment="Center"/>
         
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="5" Width="50" Content="Edit" Command="{Binding EditTricount}"/>
