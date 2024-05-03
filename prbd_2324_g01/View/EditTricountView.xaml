@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Description:" VerticalAlignment="Center" Grid.Column="0"/>
-            <TextBox Text="{Binding UpdatedDescription}" Grid.Column="1" AcceptsReturn="True"/>
+            <TextBox Text="{Binding UpdatedDescription, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" AcceptsReturn="True"/>
         </Grid>
         
         <Grid Grid.Row="4" >

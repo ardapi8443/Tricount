@@ -16,9 +16,21 @@
             </Grid.ColumnDefinitions>
         
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
-                <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="5"/>
+                <TextBlock Margin="5">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="{Binding Name}"/>
+                            <Setter Property="FontWeight" Value="Normal"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCreator}" Value="True">
+                                    <Setter Property="FontWeight" Value="Black"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 <TextBlock Text="{Binding ExpensesDisplay}" Margin="5"/>
-                <TextBlock Text="{Binding CreatorStatusDisplay}" FontStyle="Italic" Margin="5"/>
+                <TextBlock Text="{Binding CreatorStatusDisplay}" FontWeight="Black" Margin="5"/>
             </StackPanel>
             
             <Button Command="{Binding DeleteCommand}" Visibility="{Binding TrashCanVisibility}"
