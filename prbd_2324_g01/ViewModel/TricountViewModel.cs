@@ -95,9 +95,12 @@ namespace prbd_2324_g01.ViewModel {
             );
             
             //attribution des actions aux boutons
-            NewOperation = new RelayCommand(NewOperationAction);
             EditTricount = new RelayCommand(EditTricountAction);
             DeleteTricount = new RelayCommand(DeleteTricountAction);
+            
+            NewOperation = new RelayCommand<OperationCardViewModel>(vm => {
+                NotifyColleagues(App.Messages.MSG_NEW_OPERATION, new Operation());
+            });    
             //on vient définir l'action au double clic sur une operation
             DisplayOperation = new RelayCommand<OperationCardViewModel>(vm => {
                 NotifyColleagues(App.Messages.MSG_DISPLAY_OPERATION, vm.Operation);
@@ -105,8 +108,8 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public void NewOperationAction() {
-//bouton vers une nouvelle opération
-            Console.WriteLine("je suis dans TricountViewModel");
+            //DialogWindowBase dialog = new AddEditOperationView();
+            //dialog.ShowDialog();
         }
 
 //bouton vers l'édition d'un tricount
@@ -127,8 +130,6 @@ namespace prbd_2324_g01.ViewModel {
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB,Tricount);
                 NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
             }
-            
-            Console.WriteLine("je suis dans TricountViewModel");
         }
     }
 }

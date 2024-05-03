@@ -20,6 +20,7 @@ public partial class App {
         MSG_LOGIN,
         MSG_ADD_TEMPLATE,
         MSG_LOGOUT,
+        MSG_NEW_OPERATION,
         MSG_DELETE_TEMPLATE,
         MSG_REFRESH_TRICOUNT,
         MSG_SIGNUP,
@@ -45,6 +46,7 @@ public partial class App {
 
         Register<User>(this, Messages.MSG_LOGIN, user => {
             Login(user);
+
             NavigateTo<MainViewModel, User, PridContext>();
         });
         
@@ -78,11 +80,11 @@ public partial class App {
     }
 
     private static void TestQueries() {
-        var user = (from u in Context.Users
-            where u.Email.Equals("xapigeolet@epfc.eu")
-            select u).First();
-        
-        Console.WriteLine(user.FullName);
+        // var user = (from u in Context.Users
+        //     where u.Email.Equals("xapigeolet@epfc.eu")
+        //     select u).First();
+        //
+        // Console.WriteLine(user.FullName);
 
     }
 }

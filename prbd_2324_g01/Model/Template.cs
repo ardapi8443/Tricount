@@ -36,4 +36,8 @@ public class Template : EntityBase<PridContext> {
         Context.Templates.Remove(this);
         Context.SaveChanges();
     }
+
+    public override string ToString() {
+        return $"{Title} - {Tricount} ";
+    }
 }
