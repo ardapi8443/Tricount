@@ -97,26 +97,26 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void AddOperationAction() {
+//!!répartitions
             if (_isNew) {
+                Context.Add(Operation);
                 var newOperation = new Operation();
-                newOperation.Title = Title;
-                newOperation.TricountId = Operation.TricountId;
-                newOperation.Amount = Amount;
-                newOperation.OperationDate = Date;
-                newOperation.UserId = SelectedUser.UserId;
+                Operation.Title = Title;
+                Operation.Amount = Amount;
+                Operation.OperationDate = Date;
+                Operation.Initiator = SelectedUser;
 
-                Context.Add(newOperation);
+                
             } else {
                 Operation.Title = Title;
                 Operation.Amount = Amount;
                 Operation.OperationDate = Date;
-                Operation.UserId = SelectedUser.UserId;
-                
-                Context.Update(Operation);
+                Operation.Initiator = SelectedUser;
             }
             
             Context.SaveChanges();
             CancelAction();
+            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         }
     }
 }

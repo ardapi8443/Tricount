@@ -130,8 +130,6 @@ namespace prbd_2324_g01.ViewModel {
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB,Tricount);
                 NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
             }
-            
-            Console.WriteLine("je suis dans TricountViewModel");
         }
     }
 }
