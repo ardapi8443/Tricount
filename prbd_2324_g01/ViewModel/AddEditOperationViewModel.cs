@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.Model;
+using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ namespace prbd_2324_g01.ViewModel {
     public class AddEditOperationViewModel : DialogViewModelBase<Operation, PridContext> {
         public ICommand ApplyTemplate { get; set; }
         public ICommand SaveTemplate { get; set; }
+        public ICommand DeleteOperation { get; set; }
         public ICommand Cancel { get; set; }
         public ICommand AddOperation { get; set; }
 
@@ -80,6 +82,7 @@ namespace prbd_2324_g01.ViewModel {
 //voir new member
             _isNew = isNew;
             Operation = operation;
+            _tricount = tricount;
             if (isNew) {
                 Operation.TricountId = tricount.Id;   
             }
@@ -121,19 +124,31 @@ namespace prbd_2324_g01.ViewModel {
                }
             }
             
+            DisplayRepartitions();
+               
+            //we define the buttons
+            Cancel = new RelayCommand(CancelAction);
+            AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
+            ApplyTemplate = new RelayCommand(ApplyTemplateAction);
+            SaveTemplate = new RelayCommand(SaveTemplateAction);
+            DeleteOperation = new RelayCommand(DeleteOperationAction);
+            //don't forget the delete button when editing
+        }
+
+        private void DisplayRepartitions() {
             // we populate the TemplateItems
             var queryUsersID = from s in PridContext.Context.Subscriptions
-                where s.TricountId == tricount.Id
+                where s.TricountId == _tricount.Id
                 select s.UserId;
             //transform the list of user ids to a list of users
             var userTemplateItems = queryUsersID.ToList().Select(u => PridContext.Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
             foreach (var u in userTemplateItems) {
             }
             
-            if (!isNew) {
+            if (!_isNew) {
                 // Fetch the information from the Repartition table
                 var repartitionItems = PridContext.Context.Repartitions
-                    .Where(r => r.OperationId == operation.OperationId)
+                    .Where(r => r.OperationId == _operation.OperationId)
                     .ToList();
 
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
@@ -144,12 +159,6 @@ namespace prbd_2324_g01.ViewModel {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true)));
             }
-               
-            //we define the buttons
-            Cancel = new RelayCommand(CancelAction);
-            AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
-            ApplyTemplate = new RelayCommand(ApplyTemplateAction);
-            //don't forget the delete button when editing
         }
 
         public override void CancelAction() {
@@ -228,8 +237,8 @@ namespace prbd_2324_g01.ViewModel {
             Context.SaveChanges();
             Console.WriteLine("");
             
-            CancelAction();
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+            CancelAction();
         }
         
         public void ApplyTemplateAction() {
@@ -250,5 +259,40 @@ namespace prbd_2324_g01.ViewModel {
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
                     _isNew)));
         }
+
+        public void SaveTemplateAction() {
+            Console.WriteLine("SaveTemplateAction");
+        }
+
+        public void DeleteOperationAction() {
+            var confirmationDialog = new ConfirmationDialogView("operation");
+            bool? dialogResult = confirmationDialog.ShowDialog();
+
+            if (dialogResult == true && Operation != null) {
+                // Fetch the operation
+                            var operation = Context.Operations.Find(Operation.OperationId);
+                            // Delete the operation
+                            Context.Operations.Remove(operation);
+                            Context.SaveChanges();
+                            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+                            CancelAction();
+            }
+            
+            
+            
+        }
+        
+        //vraiment utile ici ?
+        protected override void OnRefreshData() {
+                // Refresh the operation
+                var operation = PridContext.Context.Operations.Find(Operation.OperationId);
+                if (operation != null) {
+                    Operation = operation;
+                }
+                //refresh the operations
+                DisplayRepartitions();
+            }
     }
+    
+    
 }

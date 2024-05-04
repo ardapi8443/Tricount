@@ -21,7 +21,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <fa6:ImageAwesome Icon="Regular_CircleQuestion" PrimaryColor="Blue" Grid.Column="0" Width="60" Height="60" VerticalAlignment="Center" Margin="10"/>
-            <TextBlock Text="You're about to delete this Tricount. &#x0a;Do you confirm?" 
+            <!-- Text filled in xalm.cs -->
+            <TextBlock Name="Text" Text=""  
                        TextWrapping="Wrap" Margin="10" FontFamily="Roboto" Grid.Column="1" VerticalAlignment="Center" />
         </Grid>
 

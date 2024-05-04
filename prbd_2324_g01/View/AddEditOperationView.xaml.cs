@@ -12,6 +12,7 @@ namespace prbd_2324_g01.View
             if (isNew) {
                 Title = "Add operation";
                 saveadd.Content = "Add";
+                delete.Visibility = Visibility.Collapsed;
             }
             DataContext = new AddEditOperationViewModel(operation, tricount, isNew);
         }
