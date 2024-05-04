@@ -121,7 +121,7 @@ namespace prbd_2324_g01.ViewModel {
                }
             }
             
-            // we popullate the TemplateItems
+            // we populate the TemplateItems
             var queryUsersID = from s in PridContext.Context.Subscriptions
                 where s.TricountId == tricount.Id
                 select s.UserId;
@@ -157,13 +157,13 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void AddOperationAction() {
-//!!répartitions
            
             Operation.Title = Title;
             Operation.Amount = Amount;
             Operation.OperationDate = Date;
                 
-             if (_isNew) {    
+            //first, save/update the operation 
+            if (_isNew) {    
                  // to prevent InvalidOperationException, we need bind the selected user to the context
                  var user = Context.Users.Find(SelectedUser.UserId);
                  Operation.Initiator = user;
@@ -175,16 +175,65 @@ namespace prbd_2324_g01.ViewModel {
                 Operation.Amount = Amount;
                 Operation.OperationDate = Date;
                 Operation.Initiator = SelectedUser;
+                
+                //save repartitions
+                
             }
             
             Context.SaveChanges();
+            
+            //then, save/update the repartitions in TemplateItems
+            if (_isNew) {
+                //save repartitions
+                foreach (var repartition in TemplateItems) {
+                    if (repartition.Weight > 0) {
+                        Repartition rep = new(
+                            //get UserId from the UserName
+                            Context.Users.Where(u => u.FullName == repartition.UserName).Select(u => u.UserId).FirstOrDefault(),
+                            Operation.OperationId,
+                            repartition.Weight);
+                        Context.Repartitions.Add(rep);
+                    }
+                }
+            } else {
+                // Update repartitions
+                foreach (var repartition in TemplateItems) {
+                    var userId = Context.Users.Where(u => u.FullName == repartition.UserName).Select(u => u.UserId).FirstOrDefault();
+                    var existingRepartition = Context.Repartitions.FirstOrDefault(r => r.OperationId == Operation.OperationId && r.UserId == userId);
+
+                    if (repartition.Weight > 0) {
+                        if (existingRepartition != null) {
+                            Console.WriteLine("Existing repartition: " + existingRepartition.OperationId + "." + existingRepartition.UserId);
+                            // If repartition exists, update the weight
+                            Console.WriteLine(existingRepartition.Weight + " -> " + repartition.Weight);
+                            existingRepartition.Weight = repartition.Weight;
+                            
+                            // Attach the repartition to the context and set its state to Modified
+                            Context.Repartitions.Update(existingRepartition);
+                        } else {
+                            Console.WriteLine("c'est le caca");
+                            // Else create a new repartition
+                            var newRepartition = new Repartition(userId, Operation.OperationId, repartition.Weight);
+                            Context.Repartitions.Add(newRepartition);
+                        }
+                    } else {
+                        // If the weight is 0 and the repartition exists, delete the repartition
+                        if (existingRepartition != null) {
+                            Context.Repartitions.Remove(existingRepartition);
+                        }
+                    }
+                }
+            }
+            //finally, save the changes
+            Context.SaveChanges();
+            Console.WriteLine("");
+            
             CancelAction();
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         }
         
         public void ApplyTemplateAction() {
             var templateItems = PridContext.Context.TemplateItems
-                .AsNoTracking() 
                 .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
                 .Include(ti => ti.UserFromTemplateItem) 
                 .DefaultIfEmpty()
