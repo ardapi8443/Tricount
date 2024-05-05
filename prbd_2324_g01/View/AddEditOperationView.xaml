@@ -7,6 +7,7 @@
         xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="Edit Operation" Height="700" Width="350"
         d:DataContext="{d:DesignInstance vm:AddEditOperationViewModel}">
     
@@ -65,12 +66,15 @@
         <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="15" Content="Save as New Template" 
                 Command="{Binding SaveTemplate}"/>
         
-        <StackPanel Grid.Row="7" Grid.ColumnSpan="3" Margin="10" Orientation="Horizontal" 
-                    FlowDirection="RightToLeft">
-            <Button Height="25" Width="50" Margin="5" HorizontalAlignment="Right" Content="Cancel" 
-                    Command="{Binding Cancel}"/>
-            <Button Height="25" Width="50" Margin="5" HorizontalAlignment="Right" Content="Edit" Name="saveadd"
-                    Command="{Binding AddOperation}"/>
-        </StackPanel>
+        <DockPanel Grid.Row="7" Grid.ColumnSpan="3" Margin="10">
+            <Button DockPanel.Dock="Left" Height="25" Width="50" Margin="5" Content="Delete" Name="delete"
+                    Command="{Binding DeleteOperation}" Background="Firebrick"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Height="25" Width="50" Margin="5" Content="Cancel"
+                        Command="{Binding Cancel}"/>
+                <Button Height="25" Width="50" Margin="5" Content="Edit" Name="saveadd"
+                        Command="{Binding AddOperation}"/>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </prbdFramework:DialogWindowBase>
