@@ -14,7 +14,7 @@ namespace prbd_2324_g01.View {
     
     private void OnLoaded(object sender, RoutedEventArgs e) {
         if (text.Equals("tricount")) {
-            Text.Text = "You're about to delete this Tricount. \nDo you confirm?;";
+            Text.Text = "You're about to delete this Tricount. \nDo you confirm?";
         } else if (text.Equals("operation")) {
             Text.Text = "You're about to delete this Operation. \nDo you confirm?";
         }

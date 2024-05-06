@@ -99,7 +99,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             }
         }
         Context.SaveChanges();
-        NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, template);
+        NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
         CloseWindow();
         }
         

@@ -35,7 +35,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public string Description {
-            get => (!string.IsNullOrEmpty(Tricount.Description) ? Tricount.Description : "pas de description");
+            get => (!string.IsNullOrEmpty(Tricount.Description) ? Tricount.Description : "No Description");
             set => SetProperty(Tricount.Description, value, Tricount, (m, v) => m.Description = v);
         }
 
