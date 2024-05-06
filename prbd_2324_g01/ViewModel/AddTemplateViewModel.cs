@@ -51,6 +51,7 @@ public class AddTemplateViewModel : ViewModelCommon {
     }
 
     public ICommand AddTemplateDbCommand { get; private set; }
+    public ICommand CancelTempalte { get; private set; }
 
 
     public AddTemplateViewModel(Tricount tricount, Template template, bool isNew) {
@@ -63,6 +64,8 @@ public class AddTemplateViewModel : ViewModelCommon {
             DisplayAddTemplateWindows();
             AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
         }
+
+        CancelTempalte = new RelayCommand((CloseWindow));
     }
         
     private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template) {
@@ -96,8 +99,8 @@ public class AddTemplateViewModel : ViewModelCommon {
             }
         }
         Context.SaveChanges();
-        NotifyColleagues(App.Messages.MSG_ADD_TEMPLATE, template);
-        ExecuteAddTemplate();
+        NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, template);
+        CloseWindow();
         }
         
         private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
@@ -118,18 +121,16 @@ public class AddTemplateViewModel : ViewModelCommon {
                     Context.TemplateItems.Add(templateItem);
                 }
             }
-    
-            Context.Templates.Add(template);
-            Context.SaveChanges();
-            Context.ChangeTracker.Clear();
-            NotifyColleagues(App.Messages.MSG_ADD_TEMPLATE, template);
-            ExecuteAddTemplate();
-        }
-        
-        private void ExecuteAddTemplate() {
-            RequestClose?.Invoke(true); 
+
+            template.Add();
+            NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
+            CloseWindow();
         }
 
+        private void CloseWindow() {
+            RequestClose?.Invoke(true);
+        }
+        
         private void DisplayEditTemplateWindows(Template template) {
            /* asNoTracking used to only read the datas , update is used with the save button */
            /* Refresh datas after edtiting it with the save button */

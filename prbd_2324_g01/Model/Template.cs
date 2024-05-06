@@ -40,4 +40,10 @@ public class Template : EntityBase<PridContext> {
     public override string ToString() {
         return $"{Title} - {Tricount} ";
     }
+
+    public void Add() {
+        Context.Templates.Add(this);
+        Context.SaveChanges();
+        Context.ChangeTracker.Clear();
+    }
 }

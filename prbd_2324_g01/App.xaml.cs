@@ -18,7 +18,7 @@ public partial class App {
         MSG_DISPLAY_OPERATION,
         MSG_CLOSE_TAB,
         MSG_LOGIN,
-        MSG_ADD_TEMPLATE,
+        MSG_UPDATE_EDITVIEW,
         MSG_LOGOUT,
         MSG_NEW_OPERATION,
         MSG_DELETE_TEMPLATE,

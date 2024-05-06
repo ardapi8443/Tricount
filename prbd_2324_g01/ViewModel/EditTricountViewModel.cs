@@ -98,7 +98,7 @@ namespace prbd_2324_g01.ViewModel {
             Tricount = tricount;
             Date = tricount.CreatedAt;
 
-            Register<Template>(App.Messages.MSG_ADD_TEMPLATE, (template) => OnRefreshData());
+            Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
             
             Register<Template>(App.Messages.MSG_DELETE_TEMPLATE, (template) => { DeleteTemplate(template);
             });
@@ -261,6 +261,7 @@ namespace prbd_2324_g01.ViewModel {
                         .Count(rep => rep.UserId == user.UserId && rep.OperationFromRepartition.TricountId == Tricount.Id);
 
                     return new ParticipantViewModel(
+                        Tricount,
                         user.FullName, 
                         numberOfExpenses,
                         user.UserId == Tricount.CreatorFromTricount.UserId 

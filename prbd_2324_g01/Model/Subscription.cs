@@ -20,4 +20,9 @@ public class Subscription : EntityBase<PridContext> {
     }
 
     public Subscription() { }
+
+    public void Delete() {
+        Context.Subscriptions.Remove(this);
+        Context.SaveChanges();
+    }
 }

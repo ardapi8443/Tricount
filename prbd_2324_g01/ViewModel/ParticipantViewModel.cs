@@ -1,4 +1,5 @@
 ﻿using Msn.ViewModel;
+using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Windows;
 using System.Windows.Input;
@@ -9,7 +10,17 @@ namespace prbd_2324_g01.ViewModel
         public ICommand DeleteCommand { get; set; }
         public string Name { get; private set; }
         
+        public string CreatorStatusDisplay => IsCreator ? "(creator)" : "";
+        public string ExpensesDisplay => (NumberOfExpenses > 0 && !IsCreator) ? $"({NumberOfExpenses} expenses)" : string.Empty;
+        
+        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator) ? Visibility.Visible : Visibility.Collapsed;
+
+        private bool _isCreator;
+        
         private int _numberOfExpenses;
+        
+        private readonly Tricount _tricount;
+        
         public int NumberOfExpenses {
             get => _numberOfExpenses;
             private set {
@@ -20,10 +31,6 @@ namespace prbd_2324_g01.ViewModel
             }
         }
         
-        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator) ? Visibility.Visible : Visibility.Collapsed;
-
-        private bool _isCreator;
-
         public bool IsCreator {
             get => _isCreator;
             private set {
@@ -33,10 +40,9 @@ namespace prbd_2324_g01.ViewModel
             }
         }
 
-        public string CreatorStatusDisplay => IsCreator ? "(creator)" : "";
-        public string ExpensesDisplay => (NumberOfExpenses > 0 && !IsCreator) ? $"({NumberOfExpenses} expenses)" : string.Empty;
         
-        public ParticipantViewModel(string name, int numberOfExpenses, bool isCreator) {
+        public ParticipantViewModel(Tricount tricount, string name, int numberOfExpenses, bool isCreator) {
+            _tricount = tricount;
             Name = name;
             NumberOfExpenses = numberOfExpenses;
             IsCreator = isCreator;
@@ -45,8 +51,20 @@ namespace prbd_2324_g01.ViewModel
         }
 
         private void DeleteParticipant() {
-            
-            Console.WriteLine("je suis dans ParticipantViewModel");
+            var q = Context.Users.FirstOrDefault(u => u.FullName == Name);
+
+            if (q == null) {
+                return;
+            }
+            Subscription sub = Context.Subscriptions.Find(_tricount.Id,q.UserId);
+            if (sub == null) {
+                return;
+            }
+
+            sub.Delete();
+            NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, _tricount);
+            Console.WriteLine(q.FullName + " est un traitre , A jamais sale eau");
+
         }
     }
 }
