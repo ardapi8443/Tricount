@@ -1,4 +1,5 @@
-﻿using Msn.ViewModel;
+﻿using Microsoft.EntityFrameworkCore;
+using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
@@ -75,6 +76,12 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayMap() {
+            
+            var tricount = Context.Tricounts
+                .Include(t => t.Subscribers)
+                .FirstOrDefault(t => t.Id == Tricount.Id);
+            Tricount = tricount;
+            
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
             var operations = from o in PridContext.Context.Operations
