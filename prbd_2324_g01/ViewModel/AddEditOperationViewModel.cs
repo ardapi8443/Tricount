@@ -35,12 +35,12 @@ namespace prbd_2324_g01.ViewModel {
         
         public string Title {
             get => _title;
-            set => SetProperty(ref _title, value);
+            set => SetProperty(ref _title, value, () => { Validate();});
         }
 
         public double Amount {
             get => _amount;
-            set => SetProperty(ref _amount, value);
+            set => SetProperty(ref _amount, value, () => { Validate();});
         }
 
         public ObservableCollectionFast<User> Users {
@@ -60,7 +60,7 @@ namespace prbd_2324_g01.ViewModel {
         
         public DateTime Date {
             get => _date;
-            set => SetProperty(ref _date, value);
+            set => SetProperty(ref _date, value, () => { Validate();});
         }
 
         public ObservableCollectionFast<Template> Templates {
@@ -70,16 +70,44 @@ namespace prbd_2324_g01.ViewModel {
         
         public ObservableCollection<UserTemplateItemViewModel> TemplateItems {
             get => _templateItems;
-            set {
-                if (_templateItems != value) {
-                    _templateItems = value;
-                    RaisePropertyChanged(nameof(TemplateItems));
-                }
+            set => SetProperty(ref _templateItems, value, () => { Validate();});
+            // set {
+            //     if (_templateItems != value) {
+            //         _templateItems = value;
+            //         RaisePropertyChanged(nameof(TemplateItems));
+            //     }
+            // }
+        }
+
+        public override bool Validate() {
+            ClearErrors();
+
+            if (string.IsNullOrEmpty(Title)) {
+                AddError(nameof(Title), "required");
+            } else if (Title.Length < 3) {
+                AddError(nameof(Title), "min 3 characters");
             }
+            
+            if (Amount < 0.01) {
+                AddError(nameof(Amount), "minimum 1 cent");
+            }
+
+            if (Date < _tricount.CreatedAt) {
+                AddError(nameof(Date), "can't add operation before tricount creation date");
+            } else if (Date > DateTime.Today) {
+                AddError(nameof(Date), "cannot be in the future");
+            }
+
+            if (!TemplateItems.Any(item => item.IsChecked)) {
+                //AddError(TemplateItems, "you must check at least one participant");
+                Console.WriteLine("can't AddError() to TemplateItems");
+            }
+            
+            
+            return !HasErrors;
         }
 
         public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
-//voir new member
             _isNew = isNew;
             Operation = operation;
             _tricount = tricount;
@@ -130,9 +158,8 @@ namespace prbd_2324_g01.ViewModel {
             Cancel = new RelayCommand(CancelAction);
             AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
             ApplyTemplate = new RelayCommand(ApplyTemplateAction);
-            SaveTemplate = new RelayCommand(SaveTemplateAction);
+            SaveTemplate = new RelayCommand(SaveTemplateAction, () => !HasErrors);
             DeleteOperation = new RelayCommand(DeleteOperationAction);
-            //don't forget the delete button when editing
         }
 
         private void DisplayRepartitions() {
@@ -185,10 +212,9 @@ namespace prbd_2324_g01.ViewModel {
                 Operation.OperationDate = Date;
                 Operation.Initiator = SelectedUser;
                 
-                //save repartitions
-                
             }
             
+            //must save here to have an Operation ID
             Context.SaveChanges();
             
             //then, save/update the repartitions in TemplateItems

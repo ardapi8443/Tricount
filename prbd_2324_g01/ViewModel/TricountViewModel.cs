@@ -121,11 +121,6 @@ namespace prbd_2324_g01.ViewModel {
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
         }
 
-        public void NewOperationAction() {
-            //DialogWindowBase dialog = new AddEditOperationView();
-            //dialog.ShowDialog();
-        }
-
 //bouton vers l'édition d'un tricount
         public void EditTricountAction() {
             Console.WriteLine("je suis dans TricountViewModel");
