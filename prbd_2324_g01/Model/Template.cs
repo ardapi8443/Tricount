@@ -41,7 +41,7 @@ public class Template : EntityBase<PridContext> {
         return $"{Title} - {Tricount} ";
     }
 
-    public void Add() {
+    public void Save() {
         Context.Templates.Add(this);
         Context.SaveChanges();
         Context.ChangeTracker.Clear();

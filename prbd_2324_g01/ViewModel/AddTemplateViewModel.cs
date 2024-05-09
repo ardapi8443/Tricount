@@ -67,6 +67,12 @@ public class AddTemplateViewModel : ViewModelCommon {
 
         CancelTempalte = new RelayCommand((CloseWindow));
     }
+
+    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew,
+        ObservableCollection<UserTemplateItemViewModel> templateItems) 
+    : this(tricount, template, isNew) {
+    TemplateItems = templateItems;
+}
         
     private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template) {
 
@@ -100,6 +106,7 @@ public class AddTemplateViewModel : ViewModelCommon {
         }
         Context.SaveChanges();
         NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
+        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
         CloseWindow();
         }
         
@@ -122,7 +129,7 @@ public class AddTemplateViewModel : ViewModelCommon {
                 }
             }
 
-            template.Add();
+            template.Save();
             NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
             CloseWindow();
         }

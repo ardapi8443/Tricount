@@ -22,11 +22,12 @@ namespace prbd_2324_g01.ViewModel {
         private double _amount;
         private User _selectedUser;
         private Template _selectedTemplate;
-        //combobox !!
         private ObservableCollectionFast<User> _users = new();
         private DateTime _date;
         private ObservableCollectionFast<Template> _templates = new();
         private ObservableCollection<UserTemplateItemViewModel> _templateItems;
+
+        private bool _isNewTemplate = true;
 
         public Operation Operation {
             get => _operation;
@@ -98,10 +99,10 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Date), "cannot be in the future");
             }
 
-            if (!TemplateItems.Any(item => item.IsChecked)) {
-                //AddError(TemplateItems, "you must check at least one participant");
-                Console.WriteLine("can't AddError() to TemplateItems");
-            }
+            // if (!TemplateItems.Any(item => item.IsChecked)) {
+            //     //AddError(TemplateItems, "you must check at least one participant");
+            //     Console.WriteLine("can't AddError() to TemplateItems");
+            // }
             
             
             return !HasErrors;
@@ -268,6 +269,8 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public void ApplyTemplateAction() {
+            _isNewTemplate = false;
+            
             var templateItems = PridContext.Context.TemplateItems
                 .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
                 .Include(ti => ti.UserFromTemplateItem) 
@@ -286,8 +289,20 @@ namespace prbd_2324_g01.ViewModel {
                     _isNew)));
         }
 
+        // !! doit prendre les élément tels que vu dans Templatesitems au moment de cliquer sur le bouton
+        //?? et si l'operation est déjà basé sur un template ??
         public void SaveTemplateAction() {
-            Console.WriteLine("SaveTemplateAction");
+            Template template;
+            if (_isNewTemplate) {
+                template = new Template();
+            } else {
+                template = Context.Templates.Find(SelectedTemplate.TemplateId);
+            }
+            
+            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems) {
+                Owner = App.Current.MainWindow
+            };
+            addTemplateDialog.ShowDialog();
         }
 
         public void DeleteOperationAction() {
