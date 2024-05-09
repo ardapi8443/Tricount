@@ -52,7 +52,7 @@
         <Button Grid.Row="4" Grid.Column="2" Margin="15"  
                 Content="Apply" Command="{Binding ApplyTemplate}"/>
         
-        <Grid Grid.Row="5" Grid.ColumnSpan="3">
+        <Grid Grid.Row="5" Grid.ColumnSpan="3" Width="auto">
             <!-- User List with Weight Controls -->
             <ListView x:Name="UsersListView" ItemsSource="{Binding TemplateItems}">
                 <ListView.ItemTemplate>

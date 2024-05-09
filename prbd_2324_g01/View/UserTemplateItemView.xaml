@@ -9,12 +9,13 @@
              d:DataContext="{d:DesignInstance Type=vm:UserTemplateItemViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <Grid Margin="4">
+    <Grid Margin="4" Background="Crimson">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/> 
-            <ColumnDefinition Width="Auto"/> 
-            <ColumnDefinition Width="Auto"/> 
+            <ColumnDefinition Width="*"/> 
+            <ColumnDefinition Width="*"/> 
+            <ColumnDefinition Width="*"/> 
+            <ColumnDefinition Width="auto"/> 
         </Grid.ColumnDefinitions>
         
         <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding UserName}" 
@@ -25,9 +26,14 @@
                 Width="20" Margin="5,0" Grid.Column="1"/>
         
         <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" 
-                 Width="30" TextAlignment="Center" Margin="5,0" Grid.Column="2" Name="weight"/>
+                 Width="30" TextAlignment="Center" Margin="5,0" Grid.Column="2" Name="weight"
+                 IsReadOnly="True"/>
         
         <Button Content="+" Command="{Binding IncrementCommand}" 
                 Width="20" Margin="5,0" Grid.Column="3"/>
+        
+        <Label Grid.Column="4" Name="Total" Content="{Binding TotalPerUser}"
+               FontWeight="UltraBlack"
+               Margin="0,-7,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right" Background="Blue"/>
     </Grid>
 </UserControl>

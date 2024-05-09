@@ -28,6 +28,7 @@ namespace prbd_2324_g01.ViewModel {
         private ObservableCollection<UserTemplateItemViewModel> _templateItems;
 
         private bool _isNewTemplate = true;
+        private int _totalWeight = 0;
 
         public Operation Operation {
             get => _operation;
@@ -41,7 +42,11 @@ namespace prbd_2324_g01.ViewModel {
 
         public double Amount {
             get => _amount;
-            set => SetProperty(ref _amount, value, () => { Validate();});
+            set => SetProperty(ref _amount, value,
+                () => {
+                    Validate();
+                    NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
+                });
         }
 
         public ObservableCollectionFast<User> Users {
@@ -182,11 +187,25 @@ namespace prbd_2324_g01.ViewModel {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName,
                         repartitionItems.FirstOrDefault(ri => ri.UserId == u.UserId)?.Weight ?? 0,
-                        false)));
+                        false, true)));
             } else {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true)));
+                    userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, true)));
             }
+            //calculate and send the total of weight and the amount to the templateItems
+            
+            Register(App.Messages.MSG_WEIGHT_CHANGED, CalculateTotalWeight);
+            
+            CalculateTotalWeight();
+            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
+        }
+
+        private void CalculateTotalWeight() {
+            foreach (var repartition in TemplateItems) {
+                _totalWeight += repartition.Weight;
+            }
+            NotifyColleagues(App.Messages.MSG_TOTAL_WEIGHT_CHANGED, _totalWeight);
+            _totalWeight = 0;
         }
 
         public override void CancelAction() {
@@ -286,7 +305,7 @@ namespace prbd_2324_g01.ViewModel {
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                 userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
-                    _isNew)));
+                    _isNew, true)));
         }
 
         // !! doit prendre les élément tels que vu dans Templatesitems au moment de cliquer sur le bouton

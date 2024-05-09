@@ -158,7 +158,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
                 users.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
-                    false)));
+                    false, false)));
             
         }
 
@@ -175,7 +175,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             AddButtonText = "Add";
                 
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName, 0,true)));
+                distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName, 0,true, false)));
             
         }
         

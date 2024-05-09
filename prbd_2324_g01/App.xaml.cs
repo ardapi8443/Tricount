@@ -24,7 +24,10 @@ public partial class App {
         MSG_DELETE_TEMPLATE,
         MSG_REFRESH_TRICOUNT,
         MSG_SIGNUP,
-        MSG_TITLE_CHANGED
+        MSG_TITLE_CHANGED,
+        MSG_AMOUNT_CHANGED,
+        MSG_WEIGHT_CHANGED,
+        MSG_TOTAL_WEIGHT_CHANGED
     }
 
     public App() {
