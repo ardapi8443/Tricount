@@ -66,7 +66,7 @@ public partial class App {
         NavigateTo<LoginViewModel, User, PridContext>();
     }
 
-    private static void PrepareDatabase() {
+    public static void PrepareDatabase() {
         // Clear database and seed data
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();

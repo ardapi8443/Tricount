@@ -20,6 +20,7 @@
         <Menu>
             <MenuItem Header="Logout" Click="MenuLogout_Click"/>
             <MenuItem Header="Reload" Command="{Binding ReloadDataCommand}" />
+            <MenuItem Header="Reset" Command="{Binding ResetCommand}"/>
         </Menu>
         <f:MyTabControl x:Name="tabControl" Margin="10" Grid.Row="1" HasCloseButton="True">
             <TabItem x:Name="tricountsTab" Header="My Tricounts" Tag="Tricounts">

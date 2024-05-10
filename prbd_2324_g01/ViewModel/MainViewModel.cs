@@ -8,6 +8,7 @@ namespace prbd_2324_g01.ViewModel;
 
 public class MainViewModel : ViewModelCommon {
     public ICommand ReloadDataCommand { get; set; }
+    public ICommand ResetCommand { get; set; }
 
     public MainViewModel() : base() {
         ReloadDataCommand = new RelayCommand(() => {
@@ -17,6 +18,13 @@ public class MainViewModel : ViewModelCommon {
             App.ClearContext();
             // notifie tout le monde qu'il faut rafraîchir les données
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+        });
+
+        ResetCommand = new RelayCommand(() => {
+            App.PrepareDatabase();
+            //ajouter tout les App.Messages pour refresh les données
+            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+            NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,null);
         });
 
     }

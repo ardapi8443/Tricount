@@ -132,8 +132,10 @@ public class Tricount : EntityBase<PridContext> {
         PridContext.Context.SaveChanges();
     }
     public void delete() {
-        PridContext.Context.Remove(this);
-        PridContext.Context.SaveChanges();
+        var tricount = Context.Tricounts.Find(this.Id);
+                
+        Context.Tricounts.Remove(tricount);
+        Context.SaveChanges();
     }
     public static List<Tricount> tricountByMember(User user) {
         
