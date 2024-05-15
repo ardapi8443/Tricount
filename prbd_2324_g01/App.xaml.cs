@@ -15,6 +15,7 @@ public partial class App {
         MSG_DISPLAY_EDIT_TRICOUNT,
         MSG_EDIT_TEMPLATE,
         MSG_DISPLAY_TRICOUNT,
+        MSG_DISPLAY_NEW_TRICOUNT,
         MSG_DISPLAY_OPERATION,
         MSG_CLOSE_TAB,
         MSG_LOGIN,

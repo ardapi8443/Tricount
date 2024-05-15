@@ -98,12 +98,31 @@ public class Tricount : EntityBase<PridContext> {
         this.Description = Description;
         this.Creator = Creator;
         this.CreatedAt = Created_at;
+
     }
     public Tricount() { }
 
-    public Tricount(bool IsNew, DateTime Created_at) {
+    public Tricount(bool IsNew, string Title, string Description, int Creator, DateTime Created_at) {
         this.IsNew = IsNew;
+        this.Title = Title;
+        this.Description = Description;
+        this.Creator = Creator;
         this.CreatedAt = Created_at;
+        this.CreatorFromTricount = User.UserById(Creator);
+        this.Subscribers.Add(CreatorFromTricount);
+        
+    }
+
+    public HashSet<User> getSubscribers() {
+        HashSet<User> res = new HashSet<User>();
+
+        var Sub = Context.Subscriptions.Where(s => s.TricountId == this.Id);
+
+        foreach (Subscription s in Sub) {
+            res.Add(User.UserById(s.UserId));
+        }
+
+        return res;
     }
 
 

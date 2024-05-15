@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -118,6 +120,8 @@ namespace prbd_2324_g01.ViewModel {
             if (tricount.IsNew) {
                 tricount.Title = "<New Tricount>";
                 tricount.Description = "No Description";
+                UpdatedTitle = "";
+                
                 /*
                  Cela fonctionne mais a voir si le process est correct
                  tricount.CreatorFromTricount = CurrentUser;
@@ -147,21 +151,26 @@ namespace prbd_2324_g01.ViewModel {
                                    .Any(sub => sub.UserId == user.UserId && sub.TricountId == Tricount.Id) 
                                && user.Role == Role.Viewer)
                 .ToList();
+            
 
             if (!usersNotSubscribed.IsNullOrEmpty()) {
+                Console.WriteLine("add everybody");
                 foreach (var user in usersNotSubscribed) {
-                    var newSub = new Subscription() {
-                        UserId = user.UserId,
-                        TricountId = Tricount.Id
-                    };
-                    Context.Subscriptions.Add(newSub);
+                    Console.WriteLine(user.FullName + " " + user.UserId);
+                    // var newSub = new Subscription() {
+                    //     UserId = user.UserId,
+                    //     TricountId = Tricount.Id
+                    // };
+                    Tricount.Subscribers.Add(User.UserById(user.UserId));
+                    // Context.Subscriptions.Add(newSub);
                 }
-                Context.SaveChanges();
+                // Context.SaveChanges();
                 
             } else {
-                Console.WriteLine("EveryOne is AlReady Sub in this Tricount");
+                Console.WriteLine("Everyone is Already Sub in this Tricount");
             }
-            OnRefreshData();
+            Console.WriteLine("AddEveryBody - fin");
+            // OnRefreshData();
         }
 
         private void AddMySelfInParticipant() {
@@ -225,6 +234,7 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private bool CanCancelAction() {
+            Console.WriteLine("CanCancelAction");
             return Tricount != null && (IsNew || !Tricount.IsModified);
         }
         
@@ -255,19 +265,26 @@ namespace prbd_2324_g01.ViewModel {
                 .ToList();
 
             Participants = new ObservableCollectionFast<ParticipantViewModel>(
-                subscriptions.Select(sub => {
-                    var user = sub.UserFromSubscription;
+                Tricount.getSubscribers().Select(sub => {
                     var numberOfExpenses = Context.Repartitions
-                        .Count(rep => rep.UserId == user.UserId && rep.OperationFromRepartition.TricountId == Tricount.Id);
-
+                        .Count(rep => rep.UserId == sub.UserId && rep.OperationFromRepartition.TricountId == Tricount.Id);
+            
                     return new ParticipantViewModel(
                         Tricount,
-                        user.FullName, 
+                        sub.FullName, 
                         numberOfExpenses,
-                        user.UserId == Tricount.CreatorFromTricount.UserId 
+                        sub.UserId == Tricount.CreatorFromTricount.UserId 
                     );
                 })
             );
+
+            Console.WriteLine("subscibers : ");
+            foreach (User sub in Tricount.getSubscribers()) {
+                Console.WriteLine(sub.FullName + " " + sub.UserId);
+            }
+            
+            Console.WriteLine("Owner " + User.GetUserById(Tricount.Creator).UserId);
+            
         }
         
         public override bool Validate() {
@@ -275,7 +292,7 @@ namespace prbd_2324_g01.ViewModel {
             
             bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id);
 
-            if (string.IsNullOrEmpty(UpdatedDescription) || UpdatedDescription.Length < 3) {
+            if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
                 AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
             }
             if (string.IsNullOrEmpty(UpdatedTitle)) {

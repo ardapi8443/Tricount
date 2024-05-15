@@ -21,6 +21,8 @@ public partial class MainView : WindowBase {
         Register<Tricount>(App.Messages.MSG_DISPLAY_TRICOUNT,
             member => DoDisplayTricount(member, false));
 
+  
+
         Register<Operation>(App.Messages.MSG_DISPLAY_OPERATION,
             (operation) => DoDisplayOperation(operation, openTricount,  false));
         
@@ -29,7 +31,10 @@ public partial class MainView : WindowBase {
         
         Register<Tricount>(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT,
             member => DoDisplayEditTricount(member, false));
-        
+
+        Register<Tricount>(App.Messages.MSG_DISPLAY_NEW_TRICOUNT,
+         member => DoDisplayEditTricount(member, true));
+
         Register<Tricount>(App.Messages.MSG_TITLE_CHANGED,
             t => DoRenameTab(string.IsNullOrEmpty(t.Title) ? "<New Member>" : t.Title));
 

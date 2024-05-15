@@ -84,7 +84,10 @@ public class TricountsViewModel : ViewModelCommon {
     
     public void AddTricountAction() {
         
-        NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, new Tricount(true, DateTime.Now));
+
+        Tricount tricount = new Tricount(true,"" ,"", CurrentUser.UserId, DateTime.Now);
+        
+        NotifyColleagues(App.Messages.MSG_DISPLAY_NEW_TRICOUNT, tricount);
        
     }
 
