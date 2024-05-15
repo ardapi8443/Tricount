@@ -104,13 +104,20 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Date), "cannot be in the future");
             }
 
-            // if (!TemplateItems.Any(item => item.IsChecked)) {
-            //     //AddError(TemplateItems, "you must check at least one participant");
-            //     Console.WriteLine("can't AddError() to TemplateItems");
-            // }
-            
+            if (TemplateItems != null && !TemplateItems.Any(item => item.IsChecked)) {
+                AddError(nameof(TemplateItems), "you must check at least one participant");
+            }
             
             return !HasErrors;
+        }
+        
+        private bool AnyChecked() {
+            foreach (var item in TemplateItems) {
+                if (item.IsChecked) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
@@ -166,6 +173,8 @@ namespace prbd_2324_g01.ViewModel {
             ApplyTemplate = new RelayCommand(ApplyTemplateAction);
             SaveTemplate = new RelayCommand(SaveTemplateAction, () => !HasErrors);
             DeleteOperation = new RelayCommand(DeleteOperationAction);
+            
+            Register(App.Messages.MSG_CHECKBOX_CHANGED, () => Validate());
         }
 
         private void DisplayRepartitions() {
@@ -175,12 +184,11 @@ namespace prbd_2324_g01.ViewModel {
                 select s.UserId;
             //transform the list of user ids to a list of users
             var userTemplateItems = queryUsersID.ToList().Select(u => PridContext.Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
-            foreach (var u in userTemplateItems) {
-            }
             
             if (!_isNew) {
                 // Fetch the information from the Repartition table
                 var repartitionItems = PridContext.Context.Repartitions
+                    .AsNoTracking()
                     .Where(r => r.OperationId == _operation.OperationId)
                     .ToList();
 
@@ -258,15 +266,15 @@ namespace prbd_2324_g01.ViewModel {
 
                     if (repartition.Weight > 0) {
                         if (existingRepartition != null) {
-                            Console.WriteLine("Existing repartition: " + existingRepartition.OperationId + "." + existingRepartition.UserId);
+                            // Console.WriteLine("Existing repartition: " + existingRepartition.OperationId + "." + existingRepartition.UserId);
                             // If repartition exists, update the weight
-                            Console.WriteLine(existingRepartition.Weight + " -> " + repartition.Weight);
+                            // Console.WriteLine(existingRepartition.Weight + " -> " + repartition.Weight);
                             existingRepartition.Weight = repartition.Weight;
                             
                             // Attach the repartition to the context and set its state to Modified
-                            Context.Repartitions.Update(existingRepartition);
+                            //Context.Repartitions.Update(existingRepartition);
                         } else {
-                            Console.WriteLine("c'est le caca");
+                            // Console.WriteLine("c'est le caca");
                             // Else create a new repartition
                             var newRepartition = new Repartition(userId, Operation.OperationId, repartition.Weight);
                             Context.Repartitions.Add(newRepartition);
@@ -291,6 +299,7 @@ namespace prbd_2324_g01.ViewModel {
             _isNewTemplate = false;
             
             var templateItems = PridContext.Context.TemplateItems
+                .AsNoTracking()
                 .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
                 .Include(ti => ti.UserFromTemplateItem) 
                 .DefaultIfEmpty()

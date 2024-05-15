@@ -83,11 +83,6 @@ public partial class MainView : WindowBase {
          NotifyColleagues(App.Messages.MSG_LOGOUT);
     }
 
-    private void WindowBase_KeyDown(object sender, KeyEventArgs e) {
-        if (e.Key == Key.Q && Keyboard.IsKeyDown(Key.LeftCtrl))
-            Close();
-    }
-
     // Nécessaire pour pouvoir Dispose tous les UC et leur VM
     protected override void OnClosing(CancelEventArgs e) {
         base.OnClosing(e);

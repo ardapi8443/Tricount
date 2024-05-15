@@ -22,7 +22,7 @@ namespace prbd_2324_g01.ViewModel {
 
         public bool IsChecked {
             get => _isChecked;
-            set => SetProperty(ref _isChecked, value);
+            set => SetProperty(ref _isChecked, value, () => NotifyColleagues(App.Messages.MSG_CHECKBOX_CHANGED));
         }
         
         public bool FromOperation { get; set; }
@@ -87,7 +87,7 @@ namespace prbd_2324_g01.ViewModel {
         private void CalculateTotal() {
     if (FromOperation) {
         TotalPerUser = (((double)_weight / _totalWeight) * _totalAmount).ToString("F2");
-        Console.WriteLine("TotalPerUser= " + "(" + _weight + " / " + _totalWeight + ") * " + _totalAmount + ")" + " = " + TotalPerUser);
+        // Console.WriteLine("TotalPerUser= " + "(" + _weight + " / " + _totalWeight + ") * " + _totalAmount + ")" + " = " + TotalPerUser);
     }
 }
     }
