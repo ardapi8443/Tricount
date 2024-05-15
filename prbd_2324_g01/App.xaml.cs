@@ -27,7 +27,8 @@ public partial class App {
         MSG_TITLE_CHANGED,
         MSG_AMOUNT_CHANGED,
         MSG_WEIGHT_CHANGED,
-        MSG_TOTAL_WEIGHT_CHANGED
+        MSG_TOTAL_WEIGHT_CHANGED,
+        MSG_CHECKBOX_CHANGED
     }
 
     public App() {

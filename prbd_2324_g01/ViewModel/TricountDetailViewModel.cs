@@ -12,18 +12,18 @@ namespace prbd_2324_g01.ViewModel
    public class TricountDetailViewModel : ViewModelCommon
     {
         public Tricount Tricount { get; set; }
-        public User ConnectedUSer { get; set; }
         public string UpdatedDescription { get; set; }
+        public User CurrentUser { get; set; }
         public string FriendMessage { get; set; }
         public string OpeMessage { get; set; }
         public string TotalExp { get; set; }
         public string UserExp { get; set; }
         public string UserBal { get; set; }
 
-        public TricountDetailViewModel(Tricount tricount, User connectedUser) {
+        public TricountDetailViewModel(Tricount tricount) {
 
             Tricount = tricount;
-            ConnectedUSer = connectedUser;
+            this.CurrentUser = App.CurrentUser;
 
             if(Tricount.Description.Length == 0 ) {
                 UpdatedDescription = "No Description";
@@ -48,8 +48,8 @@ namespace prbd_2324_g01.ViewModel
             }
 
             TotalExp = Tricount.TotalExp.ToString("0.00") + " €";
-            UserExp = Tricount.UserExpenses(this.ConnectedUSer).ToString("0.00") + " €";
-            var userBalance = Tricount.ConnectedUserBal(ConnectedUSer);
+            UserExp = Tricount.UserExpenses(CurrentUser).ToString("0.00") + " €";
+            var userBalance = Tricount.ConnectedUserBal(CurrentUser);
             UserBal = $"{(userBalance < 0 ? " - " : " ")}{Math.Abs(userBalance):0.00} €";
         }
         

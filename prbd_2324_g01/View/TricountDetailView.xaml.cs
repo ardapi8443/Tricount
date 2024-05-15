@@ -36,10 +36,10 @@ namespace prbd_2324_g01.View
         private void ColorUserBal() {
             
             if (DataContext is TricountDetailViewModel viewModel) {
-                if (viewModel.Tricount.ConnectedUserBal(viewModel.ConnectedUSer) > 0) {
+                if (viewModel.Tricount.ConnectedUserBal(viewModel.CurrentUser) > 0) {
                     UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 200, 125));
                     FullCard.Background = new SolidColorBrush(Color.FromArgb(255, 200, 230, 190));
-                } else if (viewModel.Tricount.ConnectedUserBal(viewModel.ConnectedUSer) < 0) {
+                } else if (viewModel.Tricount.ConnectedUserBal(viewModel.CurrentUser) < 0) {
                     UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 220, 20, 60));
                     FullCard.Background = new SolidColorBrush(Color.FromArgb(255, 255, 230, 210));
                 } else {

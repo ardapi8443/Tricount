@@ -51,7 +51,7 @@ public class TricountsViewModel : ViewModelCommon {
         TricountsDetailVM.Clear();
         
         foreach (var tricount in Tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,CurrentUser));
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
         }
 
 
@@ -60,7 +60,7 @@ public class TricountsViewModel : ViewModelCommon {
         IEnumerable<Tricount> tricounts = Tricount.tricountByMember(CurrentUser);
 
         foreach (var tricount in tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount,CurrentUser));
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
         }
 
         Tricounts = new ObservableCollection<Tricount>(tricounts);

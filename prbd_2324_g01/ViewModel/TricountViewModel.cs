@@ -67,11 +67,13 @@ namespace prbd_2324_g01.ViewModel {
             DeleteTricount = new RelayCommand(DeleteTricountAction);
             
             NewOperation = new RelayCommand<OperationCardViewModel>(vm => {
-                NotifyColleagues(App.Messages.MSG_NEW_OPERATION, new Operation());
+                // NotifyColleagues(App.Messages.MSG_NEW_OPERATION, new Operation());
+                App.ShowDialog<AddEditOperationViewModel, Operation, PridContext>(new Operation(), tricount, true);
             });    
             //on vient définir l'action au double clic sur une operation
             DisplayOperation = new RelayCommand<OperationCardViewModel>(vm => {
-                NotifyColleagues(App.Messages.MSG_DISPLAY_OPERATION, vm.Operation);
+                // NotifyColleagues(App.Messages.MSG_DISPLAY_OPERATION, vm.Operation);
+                App.ShowDialog<AddEditOperationViewModel, Operation, PridContext>(vm.Operation, tricount, false);
             });
         }
 
