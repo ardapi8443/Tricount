@@ -7,7 +7,6 @@
         xmlns:prbdFramework="clr-namespace:PRBD_Framework;assembly=PRBD_Framework"
         xmlns:vm="clr-namespace:prbd_2324_g01.ViewModel"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
         Title="Edit Operation" Height="700" Width="350"
         d:DataContext="{d:DesignInstance vm:AddEditOperationViewModel}">
     
@@ -19,6 +18,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="2*"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -62,10 +62,13 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="15" Content="Save as New Template" 
+        <TextBlock Grid.Row="6" Grid.ColumnSpan="3" Name="errorRepartition" Foreground="Red" 
+                   Text="{Binding ErrorMessage}" 
+        />
+        <Button Grid.Row="7" Grid.ColumnSpan="3" Margin="15" Content="Save as New Template" 
                 Command="{Binding SaveTemplate}"/>
         
-        <DockPanel Grid.Row="7" Grid.ColumnSpan="3" Margin="10">
+        <DockPanel Grid.Row="8" Grid.ColumnSpan="3" Margin="10">
             <Button DockPanel.Dock="Left" Height="25" Width="50" Margin="5" Content="Delete" Name="delete"
                     Command="{Binding DeleteOperation}" Background="Firebrick"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

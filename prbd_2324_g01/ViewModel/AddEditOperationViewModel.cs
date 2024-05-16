@@ -26,6 +26,7 @@ namespace prbd_2324_g01.ViewModel {
         private DateTime _date;
         private ObservableCollectionFast<Template> _templates = new();
         private ObservableCollection<UserTemplateItemViewModel> _templateItems;
+        private string _errorMessage;
 
         private bool _isNewTemplate = true;
         private int _totalWeight = 0;
@@ -84,6 +85,11 @@ namespace prbd_2324_g01.ViewModel {
             //     }
             // }
         }
+        
+        public string ErrorMessage {
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
+        }
 
         public override bool Validate() {
             ClearErrors();
@@ -106,6 +112,9 @@ namespace prbd_2324_g01.ViewModel {
 
             if (TemplateItems != null && !TemplateItems.Any(item => item.IsChecked)) {
                 AddError(nameof(TemplateItems), "you must check at least one participant");
+                ErrorMessage = "you must check at least one participant";
+            } else {
+                ErrorMessage = "";
             }
             
             return !HasErrors;

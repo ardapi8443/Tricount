@@ -15,8 +15,9 @@ namespace prbd_2324_g01.View
                 delete.Visibility = Visibility.Collapsed;
             }
             DataContext = new AddEditOperationViewModel(operation, tricount, isNew);
+            
+            this.Owner = Application.Current.MainWindow;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }
-        
-        
     }
 }
