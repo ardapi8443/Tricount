@@ -54,7 +54,8 @@
         
         <Grid Grid.Row="5" Grid.ColumnSpan="3" Width="auto">
             <!-- User List with Weight Controls -->
-            <ListView x:Name="UsersListView" ItemsSource="{Binding TemplateItems,UpdateSourceTrigger=PropertyChanged}">
+            <ListView x:Name="UsersListView" HorizontalAlignment="Stretch" 
+                      ItemsSource="{Binding TemplateItems,UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <local:UserTemplateItemView />
