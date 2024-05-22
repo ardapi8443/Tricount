@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Xaml.Behaviors.Core;
 using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
@@ -19,10 +20,17 @@ namespace prbd_2324_g01.ViewModel {
         private bool _isNew;
         private string _updatedTitle;
         private string _updatedDescription;
-        private List<User> _usersNotSubscribed = new List<User>();
+        private List<User> _usersNotSubscribed = new ();
         public List<User> UsersNotSubscribed {
             get => _usersNotSubscribed;
             set => SetProperty(ref _usersNotSubscribed, value);
+        }
+
+        private List<String> _fullnameNotSubscribed = new();
+
+        public List<String> FullnameNotSubscribed {
+            get => _fullnameNotSubscribed;
+            set => SetProperty(ref _fullnameNotSubscribed, value);
         }
 
         public bool IsNew {
@@ -51,6 +59,17 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
+        
+        private String _selectedFullName;
+        public String SelectedFullName
+        {
+            get => _selectedFullName;
+            set
+            {
+                SetProperty(ref _selectedFullName, value);
+                RaisePropertyChanged(nameof(SelectedFullName)); 
+            }
+        }
 
         private DateTime _date;
 
@@ -68,6 +87,7 @@ namespace prbd_2324_g01.ViewModel {
 
         public ICommand AddMySelfCommand { get; private set; }
         public ICommand AddEvryBodyCommand { get; private set; }
+        public ICommand AddParticipant { get; private set; }
 
         //not working
         public ICommand SaveCommand { get; private set; }
@@ -112,6 +132,7 @@ namespace prbd_2324_g01.ViewModel {
             Date = tricount.CreatedAt;
             
             UsersNotSubscribed = Tricount.getUsersNotSubscribed();
+            setFullnameNotSubscribed();
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
 
@@ -135,6 +156,7 @@ namespace prbd_2324_g01.ViewModel {
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
             CancelCommand = new RelayCommand(CancelAction, CanCancelAction);
+            AddParticipant = new RelayCommand(AddParticipantAction, CanAddParticipantAction);
 
             LinqToXaml();
 
@@ -161,6 +183,39 @@ namespace prbd_2324_g01.ViewModel {
             }
         }
 
+        private void AddParticipantAction() {
+
+            foreach (User u in UsersNotSubscribed) {
+                if (u.FullName == SelectedFullName) {
+                    int numberOfExpenses = Repartition.getExpenseByUserAndTricount(u.UserId, Tricount.Id);
+                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == Tricount.CreatorFromTricount.UserId));
+                    UsersNotSubscribed.Remove(u);
+                    break;
+                }
+            }
+            
+        
+            setFullnameNotSubscribed();
+        }
+
+        private bool CanAddParticipantAction() {
+            return !UsersNotSubscribed.IsNullOrEmpty();
+        }
+        
+        private void setFullnameNotSubscribed() {
+            FullnameNotSubscribed.Clear();
+            List<String> res = new();
+
+            if (!UsersNotSubscribed.IsNullOrEmpty()) {
+                foreach (User u in UsersNotSubscribed) {
+                    res.Add(u.FullName);
+                }
+
+            }
+            
+            FullnameNotSubscribed = res;
+        }
+
         private void DeleteTemplate(Template template) {
             template.Deleted();
             OnRefreshData();
@@ -181,6 +236,7 @@ namespace prbd_2324_g01.ViewModel {
                    
                 }
                 UsersNotSubscribed.Clear();
+                setFullnameNotSubscribed();
             } else {
                 Console.WriteLine("Everyone is Already Sub in this Tricount");
             }
@@ -311,14 +367,6 @@ namespace prbd_2324_g01.ViewModel {
                     );
                 })
             );
-
-            Console.WriteLine("subscribers : ");
-            foreach (User sub in Tricount.getSubscribers()) {
-                Console.WriteLine(sub.FullName + " " + sub.UserId);
-            }
-            
-            Console.WriteLine("Owner : ");
-            Console.WriteLine(User.GetUserById(Tricount.Creator).UserId);
             
         }
         
@@ -343,6 +391,7 @@ namespace prbd_2324_g01.ViewModel {
             
             Participants.Remove(PVM);
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
+            setFullnameNotSubscribed();
             PVM.Dispose();
 
         }
