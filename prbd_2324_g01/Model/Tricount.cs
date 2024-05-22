@@ -112,21 +112,7 @@ public class Tricount : EntityBase<PridContext> {
         this.Subscribers.Add(CreatorFromTricount);
         
     }
-
-    public HashSet<User> getSubscribers() {
-        HashSet<User> res = new HashSet<User>();
-
-        var Sub = Context.Subscriptions.Where(s => s.TricountId == this.Id);
-
-        foreach (Subscription s in Sub) {
-            res.Add(User.UserById(s.UserId));
-        }
-
-        return res;
-    }
-
-
-
+    
     public override bool Validate() {
         //pour add tricount
 
@@ -273,6 +259,29 @@ public class Tricount : EntityBase<PridContext> {
                 where t.Id == id
                 select t;
         return q.First();
+    }
+
+    public List<User> getUsersNotSubscribed() {
+        
+        List<User> usersNotSubscribed = PridContext.Context.Users
+            .Where(user => !PridContext.Context.Subscriptions
+                               .Any(sub => sub.UserId == user.UserId && sub.TricountId == this.Id) 
+                           && user.Role == Role.Viewer)
+            .ToList();
+
+        return usersNotSubscribed;
+    }
+        
+    public HashSet<User> getSubscribers() {
+        HashSet<User> res = new HashSet<User>();
+
+        var Sub = Context.Subscriptions.Where(s => s.TricountId == this.Id);
+
+        foreach (Subscription s in Sub) {
+            res.Add(User.UserById(s.UserId));
+        }
+
+        return res;
     }
     
 }

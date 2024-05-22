@@ -9,7 +9,7 @@ namespace prbd_2324_g01.ViewModel
     public class ParticipantViewModel : ViewModelCommon {
         public ICommand DeleteCommand { get; set; }
         public string Name { get; private set; }
-        
+        public User User { get; private set; }
         public string CreatorStatusDisplay => IsCreator ? "(creator)" : "";
         public string ExpensesDisplay => (NumberOfExpenses > 0 && !IsCreator) ? $"({NumberOfExpenses} expenses)" : string.Empty;
         
@@ -41,9 +41,10 @@ namespace prbd_2324_g01.ViewModel
         }
 
         
-        public ParticipantViewModel(Tricount tricount, string name, int numberOfExpenses, bool isCreator) {
+        public ParticipantViewModel(Tricount tricount, User User, int numberOfExpenses, bool isCreator) {
             _tricount = tricount;
-            Name = name;
+         Name = User.FullName;   
+            this.User = User;
             NumberOfExpenses = numberOfExpenses;
             IsCreator = isCreator;
             
@@ -51,19 +52,9 @@ namespace prbd_2324_g01.ViewModel
         }
 
         private void DeleteParticipant() {
-            var q = Context.Users.FirstOrDefault(u => u.FullName == Name);
 
-            if (q == null) {
-                return;
-            }
-            Subscription sub = Context.Subscriptions.Find(_tricount.Id,q.UserId);
-            if (sub == null) {
-                return;
-            }
-
-            sub.Delete();
-            NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, _tricount);
-            Console.WriteLine(q.FullName + " est un traitre , A jamais sale eau");
+            NotifyColleagues(App.Messages.MSG_DEL_PARTICIPANT, this);
+            
 
         }
     }
