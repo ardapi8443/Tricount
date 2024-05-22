@@ -109,7 +109,6 @@ namespace prbd_2324_g01.ViewModel {
             MapEntries = new ObservableCollection<UserAmountCardViewModel>(
                 Map.Select(entry => new UserAmountCardViewModel(entry.Key, entry.Value))
             );
-            Console.WriteLine("MapEntries.Count = " + MapEntries.Count);
         }
 
         private void DisplayOperations() {
