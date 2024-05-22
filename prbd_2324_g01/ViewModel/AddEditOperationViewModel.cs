@@ -119,15 +119,6 @@ namespace prbd_2324_g01.ViewModel {
             
             return !HasErrors;
         }
-        
-        private bool AnyChecked() {
-            foreach (var item in TemplateItems) {
-                if (item.IsChecked) {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
             _isNew = isNew;
@@ -348,12 +339,12 @@ namespace prbd_2324_g01.ViewModel {
 
             if (dialogResult == true && Operation != null) {
                 // Fetch the operation
-                            var operation = Context.Operations.Find(Operation.OperationId);
-                            // Delete the operation
-                            Context.Operations.Remove(operation);
-                            Context.SaveChanges();
-                            NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
-                            CancelAction();
+                var operation = Context.Operations.Find(Operation.OperationId);
+                // Delete the operation
+                Context.Operations.Remove(operation);
+                Context.SaveChanges();
+                NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+                CancelAction();
             }
             
             

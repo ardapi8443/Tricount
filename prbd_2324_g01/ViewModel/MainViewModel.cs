@@ -21,6 +21,7 @@ public class MainViewModel : ViewModelCommon {
         });
 
         ResetCommand = new RelayCommand(() => {
+            App.ClearContext();
             App.PrepareDatabase();
             //ajouter tout les App.Messages pour refresh les données
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);

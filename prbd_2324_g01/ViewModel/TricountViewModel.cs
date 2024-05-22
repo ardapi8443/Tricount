@@ -56,7 +56,6 @@ namespace prbd_2324_g01.ViewModel {
         //constructeur
         public TricountViewModel(Tricount tricount) {
             Tricount = tricount;
-            Console.WriteLine(Tricount.Title);
 
             DisplayOperations();
 
@@ -79,10 +78,13 @@ namespace prbd_2324_g01.ViewModel {
 
         private void DisplayMap() {
             
+            Console.WriteLine(Tricount.Id);
+            
             var tricount = Context.Tricounts
                 .Include(t => t.Subscribers)
                 .FirstOrDefault(t => t.Id == Tricount.Id);
             Tricount = tricount;
+            Console.WriteLine(Tricount.Id);
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
@@ -111,6 +113,7 @@ namespace prbd_2324_g01.ViewModel {
             MapEntries = new ObservableCollection<UserAmountCardViewModel>(
                 Map.Select(entry => new UserAmountCardViewModel(entry.Key, entry.Value))
             );
+            Console.WriteLine("MapEntries.Count = " + MapEntries.Count);
         }
 
         private void DisplayOperations() {
