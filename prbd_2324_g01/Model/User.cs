@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.IdentityModel.Tokens;
 using System.Windows.Controls;
 
 namespace prbd_2324_g01.Model;
@@ -91,5 +92,44 @@ public class User : EntityBase<PridContext> {
 
     public static List<User> GetAllUser() {
         return  PridContext.Context.Users.ToList();
+    }
+
+    public double GetBalanceByTricount(int tricountId) {
+        //Pour calculer la balance globale du tricount, vous devez considérer que chaque participant au tricount possède un "compte" virtuel dont le solde est nul au départ.
+        //Ensuite, pour chacune des dépenses du tricount, vous effectuez les opérations suivantes :
+
+        //répartir le montant de la dépense proportionnellement au poids de chaque participant à la dépense et imputer la part de chacun en négatif sur son compte ;
+        //imputer le montant total de la dépense en positif sur le compte de celui qui a fait le paiement.
+        
+        //au départ, balance null
+        double balance = 0;
+        
+        var operations = from o in PridContext.Context.Operations
+                where o.TricountId == tricountId
+                select o;
+
+        //pour chaque opérations :
+        foreach (var operation in operations) {
+            //trouver le poids total de l'opération
+            int poidsTotal = PridContext.Context.Repartitions.Where(r => r.OperationId == operation.OperationId).Sum(r => r.Weight);
+            
+            //pour la répartition du user :
+            var repartition = from r in PridContext.Context.Repartitions
+                where r.OperationId == operation.OperationId && r.UserId == this.UserId
+                select r;
+            
+            //si le user participe à l'opération (=> à une répartition)
+            if (!repartition.IsNullOrEmpty()) {
+                //on lui impute le montant de l'opération au prorata de son poids
+                balance -= operation.Amount * repartition.First().Weight / poidsTotal;
+                
+                //si le user a payé l'opération, on lui rajoute le montant de l'opération
+                if (operation.Initiator == this) {
+                    balance += operation.Amount;
+                }
+            }
+        }
+
+        return balance;
     }
 }

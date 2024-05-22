@@ -214,6 +214,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             NotifyColleagues(App.Messages.MSG_TOTAL_WEIGHT_CHANGED, _totalWeight);
             _totalWeight = 0;
+            Console.WriteLine();
         }
 
         public override void CancelAction() {
@@ -298,14 +299,14 @@ namespace prbd_2324_g01.ViewModel {
         public void ApplyTemplateAction() {
             _isNewTemplate = false;
             
-            var templateItems = PridContext.Context.TemplateItems
+            var templateItems = Context.TemplateItems
                 .AsNoTracking()
                 .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
                 .Include(ti => ti.UserFromTemplateItem) 
                 .DefaultIfEmpty()
                 .ToList();
                         
-            var userTemplateItems = PridContext.Context.Tricounts
+            var userTemplateItems = Context.Tricounts
                 .Where(t => t.Id == Operation.TricountId)
                 .SelectMany(t => t.Subscribers)
                 .OrderBy(t => t.FullName)
@@ -315,6 +316,9 @@ namespace prbd_2324_g01.ViewModel {
                 userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
                     _isNew, true)));
+            
+            CalculateTotalWeight();
+            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
         }
 
         // !! doit prendre les élément tels que vu dans Templatesitems au moment de cliquer sur le bouton

@@ -77,14 +77,10 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayMap() {
-            
-            Console.WriteLine(Tricount.Id);
-            
             var tricount = Context.Tricounts
                 .Include(t => t.Subscribers)
                 .FirstOrDefault(t => t.Id == Tricount.Id);
             Tricount = tricount;
-            Console.WriteLine(Tricount.Id);
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
@@ -107,13 +103,12 @@ namespace prbd_2324_g01.ViewModel {
             
             foreach (var q in query2) {
                 User user = User.GetUserById(q.UserId);
-                Map.Add(user, Tricount.ConnectedUserBal(user));
+                Map.Add(user, user.GetBalanceByTricount(Tricount.Id));
             }
 
             MapEntries = new ObservableCollection<UserAmountCardViewModel>(
                 Map.Select(entry => new UserAmountCardViewModel(entry.Key, entry.Value))
             );
-            Console.WriteLine("MapEntries.Count = " + MapEntries.Count);
         }
 
         private void DisplayOperations() {
