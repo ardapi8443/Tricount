@@ -1,5 +1,6 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
+using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -283,6 +284,11 @@ public class Tricount : EntityBase<PridContext> {
 
         return res;
     }
-    
+
+    public void Save() {
+        PridContext.Context.Tricounts.Add(this);
+        
+    }
+
 }
 

@@ -87,7 +87,9 @@ public class User : EntityBase<PridContext> {
                   &&  o.UserId == userId
                   select o;
         return q.Sum(x => x.Amount);
-                
+    }
 
+    public static List<User> GetAllUser() {
+        return  PridContext.Context.Users.ToList();
     }
 }

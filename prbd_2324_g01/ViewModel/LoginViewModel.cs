@@ -1,4 +1,5 @@
-﻿using Msn.ViewModel;
+﻿using Microsoft.EntityFrameworkCore;
+using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Windows.Input;
@@ -12,6 +13,7 @@ namespace prbd_2324_g01.ViewModel
         public ICommand LoginAsBoris { get; set; }
         public ICommand LoginAsXavier { get; set; }
         public ICommand LoginAsAdmin { get; set; }
+        public List<User> AllUser { get; set; }
 
         private string _email;
         private string _password;
@@ -34,6 +36,7 @@ namespace prbd_2324_g01.ViewModel
         public LoginViewModel() : base() {
             LoginCommand = new RelayCommand(LoginAction,
                 () => _email != null && _password != null && !HasErrors);
+            AllUser = User.GetAllUser();
             LoginAsBenoit = new RelayCommand(LoginAsBenoitAction);
             LoginAsBoris = new RelayCommand(LoginAsBorisAction);
             LoginAsXavier = new RelayCommand(LoginAsXavierAction);
@@ -92,33 +95,49 @@ namespace prbd_2324_g01.ViewModel
         }
 
         private void LoginAsBenoitAction() {
-            var user = (from u in Context.Users
-                                where u.Email.Equals("bepenelle@epfc.eu")
-                                select u).First();
+            // var user = (from u in Context.Users
+            //                     where u.Email.Equals("bepenelle@epfc.eu")
+            //                     select u).First();
+
+            var user = getUserFromList("bepenelle@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
 
         private void LoginAsBorisAction() {
-            var user = (from u in Context.Users
-                                where u.Email.Equals("boverhaegen@epfc.eu")
-                                select u).First();
+            // var user = (from u in Context.Users
+            //                     where u.Email.Equals("boverhaegen@epfc.eu")
+            //                     select u).First();
+            var user = getUserFromList("boverhaegen@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsXavierAction() {
-            var user = (from u in Context.Users
-                                where u.Email.Equals("xapigeolet@epfc.eu")
-                                select u).First();
+            // var user = (from u in Context.Users
+            //                     where u.Email.Equals("xapigeolet@epfc.eu")
+            //                     select u).First();
+            var user = getUserFromList("xapigeolet@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsAdminAction() {
-            var user = (from u in Context.Users
-                                where u.Email.Equals("admin@epfc.eu")
-                                select u).First();
+            // var user = (from u in Context.Users
+            //                     where u.Email.Equals("admin@epfc.eu")
+            //                     select u).First();
+            var user = getUserFromList("admin@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
 
+        private User getUserFromList(String mail) {
+            User res = new User();
+            foreach (User u in AllUser) {
+                if (u.Email == mail) {
+                    res = u;
+                    break;
+                }
+            }
+
+            return res;
+        }
 
         protected override void OnRefreshData() {
         }
