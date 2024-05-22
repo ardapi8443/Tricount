@@ -44,6 +44,7 @@ public class Subscription : EntityBase<PridContext> {
         if (Sub.Count() == 1) {
             var Subs = Context.Subscriptions.Where(s => s.TricountId == TricountId && s.UserId == UserID).FirstOrDefault();
             Context.Subscriptions.Remove(Subs);
+            Context.SaveChanges();
         }
         
     }

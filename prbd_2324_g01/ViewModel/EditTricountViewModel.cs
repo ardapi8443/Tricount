@@ -27,6 +27,8 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private List<String> _fullnameNotSubscribed = new();
+        private bool newTricount { get; set; }
+        
 
         public List<String> FullnameNotSubscribed {
             get => _fullnameNotSubscribed;
@@ -130,6 +132,8 @@ namespace prbd_2324_g01.ViewModel {
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
             Date = tricount.CreatedAt;
+            newTricount = tricount.IsNew;
+            
             
             UsersNotSubscribed = Tricount.getUsersNotSubscribed();
             setFullnameNotSubscribed();
@@ -272,22 +276,32 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
-     
+            
+            Console.WriteLine(Context.ChangeTracker.DebugView.LongView);
+            
+            if (newTricount) {
+               Context.Add(Tricount);
+            }
+            
+            Context.SaveChanges();
+            
             foreach(ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
+                    
+                    
                     Subscription NewSub = new (PVM.User.UserId, Tricount.Id);
                     NewSub.Add();
                 }
             }
-
-            foreach (User u in UsersNotSubscribed) {
-                Subscription.DeleteIfExist(Tricount.Id, u.UserId);
+            
+            if (!IsNew) {
+                foreach (User u in UsersNotSubscribed) {
+                    Subscription.DeleteIfExist(Tricount.Id, u.UserId);
+                }
+            
             }
             
             
-            if (IsNew)
-                Context.Add(Tricount);
-            Context.SaveChanges();
             NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
@@ -297,10 +311,6 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public bool CanSaveAction() {
-            /*Tricount IsModified n est jamais à true meme après avoir changé le titre/desciption 
-            if (IsNew)
-                return Tricount.Validate() && !HasErrors;
-            return Tricount != null && Tricount.IsModified && !HasErrors;*/
             return !HasErrors && !string.IsNullOrEmpty(UpdatedTitle);
         }
 
