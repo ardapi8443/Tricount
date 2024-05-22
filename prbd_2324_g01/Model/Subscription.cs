@@ -21,8 +21,30 @@ public class Subscription : EntityBase<PridContext> {
 
     public Subscription() { }
 
-    public void Delete() {
+    public  void Delete() {
+ 
         Context.Subscriptions.Remove(this);
         Context.SaveChanges();
+    }
+
+    public void Add() {
+        Context.Subscriptions.Add(this);
+        Context.SaveChanges();
+    }
+
+    public static bool Exist(int TricountId, int UserID) {
+        
+        var Sub = Context.Subscriptions.Where(s => s.TricountId == TricountId && s.UserId == UserID);
+        return Sub.Count() == 1;
+
+    }
+
+    public static void DeleteIfExist(int TricountId, int UserID) {
+        var Sub = Context.Subscriptions.Where(s => s.TricountId == TricountId && s.UserId == UserID);
+        if (Sub.Count() == 1) {
+            var Subs = Context.Subscriptions.Where(s => s.TricountId == TricountId && s.UserId == UserID).FirstOrDefault();
+            Context.Subscriptions.Remove(Subs);
+        }
+        
     }
 }

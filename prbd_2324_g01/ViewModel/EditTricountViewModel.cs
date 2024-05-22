@@ -7,17 +7,25 @@ using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel {
-    public class EditTricountViewModel : ViewModelCommon {
-        
+    public class EditTricountViewModel : ViewModelCommon
+    {
+
         private Tricount _tricount;
         private bool _isNew;
         private string _updatedTitle;
         private string _updatedDescription;
-        
-        public bool IsNew{ 
+        private List<User> _usersNotSubscribed = new List<User>();
+        public List<User> UsersNotSubscribed {
+            get => _usersNotSubscribed;
+            set => SetProperty(ref _usersNotSubscribed, value);
+        }
+
+        public bool IsNew {
             get => _isNew;
             set => SetProperty(ref _isNew, value);
         }
@@ -43,7 +51,7 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
-        
+
         private DateTime _date;
 
         public DateTime Date {
@@ -57,15 +65,16 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public ICommand AddTemplateCommand { get; private set; }
-        
+
         public ICommand AddMySelfCommand { get; private set; }
         public ICommand AddEvryBodyCommand { get; private set; }
-        
+
         //not working
         public ICommand SaveCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
         private ObservableCollectionFast<ParticipantViewModel> _participants;
+
         public ObservableCollectionFast<ParticipantViewModel> Participants {
             get => _participants;
             set {
@@ -75,7 +84,9 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
+
         private ObservableCollectionFast<TemplateViewModel> _templates;
+
         public ObservableCollectionFast<TemplateViewModel> Templates {
             get => _templates;
             set {
@@ -85,12 +96,12 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
-        
+
         public Tricount Tricount {
             get => _tricount;
             set => SetProperty(ref _tricount, value);
         }
-        
+
         public string FormattedDate {
             get => _date.ToShortDateString();
         }
@@ -99,29 +110,40 @@ namespace prbd_2324_g01.ViewModel {
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
             Date = tricount.CreatedAt;
+            
+            UsersNotSubscribed = Tricount.getUsersNotSubscribed();
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
+
+            Register<Template>(
+                App.Messages.MSG_DELETE_TEMPLATE, (template) => {
+                    DeleteTemplate(template);
+                });
+
+            Register<Template>(
+                App.Messages.MSG_EDIT_TEMPLATE, (template) => {
+                    AddTemplate(Tricount, template, false);
+                });
             
-            Register<Template>(App.Messages.MSG_DELETE_TEMPLATE, (template) => { DeleteTemplate(template);
-            });
-            
-            Register<Template>(App.Messages.MSG_EDIT_TEMPLATE, (template) => { AddTemplate(Tricount, template, false);
-            }); 
-            
-            AddTemplateCommand = new RelayCommand (()  => AddTemplate(Tricount ,new Template(), true));
-            AddEvryBodyCommand = new RelayCommand(AddEveryBody);
+            Register<ParticipantViewModel>(
+                App.Messages.MSG_DEL_PARTICIPANT, (PVM) => {
+                    DeleteParticipant(PVM);
+                });
+
+            AddTemplateCommand = new RelayCommand(() => AddTemplate(Tricount, new Template(), true));
+            AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
-            CancelCommand = new RelayCommand(CancelAction,CanCancelAction);
-            
+            CancelCommand = new RelayCommand(CancelAction, CanCancelAction);
+
             LinqToXaml();
-            
-            
+
+
             if (tricount.IsNew) {
                 tricount.Title = "<New Tricount>";
                 tricount.Description = "No Description";
                 UpdatedTitle = "";
-                
+
                 /*
                  Cela fonctionne mais a voir si le process est correct
                  tricount.CreatorFromTricount = CurrentUser;
@@ -145,35 +167,31 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void AddEveryBody() {
-           
-            var usersNotSubscribed = Context.Users
-                .Where(user => !Context.Subscriptions
-                                   .Any(sub => sub.UserId == user.UserId && sub.TricountId == Tricount.Id) 
-                               && user.Role == Role.Viewer)
-                .ToList();
             
+            if (!UsersNotSubscribed.IsNullOrEmpty()) {
 
-            if (!usersNotSubscribed.IsNullOrEmpty()) {
-                Console.WriteLine("add everybody");
-                foreach (var user in usersNotSubscribed) {
-                    Console.WriteLine(user.FullName + " " + user.UserId);
-                    // var newSub = new Subscription() {
-                    //     UserId = user.UserId,
-                    //     TricountId = Tricount.Id
-                    // };
-                    Tricount.Subscribers.Add(User.UserById(user.UserId));
-                    // Context.Subscriptions.Add(newSub);
+                foreach (User user in UsersNotSubscribed) {
+
+                    int numberOfExpenses = Repartition.getExpenseByUserAndTricount(user.UserId, Tricount.Id);
+
+                    Participants.Add(
+                        new ParticipantViewModel(
+                            Tricount, user, numberOfExpenses,
+                            user.UserId == Tricount.CreatorFromTricount.UserId));
+                   
                 }
-                // Context.SaveChanges();
-                
+                UsersNotSubscribed.Clear();
             } else {
                 Console.WriteLine("Everyone is Already Sub in this Tricount");
             }
-            Console.WriteLine("AddEveryBody - fin");
-            // OnRefreshData();
+            
         }
 
-        private void AddMySelfInParticipant() {
+        private bool CanAddEverybody() {
+            return !UsersNotSubscribed.IsNullOrEmpty();
+        }
+        
+    private void AddMySelfInParticipant() {
             var user = CurrentUser;
             var alreadySubscribed = Context.Subscriptions
                 .Any(s => s.UserId == user.UserId && s.TricountId == Tricount.Id);
@@ -198,6 +216,19 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
+     
+            foreach(ParticipantViewModel PVM in Participants) {
+                if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
+                    Subscription NewSub = new (PVM.User.UserId, Tricount.Id);
+                    NewSub.Add();
+                }
+            }
+
+            foreach (User u in UsersNotSubscribed) {
+                Subscription.DeleteIfExist(Tricount.Id, u.UserId);
+            }
+            
+            
             if (IsNew)
                 Context.Add(Tricount);
             Context.SaveChanges();
@@ -205,6 +236,8 @@ namespace prbd_2324_g01.ViewModel {
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
+            
+            
         }
 
         public bool CanSaveAction() {
@@ -234,8 +267,9 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private bool CanCancelAction() {
-            Console.WriteLine("CanCancelAction");
+
             return Tricount != null && (IsNew || !Tricount.IsModified);
+
         }
         
         public override void CancelAction() {
@@ -271,19 +305,20 @@ namespace prbd_2324_g01.ViewModel {
             
                     return new ParticipantViewModel(
                         Tricount,
-                        sub.FullName, 
+                        sub, 
                         numberOfExpenses,
                         sub.UserId == Tricount.CreatorFromTricount.UserId 
                     );
                 })
             );
 
-            Console.WriteLine("subscibers : ");
+            Console.WriteLine("subscribers : ");
             foreach (User sub in Tricount.getSubscribers()) {
                 Console.WriteLine(sub.FullName + " " + sub.UserId);
             }
             
-            Console.WriteLine("Owner " + User.GetUserById(Tricount.Creator).UserId);
+            Console.WriteLine("Owner : ");
+            Console.WriteLine(User.GetUserById(Tricount.Creator).UserId);
             
         }
         
@@ -303,6 +338,15 @@ namespace prbd_2324_g01.ViewModel {
     
             return !HasErrors;
         }
+        
+        public void DeleteParticipant(ParticipantViewModel PVM) {
+            
+            Participants.Remove(PVM);
+            UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
+            PVM.Dispose();
+
+        }
+        
         
     }
     
