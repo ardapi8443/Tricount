@@ -210,7 +210,7 @@ public class Tricount : EntityBase<PridContext> {
         foreach (Operation ope in user.OperationsCreated) {
 
             if (ope.TricountId == Id) {
-                expenseUserCo = expenseUserCo + ope.Amount;
+                expenseUserCo += ope.Amount;
             }
         }
         

@@ -28,8 +28,6 @@ namespace prbd_2324_g01.ViewModel {
                 UserName = user.FullName;   
             }
             Amount = amount;
-            
-            Console.WriteLine($"user = {UserName} amount = {Amount}");
         }
 
     }
