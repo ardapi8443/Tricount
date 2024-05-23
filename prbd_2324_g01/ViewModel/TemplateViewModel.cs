@@ -1,4 +1,5 @@
-﻿using Msn.ViewModel;
+﻿using Microsoft.EntityFrameworkCore;
+using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
@@ -24,22 +25,59 @@ namespace prbd_2324_g01.ViewModel {
             }
         }
         
-        public TemplateViewModel(Template template,bool isNew) {
+        private ObservableCollectionFast<UserTemplateItemViewModel> _templateitems;
+
+        public ObservableCollectionFast<UserTemplateItemViewModel> TemplateItems {
+            get => _templateitems;
+            set {
+                if (_templateitems != value) {
+                    _templateitems = value;
+                    RaisePropertyChanged(nameof(_templateitems));
+                }
+            }
+        }
+        
+        public TemplateViewModel(Template template,bool isNew, bool loadFromDb = true) {
             Template = template;
+            TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>();
             IsNew = isNew;
+            if (loadFromDb) {
+                LoadTemplateItemsFromDb(template.TemplateId);
+            }
             EditCommand = new RelayCommand(EditTemplate);
             DeleteCommand = new RelayCommand(DeleteTemplate);
             
         }
         
+        public void AddUserTemplateItem(UserTemplateItemViewModel userTemplateItem) {
+            TemplateItems.Add(userTemplateItem);
+        }
+        
         private void EditTemplate() {
             Console.WriteLine("Je suis dans TemplateViewModel");
-            NotifyColleagues(App.Messages.MSG_EDIT_TEMPLATE,Template);
+            NotifyColleagues(App.Messages.MSG_EDIT_TEMPLATE,this);
         }
         
         private void DeleteTemplate() {
-            NotifyColleagues(App.Messages.MSG_DELETE_TEMPLATE,Template);
+            NotifyColleagues(App.Messages.MSG_DELETE_TEMPLATE,this);
             Console.WriteLine("Je suis dans TemplateViewModel");
+        }
+        
+        private void LoadTemplateItemsFromDb(int templateId) {
+            var templateItems = Context.TemplateItems
+                .Where(ti => ti.Template == templateId)
+                .Include(ti => ti.UserFromTemplateItem)
+                .ToList();
+            Console.WriteLine(templateItems.Count);
+
+            foreach (var item in templateItems) {
+                TemplateItems.Add(new UserTemplateItemViewModel(
+                    item.UserFromTemplateItem.FullName,
+                    item.Weight,
+                    true,
+                    false
+                ));
+            }
         }
     }
 

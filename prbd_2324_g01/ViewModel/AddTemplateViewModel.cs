@@ -30,14 +30,7 @@ public class AddTemplateViewModel : ViewModelCommon {
         get => _addButtonText;
         set => SetProperty(ref _addButtonText, value);
     }
-
-    private ObservableCollectionFast<TemplateItem> _templateItem = new();
-
-    public ObservableCollectionFast<TemplateItem> TemplateItem {
-        get => _templateItem;
-        set => SetProperty(ref _templateItem, value);
-    }
-
+    
     public Tricount Tricount {
         get => _tricount;
         private init => SetProperty(ref _tricount, value);
@@ -51,29 +44,23 @@ public class AddTemplateViewModel : ViewModelCommon {
     }
 
     public ICommand AddTemplateDbCommand { get; private set; }
-    public ICommand CancelTempalte { get; private set; }
+    public ICommand CancelTemplate { get; private set; }
 
 
-    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew) {
+    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems) {
+        TemplateItems = templateItems;
 
-
-        if (!isNew) {
-            DisplayEditTemplateWindows(template);
-            AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template));
-        } else {
+        if (isNew) {
             DisplayAddTemplateWindows();
             AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
+        } else {
+            DisplayEditTemplateWindows(template, templateItems);
+            AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template));
         }
 
-        CancelTempalte = new RelayCommand((CloseWindow));
+        CancelTemplate = new RelayCommand(CloseWindow);
     }
 
-    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew,
-        ObservableCollection<UserTemplateItemViewModel> templateItems) 
-    : this(tricount, template, isNew) {
-    TemplateItems = templateItems;
-}
-        
     private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template) {
 
         template.Title = title;
@@ -110,56 +97,65 @@ public class AddTemplateViewModel : ViewModelCommon {
         CloseWindow();
         }
         
-        private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
-            var template = new Template {
-                Title = title,
-                Tricount = tricountId
-            };
-            
-            foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
-                if (user != null) {
-                    var templateItem = new TemplateItem {
-                        User = user.UserId,
-                        Weight = userItem.Weight,
-                        TemplateFromTemplateItem = template
-                    };
+    private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
+        var template = new Template {
+            Title = title,
+            Tricount = tricountId
+        };
 
-                    Context.TemplateItems.Add(templateItem);
-                }
+        var templateViewModel = new TemplateViewModel(template, true,false);
+
+        foreach (var userItem in userItems.Where(u => u.IsChecked)) {
+            var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
+            if (user != null) {
+                var templateItem = new UserTemplateItemViewModel(
+                    user.FullName,
+                    userItem.Weight,
+                    true,
+                    false
+                );
+
+                templateViewModel.AddUserTemplateItem(templateItem);
+            } else {
+                Console.WriteLine($"User not found: {userItem.UserName}");
             }
-
-            template.Save();
-            NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
-            CloseWindow();
         }
+        
+        NotifyColleagues(App.Messages.ADD_TEMPLATE, templateViewModel);
+        CloseWindow();
+    }
 
         private void CloseWindow() {
             RequestClose?.Invoke(true);
         }
         
-        private void DisplayEditTemplateWindows(Template template) {
-           /* asNoTracking used to only read the datas , update is used with the save button */
-           /* Refresh datas after edtiting it with the save button */
-            var templateItems = PridContext.Context.TemplateItems
-                .AsNoTracking() 
-                .Where(ti => ti.Template == template.TemplateId) 
-                .Include(ti => ti.UserFromTemplateItem) 
-                .ToList();
+        private void DisplayEditTemplateWindows(Template template, ObservableCollection<UserTemplateItemViewModel> existingTemplateItems) {
             
-            var users = PridContext.Context.Users
+            var distinctUsers = Context.Users
                 .Where(u => u.Role == Role.Viewer)
                 .OrderBy(u => u.FullName)
+                .GroupBy(u => u.FullName)
+                .Select(g => g.First())
                 .ToList();
             
+
             Title = template.Title;
             AddButtonText = "Save";
             
-            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                users.Select(u => new UserTemplateItemViewModel(u.FullName, 
-                    templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
-                    false, false)));
             
+            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                distinctUsers.Select(u => {
+                    var templateItem = existingTemplateItems.FirstOrDefault(ti => ti.UserName == u.FullName);
+                    return new UserTemplateItemViewModel(
+                        u.FullName,
+                        templateItem?.Weight ?? 0,
+                        templateItem?.IsChecked ?? false,
+                        false
+                    );
+                })
+            );
+
+            RaisePropertyChanged(nameof(TemplateItems));
         }
 
         private void DisplayAddTemplateWindows() {

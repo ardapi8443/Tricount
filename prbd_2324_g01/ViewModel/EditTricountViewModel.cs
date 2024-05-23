@@ -17,10 +17,12 @@ namespace prbd_2324_g01.ViewModel {
     {
 
         private Tricount _tricount;
+        private Template _template;
         private bool _isNew;
         private string _updatedTitle;
         private string _updatedDescription;
         private List<User> _usersNotSubscribed = new ();
+ 
         public List<User> UsersNotSubscribed {
             get => _usersNotSubscribed;
             set => SetProperty(ref _usersNotSubscribed, value);
@@ -118,17 +120,30 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
-
+        
         public Tricount Tricount {
             get => _tricount;
             set => SetProperty(ref _tricount, value);
         }
-
-        public string FormattedDate {
-            get => _date.ToShortDateString();
+        
+        public Template Template {
+            get => _template;
+            set => SetProperty(ref _template, value);
         }
+        
+        public void LoadTemplates() {
+            var templates = Context.Templates
+                .Where(t => t.Tricount == Tricount.Id)
+                .ToList();
+            
 
-
+            Templates = new ObservableCollectionFast<TemplateViewModel>(
+                templates.Select(t => new TemplateViewModel(t, true))
+            );
+            
+            
+        }
+        
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
             Date = tricount.CreatedAt;
@@ -137,17 +152,22 @@ namespace prbd_2324_g01.ViewModel {
             
             UsersNotSubscribed = Tricount.getUsersNotSubscribed();
             setFullnameNotSubscribed();
+            
+            Register<TemplateViewModel>(App.Messages.ADD_TEMPLATE, (TemplateViewModel) => {
+                Templates.Add(TemplateViewModel);
+            });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
 
-            Register<Template>(
-                App.Messages.MSG_DELETE_TEMPLATE, (template) => {
-                    DeleteTemplate(template);
+            Register<TemplateViewModel>(
+                App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
+                    Templates.Remove(TemplateViewModel);
+                    
                 });
 
-            Register<Template>(
-                App.Messages.MSG_EDIT_TEMPLATE, (template) => {
-                    AddTemplate(Tricount, template, false);
+            Register<TemplateViewModel>(
+                App.Messages.MSG_EDIT_TEMPLATE, (TemplateViewModel) => {
+                    AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems);
                 });
             
             Register<ParticipantViewModel>(
@@ -155,7 +175,10 @@ namespace prbd_2324_g01.ViewModel {
                     DeleteParticipant(PVM);
                 });
 
-            AddTemplateCommand = new RelayCommand(() => AddTemplate(Tricount, new Template(), true));
+            AddTemplateCommand = new RelayCommand(() => {
+                var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+                AddTemplate(Tricount, new Template(), true, templateItems);
+            });
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
@@ -169,18 +192,6 @@ namespace prbd_2324_g01.ViewModel {
                 tricount.Title = "<New Tricount>";
                 tricount.Description = "No Description";
                 UpdatedTitle = "";
-
-                /*
-                 Cela fonctionne mais a voir si le process est correct
-                 tricount.CreatorFromTricount = CurrentUser;
-                var sub = new Subscription() {
-                    TricountFromSubscription = tricount,
-                    UserFromSubscription = CurrentUser,
-                    TricountId = tricount.Id,
-                    UserId = CurrentUser.UserId
-                };
-                Context.Subscriptions.Add(sub);
-                Context.SaveChanges();*/
             } else {
                 UpdatedTitle = tricount.Title;
                 UpdatedDescription = tricount.Description;
@@ -198,7 +209,6 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
             
-        
             setFullnameNotSubscribed();
         }
 
@@ -319,9 +329,9 @@ namespace prbd_2324_g01.ViewModel {
         }
         
 
-        private void AddTemplate(Tricount tricount, Template template, bool isNew) {
+        private void AddTemplate(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> existingItems) {
             IsNew = isNew;
-            var addTemplateDialog = new AddTemplateView(tricount, template, isNew) {
+            var addTemplateDialog = new AddTemplateView(tricount, template, isNew, existingItems) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();
@@ -350,20 +360,9 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void LinqToXaml() {
-            var templates = Context.Templates
-                .Where(t => t.Tricount == Tricount.Id)
-                .ToList();
             
-            Templates = new ObservableCollectionFast<TemplateViewModel>(
-                templates.Select(t => new TemplateViewModel(t,true)));
+            LoadTemplates();
             
-            var subscriptions = Context.Subscriptions
-                .Include(sub => sub.UserFromSubscription)
-                .ThenInclude(user => user.OperationsCreated)
-                .Where(sub => sub.TricountId == Tricount.Id)
-                .OrderBy(sub => sub.UserFromSubscription.FullName)
-                .ToList();
-
             Participants = new ObservableCollectionFast<ParticipantViewModel>(
                 Tricount.getSubscribers().Select(sub => {
                     var numberOfExpenses = Context.Repartitions
