@@ -25,6 +25,16 @@ namespace prbd_2324_g01.ViewModel {
             }
         }
         
+        public string Title {
+            get => Template.Title;
+            set {
+                if (Template.Title != value) {
+                    Template.Title = value;
+                    RaisePropertyChanged(nameof(Title));
+                }
+            }
+        }
+        
         private ObservableCollectionFast<UserTemplateItemViewModel> _templateitems;
 
         public ObservableCollectionFast<UserTemplateItemViewModel> TemplateItems {
@@ -54,13 +64,11 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void EditTemplate() {
-            Console.WriteLine("Je suis dans TemplateViewModel");
             NotifyColleagues(App.Messages.MSG_EDIT_TEMPLATE,this);
         }
         
         private void DeleteTemplate() {
             NotifyColleagues(App.Messages.MSG_DELETE_TEMPLATE,this);
-            Console.WriteLine("Je suis dans TemplateViewModel");
         }
         
         private void LoadTemplateItemsFromDb(int templateId) {

@@ -108,7 +108,7 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
-
+        
         private ObservableCollectionFast<TemplateViewModel> _templates;
 
         public ObservableCollectionFast<TemplateViewModel> Templates {
@@ -153,21 +153,25 @@ namespace prbd_2324_g01.ViewModel {
             UsersNotSubscribed = Tricount.getUsersNotSubscribed();
             setFullnameNotSubscribed();
             
-            Register<TemplateViewModel>(App.Messages.ADD_TEMPLATE, (TemplateViewModel) => {
+            Register<TemplateViewModel>(App.Messages.MSG_ADD_TEMPLATE, (TemplateViewModel) => {
                 Templates.Add(TemplateViewModel);
             });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
+            
+            Register<TemplateViewModel>(
+                App.Messages.MSG_UPDATE_TEMPLATE, (TemplateViewModel) => {
+                    UpdateTemplateTitle(TemplateViewModel);
+                });
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
                     Templates.Remove(TemplateViewModel);
-                    
                 });
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_EDIT_TEMPLATE, (TemplateViewModel) => {
-                    AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems);
+                    AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems, Templates);
                 });
             
             Register<ParticipantViewModel>(
@@ -177,7 +181,7 @@ namespace prbd_2324_g01.ViewModel {
 
             AddTemplateCommand = new RelayCommand(() => {
                 var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-                AddTemplate(Tricount, new Template(), true, templateItems);
+                AddTemplate(Tricount, new Template(), true, templateItems, Templates);
             });
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
@@ -196,6 +200,10 @@ namespace prbd_2324_g01.ViewModel {
                 UpdatedTitle = tricount.Title;
                 UpdatedDescription = tricount.Description;
             }
+        }
+
+        private void UpdateTemplateTitle(TemplateViewModel templateViewModel) {
+            
         }
 
         private void AddParticipantAction() {
@@ -329,9 +337,9 @@ namespace prbd_2324_g01.ViewModel {
         }
         
 
-        private void AddTemplate(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> existingItems) {
+        private void AddTemplate(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> existingItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
             IsNew = isNew;
-            var addTemplateDialog = new AddTemplateView(tricount, template, isNew, existingItems) {
+            var addTemplateDialog = new AddTemplateView(tricount, template, isNew, existingItems,templateViewModels) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();

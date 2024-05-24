@@ -61,7 +61,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             
 
-            if (!isNew && Weight > 0) {
+            if (Weight > 0) {
                 IsChecked = true;
             }
         }

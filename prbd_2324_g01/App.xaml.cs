@@ -31,7 +31,8 @@ public partial class App {
         MSG_TOTAL_WEIGHT_CHANGED,
         MSG_CHECKBOX_CHANGED,
         MSG_DEL_PARTICIPANT,
-        ADD_TEMPLATE
+        MSG_ADD_TEMPLATE,
+        MSG_UPDATE_TEMPLATE
     }
 
     public App() {

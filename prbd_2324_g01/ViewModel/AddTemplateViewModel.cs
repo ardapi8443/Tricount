@@ -23,6 +23,27 @@ public class AddTemplateViewModel : ViewModelCommon {
             }
         }
     }
+    
+    private TemplateViewModel _selectedTemplate;
+    public TemplateViewModel SelectedTemplate {
+        get => _selectedTemplate;
+        set {
+            _selectedTemplate = value;
+            RaisePropertyChanged(SelectedTemplate);
+        }
+    }
+    
+    private ObservableCollectionFast<TemplateViewModel> _templates;
+
+    public ObservableCollectionFast<TemplateViewModel> Templates {
+        get => _templates;
+        set {
+            if (_templates != value) {
+                _templates = value;
+                RaisePropertyChanged(nameof(Templates));
+            }
+        }
+    }
 
     private string _addButtonText;
 
@@ -47,54 +68,53 @@ public class AddTemplateViewModel : ViewModelCommon {
     public ICommand CancelTemplate { get; private set; }
 
 
-    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems) {
+    public AddTemplateViewModel(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
         TemplateItems = templateItems;
-
+        Templates = templateViewModels;
         if (isNew) {
             DisplayAddTemplateWindows();
             AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
         } else {
             DisplayEditTemplateWindows(template, templateItems);
-            AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template));
+            AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
         }
 
         CancelTemplate = new RelayCommand(CloseWindow);
     }
 
-    private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template) {
+    private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template,ObservableCollectionFast<TemplateViewModel> templateViewModels) {
 
         template.Title = title;
         
-        var users = Context.Users.ToDictionary(u => u.FullName, u => u.UserId);
+        SelectedTemplate = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId);
         
-        var existingItems = Context.TemplateItems
-            .Where(ti => ti.Template == template.TemplateId)
-            .ToList();
+        if (SelectedTemplate == null) {
+            SelectedTemplate = new TemplateViewModel(template, false, false);
+            templateViewModels.Add(SelectedTemplate);
+        }
+        SelectedTemplate.Title = title;
         
-        var existingItemsMap = existingItems.ToDictionary(ti => ti.User);
-
         foreach (var userItem in userItems) {
-            
-            if (users.TryGetValue(userItem.UserName, out var userId)) {
-                if (existingItemsMap.TryGetValue(userId, out var existingItem)) {
-                    existingItem.Weight = userItem.Weight;
-                    if (!userItem.IsChecked) {
-                        Context.TemplateItems.Remove(existingItem);
-                    }
-                } else {
-                    var newItem = new TemplateItem {
-                        User = userId,
-                        Weight = userItem.Weight,
-                        Template = template.TemplateId
-                    };
-                    Context.TemplateItems.Add(newItem);
+            var existingItem = SelectedTemplate.TemplateItems.FirstOrDefault(ti => ti.UserName == userItem.UserName);
+            if (existingItem != null) {
+                existingItem.Weight = userItem.Weight;
+                existingItem.IsChecked = userItem.IsChecked;
+                if (!userItem.IsChecked) {
+                    SelectedTemplate.TemplateItems.Remove(existingItem);
                 }
+            } else if (userItem.IsChecked) {
+                var newItem = new UserTemplateItemViewModel(
+                    userItem.UserName,
+                    userItem.Weight,
+                    true,
+                    false
+                );
+                SelectedTemplate.TemplateItems.Add(newItem);
             }
         }
-        Context.SaveChanges();
-        NotifyColleagues(App.Messages.MSG_UPDATE_EDITVIEW, Tricount);
-        NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+        RaisePropertyChanged(nameof(TemplateItems));
         CloseWindow();
+        
         }
         
     private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
@@ -121,7 +141,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             }
         }
         
-        NotifyColleagues(App.Messages.ADD_TEMPLATE, templateViewModel);
+        NotifyColleagues(App.Messages.MSG_ADD_TEMPLATE, templateViewModel);
         CloseWindow();
     }
 
