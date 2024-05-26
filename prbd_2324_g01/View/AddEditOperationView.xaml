@@ -48,7 +48,8 @@
         <Label Grid.Row="4" Content="Template" Margin="15"/>
         <ComboBox Grid.Row="4" Grid.Column="1" Margin="15"
                   ItemsSource="{Binding Templates}" DisplayMemberPath="Title"
-                  SelectedItem="{Binding SelectedTemplate}" Text="--Choose a template--"/>
+                  SelectedItem="{Binding SelectedTemplate}"  HorizontalContentAlignment="Center"/>
+        
         <Button Grid.Row="4" Grid.Column="2" Margin="15"  
                 Content="Apply" Command="{Binding ApplyTemplate}"/>
         

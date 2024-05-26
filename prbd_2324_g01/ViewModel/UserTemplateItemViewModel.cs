@@ -61,7 +61,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             
 
-            if (!isNew && Weight > 0) {
+            if (Weight > 0) {
                 IsChecked = true;
             }
         }
@@ -87,7 +87,7 @@ namespace prbd_2324_g01.ViewModel {
         private void CalculateTotal() {
     if (FromOperation) {
         TotalPerUser = (((double)_weight / _totalWeight) * _totalAmount).ToString("F2");
-         Console.WriteLine($"{UserName} = " + "(" + _weight + " / " + _totalWeight + ") * " + _totalAmount + ")" + " = " + TotalPerUser);
+         //Console.WriteLine($"{UserName} = " + "(" + _weight + " / " + _totalWeight + ") * " + _totalAmount + ")" + " = " + TotalPerUser);
     }
 }
     }

@@ -15,7 +15,7 @@
             <ColumnDefinition Width="Auto"/> 
         </Grid.ColumnDefinitions>
         
-        <TextBlock Text="{Binding Template.Title}" VerticalAlignment="Center" Grid.Column="0"/>
+        <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="0"/>
         
         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" >
             <Button Command="{Binding EditCommand}" ToolTip="Edit" Margin="0,0,8,0"

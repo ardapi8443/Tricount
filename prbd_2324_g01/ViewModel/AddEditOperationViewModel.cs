@@ -158,19 +158,21 @@ namespace prbd_2324_g01.ViewModel {
                 select t;
             var templates = q2.ToList();
             
-
             if (!templates.IsNullOrEmpty()) {
                foreach (var row in templates) { 
                Templates.Add(row);
                }
             }
             
+            Templates.Insert(0, new Template{Title = "--choose a template--"});
+            SelectedTemplate = Templates.FirstOrDefault();
+            
             DisplayRepartitions();
                
             //we define the buttons
             Cancel = new RelayCommand(CancelAction);
             AddOperation = new RelayCommand(AddOperationAction, () => !HasErrors);
-            ApplyTemplate = new RelayCommand(ApplyTemplateAction);
+            ApplyTemplate = new RelayCommand(ApplyTemplateAction, () => !SelectedTemplate.Title.Equals("--choose a template--"));
             SaveTemplate = new RelayCommand(SaveTemplateAction, () => !HasErrors);
             DeleteOperation = new RelayCommand(DeleteOperationAction);
             
@@ -330,8 +332,8 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 template = Context.Templates.Find(SelectedTemplate.TemplateId);
             }
-            
-            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems) {
+            // need to update code here
+            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,null) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();

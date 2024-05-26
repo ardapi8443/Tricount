@@ -43,7 +43,7 @@ namespace prbd_2324_g01.ViewModel
         
         public ParticipantViewModel(Tricount tricount, User User, int numberOfExpenses, bool isCreator) {
             _tricount = tricount;
-         Name = User.FullName;   
+            Name = User.FullName;   
             this.User = User;
             NumberOfExpenses = numberOfExpenses;
             IsCreator = isCreator;
