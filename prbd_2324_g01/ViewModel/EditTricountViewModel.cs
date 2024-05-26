@@ -169,18 +169,10 @@ namespace prbd_2324_g01.ViewModel {
                 tricount.Title = "<New Tricount>";
                 tricount.Description = "No Description";
                 UpdatedTitle = "";
-
-                /*
-                 Cela fonctionne mais a voir si le process est correct
-                 tricount.CreatorFromTricount = CurrentUser;
-                var sub = new Subscription() {
-                    TricountFromSubscription = tricount,
-                    UserFromSubscription = CurrentUser,
-                    TricountId = tricount.Id,
-                    UserId = CurrentUser.UserId
-                };
-                Context.Subscriptions.Add(sub);
-                Context.SaveChanges();*/
+                
+                int numberOfExpenses = Repartition.getExpenseByUserAndTricount(tricount.Creator, tricount.Id);
+                Participants.Add(new ParticipantViewModel(Tricount, User.GetUserById(tricount.Creator), numberOfExpenses, true));
+                
             } else {
                 UpdatedTitle = tricount.Title;
                 UpdatedDescription = tricount.Description;
@@ -276,8 +268,6 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
-            
-            Console.WriteLine(Context.ChangeTracker.DebugView.LongView);
             
             if (newTricount) {
                Context.Add(Tricount);

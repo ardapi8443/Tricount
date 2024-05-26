@@ -1,5 +1,6 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.ComponentModel.DataAnnotations;
@@ -119,15 +120,21 @@ public class Tricount : EntityBase<PridContext> {
 
         ClearErrors();
 
-        if (string.IsNullOrWhiteSpace(Title))
+        if (string.IsNullOrWhiteSpace(Title)) {
+            
             AddError(nameof(Title), "required");
-        else if (Description.Length < 3)
+            
+        } else if (!Description.IsNullOrEmpty() &&  Description.Length < 3) {
+            
             AddError(nameof(Description), "length must be >= 3");
-        else
+            
+        } else {
             // On ne v�rifie l'unicit� du pseudo que si l'entit� est en mode d�tach� ou ajout�, car
             // dans ces cas-l�, il s'agit d'un nouveau membre.
             if ((IsDetached || IsAdded) && Context.Tricounts.Any(t => t.Title == Title))
-            AddError(nameof(Title), "title already exists");
+                AddError(nameof(Title), "title already exists");
+        }
+ 
 
         return !HasErrors;
     }
