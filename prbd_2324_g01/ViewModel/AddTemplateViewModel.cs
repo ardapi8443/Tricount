@@ -61,7 +61,12 @@ public class AddTemplateViewModel : ViewModelCommon {
 
     public string Title {
         get => _title;
-        set => SetProperty(ref _title, value);
+        set {
+            if ( _title != value) {
+                _title = value;
+                RaisePropertyChanged(nameof(Title));
+            }
+        }
     }
 
     public ICommand AddTemplateDbCommand { get; private set; }
@@ -71,11 +76,12 @@ public class AddTemplateViewModel : ViewModelCommon {
     public AddTemplateViewModel(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
         TemplateItems = templateItems;
         Templates = templateViewModels;
+        
         if (isNew) {
             DisplayAddTemplateWindows();
             AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
         } else {
-            DisplayEditTemplateWindows(template, templateItems);
+            DisplayEditTemplateWindows(template, templateItems, Templates);
             AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
         }
 
@@ -83,14 +89,11 @@ public class AddTemplateViewModel : ViewModelCommon {
     }
 
     private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template,ObservableCollectionFast<TemplateViewModel> templateViewModels) {
-
-        template.Title = title;
-        
+        Title = title;
         SelectedTemplate = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId);
         
         if (SelectedTemplate == null) {
-            SelectedTemplate = new TemplateViewModel(template, false, false);
-            templateViewModels.Add(SelectedTemplate);
+            return;
         }
         SelectedTemplate.Title = title;
         
@@ -112,7 +115,7 @@ public class AddTemplateViewModel : ViewModelCommon {
                 SelectedTemplate.TemplateItems.Add(newItem);
             }
         }
-        RaisePropertyChanged(nameof(TemplateItems));
+      //  RaisePropertyChanged(nameof(SelectedTemplate));
         CloseWindow();
         
         }
@@ -149,7 +152,7 @@ public class AddTemplateViewModel : ViewModelCommon {
             RequestClose?.Invoke(true);
         }
         
-        private void DisplayEditTemplateWindows(Template template, ObservableCollection<UserTemplateItemViewModel> existingTemplateItems) {
+        private void DisplayEditTemplateWindows(Template template, ObservableCollection<UserTemplateItemViewModel> existingTemplateItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
             
             var distinctUsers = Context.Users
                 .Where(u => u.Role == Role.Viewer)
@@ -159,7 +162,7 @@ public class AddTemplateViewModel : ViewModelCommon {
                 .ToList();
             
 
-            Title = template.Title;
+            Title = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId)?.Title;
             AddButtonText = "Save";
             
             

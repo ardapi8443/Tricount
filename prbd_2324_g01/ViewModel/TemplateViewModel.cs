@@ -12,6 +12,7 @@ namespace prbd_2324_g01.ViewModel {
         public ICommand DeleteCommand { get; private set; }
         
         private bool _isNew;
+        private string _title;
         public bool IsNew
         {
             get => _isNew;
@@ -26,10 +27,10 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public string Title {
-            get => Template.Title;
+            get => _title;
             set {
-                if (Template.Title != value) {
-                    Template.Title = value;
+                if ( _title != value) {
+                    _title = value;
                     RaisePropertyChanged(nameof(Title));
                 }
             }
@@ -49,6 +50,7 @@ namespace prbd_2324_g01.ViewModel {
         
         public TemplateViewModel(Template template,bool isNew, bool loadFromDb = true) {
             Template = template;
+            Title = template.Title;
             TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>();
             IsNew = isNew;
             if (loadFromDb) {
@@ -76,7 +78,7 @@ namespace prbd_2324_g01.ViewModel {
                 .Where(ti => ti.Template == templateId)
                 .Include(ti => ti.UserFromTemplateItem)
                 .ToList();
-            Console.WriteLine(templateItems.Count);
+
 
             foreach (var item in templateItems) {
                 TemplateItems.Add(new UserTemplateItemViewModel(
