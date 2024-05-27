@@ -1,4 +1,5 @@
-﻿using Msn.ViewModel;
+﻿using Microsoft.IdentityModel.Tokens;
+using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace prbd_2324_g01.ViewModel
             Tricount = tricount;
             this.CurrentUser = App.CurrentUser;
 
-            if(Tricount.Description.Length == 0 ) {
+            if(Tricount.Description.IsNullOrEmpty()) {
                 UpdatedDescription = "No Description";
             } else {
                 UpdatedDescription = Tricount.Description;

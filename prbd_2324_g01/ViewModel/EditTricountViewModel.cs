@@ -18,6 +18,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private Tricount _tricount;
         private Template _template;
+       
         private bool _isNew;
         private string _updatedTitle;
         private string _updatedDescription;
@@ -27,10 +28,19 @@ namespace prbd_2324_g01.ViewModel {
             get => _usersNotSubscribed;
             set => SetProperty(ref _usersNotSubscribed, value);
         }
+        
+        private List<User> _usersSubscribed = new ();
+ 
+        public List<User> UsersSubscribed {
+            get => _usersSubscribed;
+            set => SetProperty(ref _usersSubscribed, value);
+        }
 
         private List<String> _fullnameNotSubscribed = new();
         private bool newTricount { get; set; }
         
+        private User CurrentTricountCreator { get; set; }
+
 
         public List<String> FullnameNotSubscribed {
             get => _fullnameNotSubscribed;
@@ -148,10 +158,18 @@ namespace prbd_2324_g01.ViewModel {
             Tricount = tricount;
             Date = tricount.CreatedAt;
             newTricount = tricount.IsNew;
+            CurrentTricountCreator = User.GetUserById(tricount.Creator);
+            UsersSubscribed.Add(CurrentTricountCreator);
+
+            if (tricount.IsNew) {
+                UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
+            } else {
+                UsersNotSubscribed = Tricount.getUsersNotSubscribed();
+            }
             
-            
-            UsersNotSubscribed = Tricount.getUsersNotSubscribed();
             setFullnameNotSubscribed();
+            
+
             
             Register<TemplateViewModel>(App.Messages.MSG_ADD_TEMPLATE, (TemplateViewModel) => {
                 Templates.Add(TemplateViewModel);
@@ -197,8 +215,8 @@ namespace prbd_2324_g01.ViewModel {
                 tricount.Description = "No Description";
                 UpdatedTitle = "";
                 
-                int numberOfExpenses = Repartition.getExpenseByUserAndTricount(tricount.Creator, tricount.Id);
-                Participants.Add(new ParticipantViewModel(Tricount, User.GetUserById(tricount.Creator), numberOfExpenses, true));
+                int numberOfExpenses = Repartition.getExpenseByUserAndTricount(CurrentTricountCreator.UserId, tricount.Id);
+                Participants.Add(new ParticipantViewModel(Tricount, CurrentTricountCreator, numberOfExpenses, true));
 
             } else {
                 UpdatedTitle = tricount.Title;
@@ -215,7 +233,7 @@ namespace prbd_2324_g01.ViewModel {
             foreach (User u in UsersNotSubscribed) {
                 if (u.FullName == SelectedFullName) {
                     int numberOfExpenses = Repartition.getExpenseByUserAndTricount(u.UserId, Tricount.Id);
-                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == Tricount.CreatorFromTricount.UserId));
+                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == CurrentTricountCreator.UserId));
                     UsersNotSubscribed.Remove(u);
                     break;
                 }
@@ -258,7 +276,7 @@ namespace prbd_2324_g01.ViewModel {
                     Participants.Add(
                         new ParticipantViewModel(
                             Tricount, user, numberOfExpenses,
-                            user.UserId == Tricount.CreatorFromTricount.UserId));
+                            user.UserId == CurrentTricountCreator.UserId));
                    
                 }
                 UsersNotSubscribed.Clear();
@@ -308,7 +326,6 @@ namespace prbd_2324_g01.ViewModel {
             foreach(ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
                     
-                    
                     Subscription NewSub = new (PVM.User.UserId, Tricount.Id);
                     NewSub.Add();
                 }
@@ -335,7 +352,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public string Creation {
-            get => $"Created by {Tricount.CreatorFromTricount.FullName} on {Tricount.CreatedAt.ToShortDateString()}";
+            get => $"Created by {User.GetUserById(CurrentTricountCreator.UserId).FullName} on {Tricount.CreatedAt.ToShortDateString()}";
         }
         
 
@@ -382,7 +399,7 @@ namespace prbd_2324_g01.ViewModel {
                         Tricount,
                         sub, 
                         numberOfExpenses,
-                        sub.UserId == Tricount.CreatorFromTricount.UserId 
+                        sub.UserId == CurrentTricountCreator.UserId 
                     );
                 })
             );
