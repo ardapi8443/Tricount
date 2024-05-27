@@ -176,11 +176,6 @@ namespace prbd_2324_g01.ViewModel {
             });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
-            
-            Register<TemplateViewModel>(
-                App.Messages.MSG_UPDATE_TEMPLATE, (TemplateViewModel) => {
-                    UpdateTemplateTitle(TemplateViewModel);
-                });
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
@@ -211,8 +206,6 @@ namespace prbd_2324_g01.ViewModel {
 
 
             if (tricount.IsNew) {
-                tricount.Title = "<New Tricount>";
-                tricount.Description = "No Description";
                 UpdatedTitle = "";
                 
                 int numberOfExpenses = Repartition.getExpenseByUserAndTricount(CurrentTricountCreator.UserId, tricount.Id);
@@ -317,7 +310,8 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
             
-            if (newTricount) {
+            if (newTricount) { 
+                Tricount.IsNew = false;
                Context.Add(Tricount);
             }
             
