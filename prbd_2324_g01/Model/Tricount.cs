@@ -37,7 +37,7 @@ public class Tricount : EntityBase<PridContext> {
     [NotMapped]
     public virtual Boolean HaveOpe {
         get {
-            PridContext.Context.Entry(this)
+            Context.Entry(this)
               .Collection(t => t.Operations)
               .Load();
             if (Operations.Count == 0) {
@@ -51,7 +51,7 @@ public class Tricount : EntityBase<PridContext> {
     public virtual DateTime? LatestOpe {
         
         get {
-            PridContext.Context.Entry(this)
+            Context.Entry(this)
              .Collection(t => t.Operations)
              .Load();
 
@@ -66,7 +66,7 @@ public class Tricount : EntityBase<PridContext> {
     public virtual int NumFriends {
 
         get {
-            PridContext.Context.Entry(this)
+            Context.Entry(this)
            .Collection(t => t.Subscribers)
            .Load();
 
@@ -77,7 +77,7 @@ public class Tricount : EntityBase<PridContext> {
     [NotMapped]
     public virtual Boolean haveFriends {
         get {
-            PridContext.Context.Entry(this)
+            Context.Entry(this)
               .Collection(t => t.Subscribers)
               .Load();
             if(Subscribers.Count == 1) return false;
@@ -140,8 +140,8 @@ public class Tricount : EntityBase<PridContext> {
 
 
     public void Persist() {
-        PridContext.Context.Update(this);
-        PridContext.Context.SaveChanges();
+        Context.Update(this);
+        Context.SaveChanges();
     }
     public void delete() {
         var tricount = Context.Tricounts.Find(this.Id);
@@ -153,7 +153,9 @@ public class Tricount : EntityBase<PridContext> {
         
         List<Tricount> res;
         
-        res = user.Role == Role.Administrator ? PridContext.Context.Tricounts.ToList() : PridContext.Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
+        res = user.Role == Role.Administrator ? 
+            Context.Tricounts.ToList() : 
+            Context.Tricounts.Where(t => t.Creator == user.UserId || t.Subscribers.Any(s => s.UserId == user.UserId)).ToList();
         res.Sort(
             (tricount1, tricount2) => {
 
@@ -193,11 +195,11 @@ public class Tricount : EntityBase<PridContext> {
         double res = new();
 
         foreach (Operation ope in Operations) {
-            double TotalWeight = PridContext.Context.Repartitions
+            double TotalWeight = Context.Repartitions
                 .Where(r => r.OperationId == ope.OperationId)
                 .Sum(r => r.Weight);
             
-            double UserWeight = PridContext.Context.Repartitions
+            double UserWeight = Context.Repartitions
                 .Where(r => r.OperationId == ope.OperationId && r.UserId == user.UserId)
                 .Sum(r => r.Weight);
             
@@ -231,7 +233,7 @@ public class Tricount : EntityBase<PridContext> {
     }   
     
     public static IQueryable<int> GetTricountsIdByUser(User user) {
-        var q = from t in PridContext.Context.Tricounts
+        var q = from t in Context.Tricounts
                 where t.Creator == user.UserId
                 orderby t.CreatedAt
                 select t.Id;
@@ -243,7 +245,7 @@ public class Tricount : EntityBase<PridContext> {
         //manque balance !!!
         //sous requete � faire � part dans user en envoyant le tricountId en param�tre
         int Id = this.Id;
-        var q = from t in PridContext.Context.Tricounts
+        var q = from t in Context.Tricounts
                 where t.Id == Id
                 let lastOperationDate = t.Operations.OrderByDescending(x => x.OperationDate).FirstOrDefault()
                 let friendsCount = t.Subscribers.Count()
@@ -255,14 +257,14 @@ public class Tricount : EntityBase<PridContext> {
     }
 
     public static dynamic GetTricountOperations(int id) {
-        var q = from o in PridContext.Context.Operations
+        var q = from o in Context.Operations
                 where o.TricountId == id
                 select o;
         return q;
     }
 
     public static dynamic GetTricountById(int id) {
-        var q = from t in PridContext.Context.Tricounts
+        var q = from t in Context.Tricounts
                 where t.Id == id
                 select t;
         return q.First();
@@ -270,8 +272,8 @@ public class Tricount : EntityBase<PridContext> {
 
     public List<User> getUsersNotSubscribed() {
         
-        List<User> usersNotSubscribed = PridContext.Context.Users
-            .Where(user => !PridContext.Context.Subscriptions
+        List<User> usersNotSubscribed = Context.Users
+            .Where(user => !Context.Subscriptions
                                .Any(sub => sub.UserId == user.UserId && sub.TricountId == this.Id) 
                            && user.Role == Role.Viewer)
             .ToList();
@@ -292,7 +294,7 @@ public class Tricount : EntityBase<PridContext> {
     }
 
     public void Save() {
-        PridContext.Context.Tricounts.Add(this);
+        Context.Tricounts.Add(this);
         
     }
 
