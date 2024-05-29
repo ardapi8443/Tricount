@@ -205,11 +205,7 @@ namespace prbd_2324_g01.ViewModel {
                 App.Messages.MSG_DEL_PARTICIPANT, (PVM) => {
                     DeleteParticipant(PVM);
                 });
-
-            // AddTemplateCommand = new RelayCommand(() => {
-            //     var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-            //     AddTemplate(Tricount, new Template(), true, templateItems, Templates);
-            // });
+            
             AddTemplateCommand = new RelayCommand(AddTemplate, CanAddTemplate);
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
@@ -462,6 +458,10 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(UpdatedTitle), "Title is required.");
             } else if (titleExist) {
                 AddError(nameof(UpdatedTitle), "Title must be unique.");
+            }
+                        
+             if (Date > DateTime.Today) {
+                AddError(nameof(Date), "cannot be in the future");
             }
     
             return !HasErrors;
