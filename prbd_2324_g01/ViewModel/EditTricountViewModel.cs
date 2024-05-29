@@ -206,10 +206,11 @@ namespace prbd_2324_g01.ViewModel {
                     DeleteParticipant(PVM);
                 });
 
-            AddTemplateCommand = new RelayCommand(() => {
-                var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-                AddTemplate(Tricount, new Template(), true, templateItems, Templates);
-            });
+            // AddTemplateCommand = new RelayCommand(() => {
+            //     var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+            //     AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+            // });
+            AddTemplateCommand = new RelayCommand(AddTemplate, CanAddTemplate);
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
@@ -233,6 +234,15 @@ namespace prbd_2324_g01.ViewModel {
                 UpdatedDescription = tricount.Description;
                 
             }
+        }
+
+        private void AddTemplate() {
+            var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+            AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+        }
+
+        private bool CanAddTemplate() {
+            return !newTricount;
         }
 
         private void UpdateTemplateTitle(TemplateViewModel templateViewModel) {
@@ -375,7 +385,7 @@ namespace prbd_2324_g01.ViewModel {
             
         }
 
-        public bool CanSaveAction() {
+        private bool CanSaveAction() {
             return !HasErrors && !string.IsNullOrEmpty(UpdatedTitle);
         }
 
