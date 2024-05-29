@@ -209,7 +209,7 @@ namespace prbd_2324_g01.ViewModel {
                 AddTemplate(Tricount, new Template(), true, templateItems, Templates);
             });
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
-            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
+            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
             CancelCommand = new RelayCommand(CancelAction, CanCancelAction);
             AddParticipant = new RelayCommand(AddParticipantAction, CanAddParticipantAction);
@@ -320,8 +320,20 @@ namespace prbd_2324_g01.ViewModel {
             }
 
             SortPaticipants();
+        }
 
-    }
+        private bool CanAddMySelfInParticipant() {
+            bool isCurrentInParticipants = false;
+
+            foreach (User u  in UsersNotSubscribed) {
+                if (CurrentUser.FullName == u.FullName) {
+                    isCurrentInParticipants = true;
+                    break;
+                }
+            }
+            
+            return !newTricount || isCurrentInParticipants;
+        }
 
         private void CancelEditTricount() { }
 
@@ -357,7 +369,7 @@ namespace prbd_2324_g01.ViewModel {
             NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
-            NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
+            NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, Tricount);
             
             
         }

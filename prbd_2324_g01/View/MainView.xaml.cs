@@ -21,8 +21,6 @@ public partial class MainView : WindowBase {
         Register<Tricount>(App.Messages.MSG_DISPLAY_TRICOUNT,
             member => DoDisplayTricount(member, false));
 
-  
-
         Register<Operation>(App.Messages.MSG_DISPLAY_OPERATION,
             (operation) => DoDisplayOperation(operation, openTricount,  false));
         
@@ -76,8 +74,6 @@ public partial class MainView : WindowBase {
     }
 
     private void DoCloseTab(Tricount tricount) {
-        Console.WriteLine(tricount.Title);
-        Console.WriteLine(string.IsNullOrEmpty(tricount.Title));
         tabControl.CloseByTag(string.IsNullOrEmpty(tricount.Title) ? "<New Tricount>" : tricount.Title);
     }
 
