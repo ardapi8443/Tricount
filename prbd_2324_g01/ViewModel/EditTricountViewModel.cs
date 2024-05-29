@@ -249,6 +249,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             
             setFullnameNotSubscribed();
+            SortPaticipants();
         }
 
         private bool CanAddParticipantAction() {
@@ -293,7 +294,8 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 Console.WriteLine("Everyone is Already Sub in this Tricount");
             }
-            
+
+            SortPaticipants();
         }
 
         private bool CanAddEverybody() {
@@ -316,8 +318,10 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 Console.WriteLine("déja sub");
             }
-           
-        }
+
+            SortPaticipants();
+
+    }
 
         private void CancelEditTricount() { }
 
@@ -413,7 +417,9 @@ namespace prbd_2324_g01.ViewModel {
                     );
                 })
             );
-            
+
+            SortPaticipants();
+
         }
         
         public override bool Validate() {
@@ -433,12 +439,17 @@ namespace prbd_2324_g01.ViewModel {
             return !HasErrors;
         }
         
-        public void DeleteParticipant(ParticipantViewModel PVM) {
+        private void DeleteParticipant(ParticipantViewModel PVM) {
             
             Participants.Remove(PVM);
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
             setFullnameNotSubscribed();
             PVM.Dispose();
+
+        }
+
+        private void SortPaticipants() {
+            Participants = new ObservableCollectionFast<ParticipantViewModel>(Participants.OrderBy(PVM => PVM.Name));
 
         }
         
