@@ -18,6 +18,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private Tricount _tricount;
         private Template _template;
+        private int Myself;
        
         private bool _isNew;
         private string _updatedTitle;
@@ -172,6 +173,7 @@ namespace prbd_2324_g01.ViewModel {
             newTricount = tricount.IsNew;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
+            Myself = CurrentUser.UserId;
 
             if (tricount.IsNew) {
                 UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
@@ -204,10 +206,11 @@ namespace prbd_2324_g01.ViewModel {
                     DeleteParticipant(PVM);
                 });
 
-            AddTemplateCommand = new RelayCommand(() => {
-                var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-                AddTemplate(Tricount, new Template(), true, templateItems, Templates);
-            });
+            // AddTemplateCommand = new RelayCommand(() => {
+            //     var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+            //     AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+            // });
+            AddTemplateCommand = new RelayCommand(AddTemplate, CanAddTemplate);
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
             AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
@@ -231,6 +234,15 @@ namespace prbd_2324_g01.ViewModel {
                 UpdatedDescription = tricount.Description;
                 
             }
+        }
+
+        private void AddTemplate() {
+            var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+            AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+        }
+
+        private bool CanAddTemplate() {
+            return !newTricount;
         }
 
         private void UpdateTemplateTitle(TemplateViewModel templateViewModel) {
@@ -325,7 +337,7 @@ namespace prbd_2324_g01.ViewModel {
         private bool CanAddMySelfInParticipant() {
             
             foreach (ParticipantViewModel PVM  in Participants) {
-                if (CurrentUser.UserId == PVM.User.UserId) {
+                if (Myself == PVM.User.UserId) {
                     return false;
                 }
             }
@@ -373,7 +385,7 @@ namespace prbd_2324_g01.ViewModel {
             
         }
 
-        public bool CanSaveAction() {
+        private bool CanSaveAction() {
             return !HasErrors && !string.IsNullOrEmpty(UpdatedTitle);
         }
 
