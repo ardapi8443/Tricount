@@ -18,6 +18,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private Tricount _tricount;
         private Template _template;
+        private int Myself;
        
         private bool _isNew;
         private string _updatedTitle;
@@ -172,6 +173,7 @@ namespace prbd_2324_g01.ViewModel {
             newTricount = tricount.IsNew;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
+            Myself = CurrentUser.UserId;
 
             if (tricount.IsNew) {
                 UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
@@ -325,7 +327,7 @@ namespace prbd_2324_g01.ViewModel {
         private bool CanAddMySelfInParticipant() {
             
             foreach (ParticipantViewModel PVM  in Participants) {
-                if (CurrentUser.UserId == PVM.User.UserId) {
+                if (Myself == PVM.User.UserId) {
                     return false;
                 }
             }

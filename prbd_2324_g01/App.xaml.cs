@@ -3,6 +3,7 @@ using prbd_2324_g01.ViewModel;
 using PRBD_Framework;
 using System.Windows;
 using System.Globalization;
+using System.Windows.Controls;
 
 namespace prbd_2324_g01;
 

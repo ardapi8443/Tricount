@@ -78,6 +78,8 @@ public partial class MainView : WindowBase {
     }
 
     private void MenuLogout_Click(object sender, System.Windows.RoutedEventArgs e) {
+
+        // List<Tricount> TricountsByMember = Tricount.tricountByMember(CurrentUser);
          NotifyColleagues(App.Messages.MSG_LOGOUT);
     }
 
