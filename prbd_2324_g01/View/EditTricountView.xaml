@@ -22,14 +22,14 @@
         
         <!-- Title & Description Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding Tricount.Title}" 
+            <TextBlock Text="{Binding TitlePlaceHolder}" 
                        FontSize="18" 
                        FontWeight="Bold" 
                        Margin="0,0,10,0"/>
             <TextBlock Text="-" 
                        FontSize="18" 
                        Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Tricount.Description}" 
+            <TextBlock Text="{Binding DescriptionPlaceHolder}" 
                        FontStyle="Italic" 
                        FontSize="18"/>
         </StackPanel>
