@@ -21,6 +21,30 @@ namespace prbd_2324_g01.ViewModel {
        
         private bool _isNew;
         private string _updatedTitle;
+        private string _TitlePlaceHolder;
+        public string TitlePlaceHolder {
+            get => _TitlePlaceHolder;
+            set => SetProperty(ref _TitlePlaceHolder, value);
+        }
+
+        private string _DescriptionPlaceHolder;
+
+        public string DescriptionPlaceHolder {
+            get => _DescriptionPlaceHolder;
+            set => SetProperty(ref _DescriptionPlaceHolder, value);
+        }
+        
+        public string UpdatedTitle {
+            get => _updatedTitle;
+            set {
+                if (_updatedTitle != value) {
+                    _updatedTitle = value;
+                    RaisePropertyChanged(nameof(UpdatedTitle));
+                    Validate();
+                }
+            }
+        }
+
         private string _updatedDescription;
         private List<User> _usersNotSubscribed = new ();
  
@@ -52,16 +76,6 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _isNew, value);
         }
 
-        public string UpdatedTitle {
-            get => _updatedTitle;
-            set {
-                if (_updatedTitle != value) {
-                    _updatedTitle = value;
-                    RaisePropertyChanged(nameof(UpdatedTitle));
-                    Validate();
-                }
-            }
-        }
 
         public string UpdatedDescription {
             get => _updatedDescription;
@@ -150,8 +164,6 @@ namespace prbd_2324_g01.ViewModel {
             Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t, true))
             );
-            
-            
         }
         
         public EditTricountViewModel(Tricount tricount) {
@@ -206,14 +218,18 @@ namespace prbd_2324_g01.ViewModel {
 
 
             if (tricount.IsNew) {
-                UpdatedTitle = "";
+                TitlePlaceHolder = "<New Tricount>";
+                DescriptionPlaceHolder = "No Description";
                 
                 int numberOfExpenses = Repartition.getExpenseByUserAndTricount(CurrentTricountCreator.UserId, tricount.Id);
                 Participants.Add(new ParticipantViewModel(Tricount, CurrentTricountCreator, numberOfExpenses, true));
 
             } else {
+                TitlePlaceHolder = tricount.Title;
                 UpdatedTitle = tricount.Title;
+                DescriptionPlaceHolder = tricount.Description;
                 UpdatedDescription = tricount.Description;
+                
             }
         }
 
@@ -426,7 +442,7 @@ namespace prbd_2324_g01.ViewModel {
             PVM.Dispose();
 
         }
-
+        
         private void SaveTemplate() {
             
          KeepTemplateFromView();
