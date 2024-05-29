@@ -115,7 +115,7 @@ public class AddTemplateViewModel : ViewModelCommon {
                 SelectedTemplate.TemplateItems.Add(newItem);
             }
         }
-      //  RaisePropertyChanged(nameof(SelectedTemplate));
+        RaisePropertyChanged(nameof(SelectedTemplate));
         CloseWindow();
         
         }
