@@ -110,8 +110,7 @@ public class Tricount : EntityBase<PridContext> {
         this.Description = Description;
         this.Creator = Creator;
         this.CreatedAt = Created_at;
-        this.CreatorFromTricount = User.UserById(Creator);
-        this.Subscribers.Add(CreatorFromTricount);
+        // this.Subscribers.Add(CreatorFromTricount);
         
     }
     
@@ -295,6 +294,10 @@ public class Tricount : EntityBase<PridContext> {
     public void Save() {
         PridContext.Context.Tricounts.Add(this);
         
+    }
+
+    public void addUserToSubscribers(User u) {
+        this.Subscribers.Add(u);
     }
 
 }

@@ -21,8 +21,6 @@ public partial class MainView : WindowBase {
         Register<Tricount>(App.Messages.MSG_DISPLAY_TRICOUNT,
             member => DoDisplayTricount(member, false));
 
-  
-
         Register<Operation>(App.Messages.MSG_DISPLAY_OPERATION,
             (operation) => DoDisplayOperation(operation, openTricount,  false));
         
@@ -56,7 +54,7 @@ public partial class MainView : WindowBase {
     private void DoDisplayEditTricount(Tricount tricount, bool isNew) {
         if (tricount != null) {
             DoCloseTab(tricount);
-            OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
+            OpenTab(isNew ? "<New Tricount>" : tricount.Title, isNew ? "<New Tricount>" : tricount.Title, () => new EditTricountView(tricount));
         }
     }
 

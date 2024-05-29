@@ -104,7 +104,10 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Amount), "minimum 1 cent");
             }
 
-            if (Date < _tricount.CreatedAt) {
+            DateTime tempDate = new DateTime(
+                _tricount.CreatedAt.Year, _tricount.CreatedAt.Month, _tricount.CreatedAt.Day, 0, 0, 0);
+            
+            if (Date < tempDate) {
                 AddError(nameof(Date), "can't add operation before tricount creation date");
             } else if (Date > DateTime.Today) {
                 AddError(nameof(Date), "cannot be in the future");

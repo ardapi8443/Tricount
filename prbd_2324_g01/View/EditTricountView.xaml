@@ -22,14 +22,14 @@
         
         <!-- Title & Description Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding Tricount.Title}" 
+            <TextBlock Text="{Binding TitlePlaceHolder}" 
                        FontSize="18" 
                        FontWeight="Bold" 
                        Margin="0,0,10,0"/>
             <TextBlock Text="-" 
                        FontSize="18" 
                        Margin="0,0,10,0"/>
-            <TextBlock Text="{Binding Tricount.Description}" 
+            <TextBlock Text="{Binding DescriptionPlaceHolder}" 
                        FontStyle="Italic" 
                        FontSize="18"/>
         </StackPanel>
@@ -84,9 +84,9 @@
                 
                 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
-                    <ComboBox  ItemsSource="{Binding FullnameNotSubscribed, Mode=TwoWay}"
+                    <ComboBox Padding="165,0,185,0"  ItemsSource="{Binding FullnameNotSubscribed, Mode=TwoWay}"
                                SelectedItem="{Binding SelectedFullName, Mode=TwoWay}"/>
-                    <Button Content="Add" Command="{Binding AddParticipant}" Padding="10,3,10,3"  />
+                    <Button Margin="10,0,0,0" Content="Add" Command="{Binding AddParticipant}" Padding="10,3,10,3"  />
                 </StackPanel>
                 
                 <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">

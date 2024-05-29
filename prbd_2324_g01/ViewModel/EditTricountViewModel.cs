@@ -18,8 +18,33 @@ namespace prbd_2324_g01.ViewModel {
 
         private Tricount _tricount;
         private Template _template;
+       
         private bool _isNew;
         private string _updatedTitle;
+        private string _TitlePlaceHolder;
+        public string TitlePlaceHolder {
+            get => _TitlePlaceHolder;
+            set => SetProperty(ref _TitlePlaceHolder, value);
+        }
+
+        private string _DescriptionPlaceHolder;
+
+        public string DescriptionPlaceHolder {
+            get => _DescriptionPlaceHolder;
+            set => SetProperty(ref _DescriptionPlaceHolder, value);
+        }
+        
+        public string UpdatedTitle {
+            get => _updatedTitle;
+            set {
+                if (_updatedTitle != value) {
+                    _updatedTitle = value;
+                    RaisePropertyChanged(nameof(UpdatedTitle));
+                    Validate();
+                }
+            }
+        }
+
         private string _updatedDescription;
         private List<User> _usersNotSubscribed = new ();
  
@@ -27,10 +52,19 @@ namespace prbd_2324_g01.ViewModel {
             get => _usersNotSubscribed;
             set => SetProperty(ref _usersNotSubscribed, value);
         }
+        
+        private List<User> _usersSubscribed = new ();
+ 
+        public List<User> UsersSubscribed {
+            get => _usersSubscribed;
+            set => SetProperty(ref _usersSubscribed, value);
+        }
 
         private List<String> _fullnameNotSubscribed = new();
         private bool newTricount { get; set; }
         
+        private User CurrentTricountCreator { get; set; }
+
 
         public List<String> FullnameNotSubscribed {
             get => _fullnameNotSubscribed;
@@ -42,16 +76,6 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _isNew, value);
         }
 
-        public string UpdatedTitle {
-            get => _updatedTitle;
-            set {
-                if (_updatedTitle != value) {
-                    _updatedTitle = value;
-                    RaisePropertyChanged(nameof(UpdatedTitle));
-                    Validate();
-                }
-            }
-        }
 
         public string UpdatedDescription {
             get => _updatedDescription;
@@ -140,29 +164,30 @@ namespace prbd_2324_g01.ViewModel {
             Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t, true))
             );
-            
-            
         }
         
         public EditTricountViewModel(Tricount tricount) {
             Tricount = tricount;
             Date = tricount.CreatedAt;
             newTricount = tricount.IsNew;
+            CurrentTricountCreator = User.GetUserById(tricount.Creator);
+            UsersSubscribed.Add(CurrentTricountCreator);
+
+            if (tricount.IsNew) {
+                UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
+            } else {
+                UsersNotSubscribed = Tricount.getUsersNotSubscribed();
+            }
             
-            
-            UsersNotSubscribed = Tricount.getUsersNotSubscribed();
             setFullnameNotSubscribed();
+            
+
             
             Register<TemplateViewModel>(App.Messages.MSG_ADD_TEMPLATE, (TemplateViewModel) => {
                 Templates.Add(TemplateViewModel);
             });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
-            
-            Register<TemplateViewModel>(
-                App.Messages.MSG_UPDATE_TEMPLATE, (TemplateViewModel) => {
-                    UpdateTemplateTitle(TemplateViewModel);
-                });
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
@@ -184,7 +209,7 @@ namespace prbd_2324_g01.ViewModel {
                 AddTemplate(Tricount, new Template(), true, templateItems, Templates);
             });
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
-            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
+            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
             CancelCommand = new RelayCommand(CancelAction, CanCancelAction);
             AddParticipant = new RelayCommand(AddParticipantAction, CanAddParticipantAction);
@@ -193,16 +218,18 @@ namespace prbd_2324_g01.ViewModel {
 
 
             if (tricount.IsNew) {
-                tricount.Title = "<New Tricount>";
-                tricount.Description = "No Description";
-                UpdatedTitle = "";
+                TitlePlaceHolder = "<New Tricount>";
+                DescriptionPlaceHolder = "No Description";
                 
-                int numberOfExpenses = Repartition.getExpenseByUserAndTricount(tricount.Creator, tricount.Id);
-                Participants.Add(new ParticipantViewModel(Tricount, User.GetUserById(tricount.Creator), numberOfExpenses, true));
+                int numberOfExpenses = Repartition.getExpenseByUserAndTricount(CurrentTricountCreator.UserId, tricount.Id);
+                Participants.Add(new ParticipantViewModel(Tricount, CurrentTricountCreator, numberOfExpenses, true));
 
             } else {
+                TitlePlaceHolder = tricount.Title;
                 UpdatedTitle = tricount.Title;
+                DescriptionPlaceHolder = tricount.Description;
                 UpdatedDescription = tricount.Description;
+                
             }
         }
 
@@ -215,13 +242,14 @@ namespace prbd_2324_g01.ViewModel {
             foreach (User u in UsersNotSubscribed) {
                 if (u.FullName == SelectedFullName) {
                     int numberOfExpenses = Repartition.getExpenseByUserAndTricount(u.UserId, Tricount.Id);
-                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == Tricount.CreatorFromTricount.UserId));
+                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == CurrentTricountCreator.UserId));
                     UsersNotSubscribed.Remove(u);
                     break;
                 }
             }
             
             setFullnameNotSubscribed();
+            SortPaticipants();
         }
 
         private bool CanAddParticipantAction() {
@@ -258,7 +286,7 @@ namespace prbd_2324_g01.ViewModel {
                     Participants.Add(
                         new ParticipantViewModel(
                             Tricount, user, numberOfExpenses,
-                            user.UserId == Tricount.CreatorFromTricount.UserId));
+                            user.UserId == CurrentTricountCreator.UserId));
                    
                 }
                 UsersNotSubscribed.Clear();
@@ -266,7 +294,8 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 Console.WriteLine("Everyone is Already Sub in this Tricount");
             }
-            
+
+            SortPaticipants();
         }
 
         private bool CanAddEverybody() {
@@ -289,7 +318,20 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 Console.WriteLine("déja sub");
             }
-           
+
+            SortPaticipants();
+        }
+
+        private bool CanAddMySelfInParticipant() {
+            
+            foreach (ParticipantViewModel PVM  in Participants) {
+                if (CurrentUser.UserId == PVM.User.UserId) {
+                    return false;
+                }
+            }
+
+            return true;
+            
         }
 
         private void CancelEditTricount() { }
@@ -298,34 +340,35 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
-            
+
             if (newTricount) {
-               Context.Add(Tricount);
+                Tricount.IsNew = false;
+                Context.Add(Tricount);
             }
-            
+
             Context.SaveChanges();
-            
-            foreach(ParticipantViewModel PVM in Participants) {
+
+            foreach (ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
-                    
-                    
-                    Subscription NewSub = new (PVM.User.UserId, Tricount.Id);
+
+                    Subscription NewSub = new(PVM.User.UserId, Tricount.Id);
                     NewSub.Add();
                 }
             }
+
+            SaveTemplate();
+            Context.SaveChanges();
             
             if (!IsNew) {
                 foreach (User u in UsersNotSubscribed) {
                     Subscription.DeleteIfExist(Tricount.Id, u.UserId);
                 }
-            
             }
-            
-            
+
             NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
-            NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
+            NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, Tricount);
             
             
         }
@@ -335,7 +378,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         public string Creation {
-            get => $"Created by {Tricount.CreatorFromTricount.FullName} on {Tricount.CreatedAt.ToShortDateString()}";
+            get => $"Created by {User.GetUserById(CurrentTricountCreator.UserId).FullName} on {Tricount.CreatedAt.ToShortDateString()}";
         }
         
 
@@ -362,11 +405,15 @@ namespace prbd_2324_g01.ViewModel {
             if (!Tricount.IsModified) {
                 ClearErrors();
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
-                NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
+                if (!Tricount.IsNew) {
+                    NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
+                }
+                
             } else {
                 Tricount.Reload();
                 RaisePropertyChanged();
             }
+           
         }
 
         private void LinqToXaml() {
@@ -382,11 +429,13 @@ namespace prbd_2324_g01.ViewModel {
                         Tricount,
                         sub, 
                         numberOfExpenses,
-                        sub.UserId == Tricount.CreatorFromTricount.UserId 
+                        sub.UserId == CurrentTricountCreator.UserId 
                     );
                 })
             );
-            
+
+            SortPaticipants();
+
         }
         
         public override bool Validate() {
@@ -406,7 +455,7 @@ namespace prbd_2324_g01.ViewModel {
             return !HasErrors;
         }
         
-        public void DeleteParticipant(ParticipantViewModel PVM) {
+        private void DeleteParticipant(ParticipantViewModel PVM) {
             
             Participants.Remove(PVM);
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
@@ -414,8 +463,81 @@ namespace prbd_2324_g01.ViewModel {
             PVM.Dispose();
 
         }
+
+        private void SortPaticipants() {
+            Participants = new ObservableCollectionFast<ParticipantViewModel>(Participants.OrderBy(PVM => PVM.Name));
+
+        }
         
-        
+        private void SaveTemplate() {
+            
+         KeepTemplateFromView();
+         
+         foreach (TemplateViewModel templateViewModel in Templates) {
+            Template existingTemplate = Context.Templates
+                .Include(t => t.TemplateItems)
+                .FirstOrDefault(t => t.TemplateId == templateViewModel.Template.TemplateId);
+
+            if (existingTemplate != null) {
+                // Mise à jour du template existant
+                existingTemplate.Title = templateViewModel.Title;
+                
+            } else {
+                // Création d'un nouveau template
+                Template template = new Template {
+                    TemplateId = templateViewModel.Template.TemplateId,
+                    Title = templateViewModel.Title,
+                    Tricount = Tricount.Id,
+                    TemplateItems = new List<TemplateItem>()
+                };
+                Context.Templates.Add(template);
+                existingTemplate = template; 
+            }
+
+            foreach (UserTemplateItemViewModel userTemplateItemViewModel in templateViewModel.TemplateItems) {
+                User user = Context.Users.FirstOrDefault(u => u.FullName == userTemplateItemViewModel.UserName);
+                if (user != null) {
+                    TemplateItem existingTemplateItem = existingTemplate.TemplateItems
+                        .FirstOrDefault(ti => ti.User == user.UserId);
+
+                    if (existingTemplateItem != null) {
+                        // Mise à jour de l'item existant
+                        existingTemplateItem.Weight = userTemplateItemViewModel.Weight;
+                    } else {
+                        if (!Context.TemplateItems.Local.Any(ti =>
+                                ti.User == user.UserId && ti.Template == existingTemplate.TemplateId)) {
+                            // Création d'un nouvel item
+                            TemplateItem templateItem = new TemplateItem {
+                                Weight = userTemplateItemViewModel.Weight,
+                                User = user.UserId,
+                                Template = existingTemplate.TemplateId,
+                                TemplateFromTemplateItem = existingTemplate,
+                                UserFromTemplateItem = user
+                            };
+                            existingTemplate.TemplateItems.Add(templateItem);
+                            Context.TemplateItems.Add(templateItem);
+                        }
+                    }
+                }
+            } 
+         } 
+        }
+
+        private void KeepTemplateFromView() {
+            List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
+            
+            var templatesInDb = Context.Templates
+                .Where(t => t.Tricount == Tricount.Id)
+                .ToList();
+            
+            var templatesToDelete = templatesInDb
+                .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))
+                .ToList();
+            
+            foreach (var templateToDelete in templatesToDelete) {
+                Context.Templates.Remove(templateToDelete);
+            }
+        }
     }
     
 }

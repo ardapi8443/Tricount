@@ -132,4 +132,12 @@ public class User : EntityBase<PridContext> {
 
         return balance;
     }
+
+    public static List<User> GetAllUserButOne(User creator) {
+        List<User> AllButOne = PridContext.Context.Users
+            .Where(user =>user.UserId != creator.UserId  && user.Role == Role.Viewer)
+            .ToList();
+
+        return AllButOne;
+    }
 }

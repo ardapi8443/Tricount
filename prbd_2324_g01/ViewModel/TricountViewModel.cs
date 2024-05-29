@@ -123,7 +123,6 @@ namespace prbd_2324_g01.ViewModel {
 
 //bouton vers l'édition d'un tricount
         public void EditTricountAction() {
-            Console.WriteLine("je suis dans TricountViewModel");
             NotifyColleagues(App.Messages.MSG_DISPLAY_EDIT_TRICOUNT, Tricount);
         }
 
