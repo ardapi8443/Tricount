@@ -394,11 +394,15 @@ namespace prbd_2324_g01.ViewModel {
             if (!Tricount.IsModified) {
                 ClearErrors();
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
-                NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
+                if (!Tricount.IsNew) {
+                    NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT,Tricount);
+                }
+                
             } else {
                 Tricount.Reload();
                 RaisePropertyChanged();
             }
+           
         }
 
         private void LinqToXaml() {

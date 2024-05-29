@@ -56,7 +56,7 @@ public partial class MainView : WindowBase {
     private void DoDisplayEditTricount(Tricount tricount, bool isNew) {
         if (tricount != null) {
             DoCloseTab(tricount);
-            OpenTab(isNew ? "<New Tricount>" : tricount.Title, tricount.Title, () => new EditTricountView(tricount));
+            OpenTab(isNew ? "<New Tricount>" : tricount.Title, isNew ? "<New Tricount>" : tricount.Title, () => new EditTricountView(tricount));
         }
     }
 
@@ -76,6 +76,8 @@ public partial class MainView : WindowBase {
     }
 
     private void DoCloseTab(Tricount tricount) {
+        Console.WriteLine(tricount.Title);
+        Console.WriteLine(string.IsNullOrEmpty(tricount.Title));
         tabControl.CloseByTag(string.IsNullOrEmpty(tricount.Title) ? "<New Tricount>" : tricount.Title);
     }
 
