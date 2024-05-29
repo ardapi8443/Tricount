@@ -376,6 +376,8 @@ namespace prbd_2324_g01.ViewModel {
                 }
                 //refresh the operations
                 DisplayRepartitions();
+                
+                
             }
     }
     

@@ -17,6 +17,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private Tricount _tricount;
         private Template _template;
+        private int Myself;
        
         private bool _isNew;
         private string _updatedTitle;
@@ -171,6 +172,7 @@ namespace prbd_2324_g01.ViewModel {
             newTricount = tricount.IsNew;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
+            Myself = CurrentUser.UserId;
 
             if (tricount.IsNew) {
                 UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
@@ -203,13 +205,10 @@ namespace prbd_2324_g01.ViewModel {
                 App.Messages.MSG_DEL_PARTICIPANT, (PVM) => {
                     DeleteParticipant(PVM);
                 });
-
-            AddTemplateCommand = new RelayCommand(() => {
-                var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-                AddTemplate(Tricount, new Template(), true, templateItems, Templates);
-            });
+            
+            AddTemplateCommand = new RelayCommand(AddTemplate, CanAddTemplate);
             AddEvryBodyCommand = new RelayCommand(AddEveryBody, CanAddEverybody);
-            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant);
+            AddMySelfCommand = new RelayCommand(AddMySelfInParticipant, CanAddMySelfInParticipant);
             SaveCommand = new RelayCommand(SaveAction, CanSaveAction);
             CancelCommand = new RelayCommand(CancelAction, CanCancelAction);
             AddParticipant = new RelayCommand(AddParticipantAction, CanAddParticipantAction);
@@ -231,6 +230,15 @@ namespace prbd_2324_g01.ViewModel {
                 UpdatedDescription = tricount.Description;
                 
             }
+        }
+        
+        private void AddTemplate() {
+            var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
+            AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+        }
+
+        private bool CanAddTemplate() {
+            return !newTricount;
         }
         
         private void AddParticipantAction() {
@@ -311,9 +319,20 @@ namespace prbd_2324_g01.ViewModel {
             }
 
             SortPaticipants();
-
-    }
+        }
     
+        private bool CanAddMySelfInParticipant() {
+            
+            foreach (ParticipantViewModel PVM  in Participants) {
+                if (Myself == PVM.User.UserId) {
+                    return false;
+                }
+            }
+
+            return true;
+            
+        }
+        
 
         public override void SaveAction() {
             Tricount.Title = UpdatedTitle;
@@ -352,7 +371,7 @@ namespace prbd_2324_g01.ViewModel {
             
         }
 
-        public bool CanSaveAction() {
+        private bool CanSaveAction() {
             return !HasErrors && !string.IsNullOrEmpty(UpdatedTitle);
         }
 
@@ -429,6 +448,10 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(UpdatedTitle), "Title is required.");
             } else if (titleExist) {
                 AddError(nameof(UpdatedTitle), "Title must be unique.");
+            }
+                        
+             if (Date > DateTime.Today) {
+                AddError(nameof(Date), "cannot be in the future");
             }
     
             return !HasErrors;
