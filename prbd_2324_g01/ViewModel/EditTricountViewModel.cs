@@ -323,16 +323,15 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private bool CanAddMySelfInParticipant() {
-            bool isCurrentInParticipants = false;
-
-            foreach (User u  in UsersNotSubscribed) {
-                if (CurrentUser.FullName == u.FullName) {
-                    isCurrentInParticipants = true;
-                    break;
+            
+            foreach (ParticipantViewModel PVM  in Participants) {
+                if (CurrentUser.UserId == PVM.User.UserId) {
+                    return false;
                 }
             }
+
+            return true;
             
-            return !newTricount || isCurrentInParticipants;
         }
 
         private void CancelEditTricount() { }
