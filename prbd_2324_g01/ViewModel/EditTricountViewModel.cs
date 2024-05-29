@@ -13,8 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel {
-    public class EditTricountViewModel : ViewModelCommon
-    {
+    public class EditTricountViewModel : ViewModelCommon {
 
         private Tricount _tricount;
         private Template _template;
@@ -199,6 +198,7 @@ namespace prbd_2324_g01.ViewModel {
                     AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems, Templates);
                 });
             
+            
             Register<ParticipantViewModel>(
                 App.Messages.MSG_DEL_PARTICIPANT, (PVM) => {
                     DeleteParticipant(PVM);
@@ -232,11 +232,7 @@ namespace prbd_2324_g01.ViewModel {
                 
             }
         }
-
-        private void UpdateTemplateTitle(TemplateViewModel templateViewModel) {
-            
-        }
-
+        
         private void AddParticipantAction() {
 
             foreach (User u in UsersNotSubscribed) {
@@ -269,12 +265,7 @@ namespace prbd_2324_g01.ViewModel {
             
             FullnameNotSubscribed = res;
         }
-
-        private void DeleteTemplate(Template template) {
-            template.Deleted();
-            OnRefreshData();
-        }
-
+        
         private void AddEveryBody() {
             
             if (!UsersNotSubscribed.IsNullOrEmpty()) {
@@ -322,8 +313,7 @@ namespace prbd_2324_g01.ViewModel {
             SortPaticipants();
 
     }
-
-        private void CancelEditTricount() { }
+    
 
         public override void SaveAction() {
             Tricount.Title = UpdatedTitle;

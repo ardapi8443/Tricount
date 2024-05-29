@@ -25,7 +25,7 @@ namespace prbd_2324_g01.ViewModel {
         private ObservableCollectionFast<User> _users = new();
         private DateTime _date;
         private ObservableCollectionFast<Template> _templates = new();
-        private ObservableCollection<UserTemplateItemViewModel> _templateItems;
+        private ObservableCollectionFast<UserTemplateItemViewModel> _templateItems;
         private string _errorMessage;
 
         private bool _isNewTemplate = true;
@@ -75,7 +75,7 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _templates, value);
         }
         
-        public ObservableCollection<UserTemplateItemViewModel> TemplateItems {
+        public ObservableCollectionFast<UserTemplateItemViewModel> TemplateItems {
             get => _templateItems;
             set => SetProperty(ref _templateItems, value, () => { Validate();});
             // set {
@@ -137,12 +137,12 @@ namespace prbd_2324_g01.ViewModel {
             //we populate the Users Combobox
             IQueryable<ICollection<User>> query;
             if (!isNew) {
-                query = from o in PridContext.Context.Operations
+                query = from o in Context.Operations
                     where o.OperationId == operation.OperationId
                     select o.Users;
                   
             } else {
-                query = from t in PridContext.Context.Tricounts
+                query = from t in Context.Tricounts
                     where t.Id == tricount.Id
                     select t.Subscribers;
             }
@@ -156,7 +156,7 @@ namespace prbd_2324_g01.ViewModel {
             SelectedUser = isNew ? Users.FirstOrDefault(u => u.UserId == App.CurrentUser.UserId) : operation.Initiator;
             
             //we populate the Templates Combobox
-            var q2 = from t in PridContext.Context.Templates
+            var q2 = from t in Context.Templates
                 where t.Tricount == tricount.Id
                 select t;
             var templates = q2.ToList();
@@ -180,29 +180,33 @@ namespace prbd_2324_g01.ViewModel {
             DeleteOperation = new RelayCommand(DeleteOperationAction);
             
             Register(App.Messages.MSG_CHECKBOX_CHANGED, () => Validate());
+
+            Register<Template>(App.Messages.MSG_ADD_TEMPLATE_OPE, (t) => {
+                AddTemplate(t);
+            });
         }
 
         private void DisplayRepartitions() {
             // we populate the TemplateItems
-            var queryUsersID = from s in PridContext.Context.Subscriptions
+            var queryUsersID = from s in Context.Subscriptions
                 where s.TricountId == _tricount.Id
                 select s.UserId;
             //transform the list of user ids to a list of users
-            var userTemplateItems = queryUsersID.ToList().Select(u => PridContext.Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
+            var userTemplateItems = queryUsersID.ToList().Select(u => Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
             
             if (!_isNew) {
                 // Fetch the information from the Repartition table
-                var repartitionItems = PridContext.Context.Repartitions
+                var repartitionItems = Context.Repartitions
                     .AsNoTracking()
                     .Where(r => r.OperationId == _operation.OperationId)
                     .ToList();
 
-                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName,
                         repartitionItems.FirstOrDefault(ri => ri.UserId == u.UserId)?.Weight ?? 0,
                         false, true)));
             } else {
-                TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+                TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, true)));
             }
             //calculate and send the total of weight and the amount to the templateItems
@@ -302,7 +306,6 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public void ApplyTemplateAction() {
-            _isNewTemplate = false;
             
             var templateItems = Context.TemplateItems
                 .AsNoTracking()
@@ -317,7 +320,7 @@ namespace prbd_2324_g01.ViewModel {
                 .OrderBy(t => t.FullName)
                 .ToList();
                         
-            TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
+            TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
                 userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
                     _isNew, true)));
@@ -334,12 +337,16 @@ namespace prbd_2324_g01.ViewModel {
                 template = new Template();
             } else {
                 template = Context.Templates.Find(SelectedTemplate.TemplateId);
-            }
+            } 
             // need to update code here
-            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,null) {
+            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,new ObservableCollectionFast<TemplateViewModel>()) {
                 Owner = App.Current.MainWindow
             };
-            addTemplateDialog.ShowDialog();
+            addTemplateDialog.ShowDialog(); 
+        }
+  
+        public void AddTemplate(Template template) {
+            Templates.Add(template);
         }
 
         public void DeleteOperationAction() {
@@ -363,7 +370,7 @@ namespace prbd_2324_g01.ViewModel {
         //vraiment utile ici ?
         protected override void OnRefreshData() {
                 // Refresh the operation
-                var operation = PridContext.Context.Operations.Find(Operation.OperationId);
+                var operation = Context.Operations.Find(Operation.OperationId);
                 if (operation != null) {
                     Operation = operation;
                 }
