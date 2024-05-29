@@ -143,10 +143,13 @@ namespace prbd_2324_g01.ViewModel {
 
         protected override void OnRefreshData() {
             //refresh tricount
+            NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             var tricount = Tricount.GetTricountById(Tricount.Id);
             Tricount = tricount;
-            NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
-            NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+            //Title = Tricount.Title;
+            //Description = Tricount.Description;
+            //RaisePropertyChanged();
+            //NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
             
             //refresh operations

@@ -18,6 +18,7 @@ public class MainViewModel : ViewModelCommon {
             App.ClearContext();
             // notifie tout le monde qu'il faut rafraîchir les données
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
+            NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,null);
         });
 
         ResetCommand = new RelayCommand(() => {

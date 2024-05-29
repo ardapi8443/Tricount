@@ -34,10 +34,10 @@ public partial class MainView : WindowBase {
          member => DoDisplayEditTricount(member, true));
 
         Register<Tricount>(App.Messages.MSG_TITLE_CHANGED,
-            t => DoRenameTab(string.IsNullOrEmpty(t.Title) ? "<New Member>" : t.Title));
+            t => DoRenameTab(string.IsNullOrEmpty(t.Title) ? "<New Tricount>" : t.Title));
 
         Register<Tricount>(App.Messages.MSG_CLOSE_TAB,
-            tricount => DoCloseTab(tricount));
+            tricount => { DoCloseTab(tricount); Console.WriteLine(tricount.Title); }); ;
     }
 
     private void DoDisplayTricount(Tricount tricount, bool isNew) {
@@ -67,7 +67,8 @@ public partial class MainView : WindowBase {
     }
 
     private void DoRenameTab(string header) {
-        if (tabControl.SelectedItem is TabItem tab) {
+        if (tabControl.SelectedItem is TabItem tab && !tab.Tag.Equals("Tricounts") && tab.Tag.Equals(header)) {
+            Console.WriteLine("Rename tab " + tab.Tag +  "to " + header);
             MyTabControl.RenameTab(tab, header);
             tab.Tag = header;
         }

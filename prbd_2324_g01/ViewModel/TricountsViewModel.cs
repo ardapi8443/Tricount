@@ -45,13 +45,7 @@ public class TricountsViewModel : ViewModelCommon {
                 select t;
         } else {
             query = Tricount.tricountByMember(CurrentUser);
-            Console.WriteLine("Filter is empty");
         }
-
-        foreach (var t in query) {
-            Console.WriteLine(t.Title);
-        }
-        Console.WriteLine("");
 
         Tricounts = new ObservableCollection<Tricount>(query);
 

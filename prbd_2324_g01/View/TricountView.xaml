@@ -25,12 +25,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
+       <TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold">
             <Run Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
             <Run Text=" - "/>
             <Run Text="{Binding Description}" FontWeight="Thin" FontStyle="Italic" FontSize="18"/>
         </TextBlock>
-
+       <!--<TextBlock x:Name="Tricount" Grid.Row="0" Grid.ColumnSpan="2" 
+                  Text="{Binding Title}" HorizontalAlignment="Center" FontWeight="Bold"/>
+       -->
+       
         <Label x:Name="Creation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Creation}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
                 
         <ListView Grid.Row="2" x:Name="listView" ItemsSource="{Binding Operations}" BorderBrush="Transparent" 
