@@ -27,5 +27,9 @@ public class TemplateItem : EntityBase<PridContext> {
 
     // A parameterless constructor is needed for Entity Framework
     public TemplateItem() { }
+
+    public void Add() {
+        Context.TemplateItems.Add(this);
+    }
 }
 

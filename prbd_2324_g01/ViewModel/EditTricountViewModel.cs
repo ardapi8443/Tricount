@@ -329,30 +329,31 @@ namespace prbd_2324_g01.ViewModel {
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
-            
-            if (newTricount) { 
+
+            if (newTricount) {
                 Tricount.IsNew = false;
-               Context.Add(Tricount);
+                Context.Add(Tricount);
             }
-            
+
             Context.SaveChanges();
-            
-            foreach(ParticipantViewModel PVM in Participants) {
+
+            foreach (ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
-                    
-                    Subscription NewSub = new (PVM.User.UserId, Tricount.Id);
+
+                    Subscription NewSub = new(PVM.User.UserId, Tricount.Id);
                     NewSub.Add();
                 }
             }
+
+            SaveTemplate();
+            Context.SaveChanges();
             
             if (!IsNew) {
                 foreach (User u in UsersNotSubscribed) {
                     Subscription.DeleteIfExist(Tricount.Id, u.UserId);
                 }
-            
             }
-            
-            
+
             NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
@@ -453,6 +454,75 @@ namespace prbd_2324_g01.ViewModel {
 
         }
         
+        private void SaveTemplate() {
+            
+         KeepTemplateFromView();
+         
+         foreach (TemplateViewModel templateViewModel in Templates) {
+            Template existingTemplate = Context.Templates
+                .Include(t => t.TemplateItems)
+                .FirstOrDefault(t => t.TemplateId == templateViewModel.Template.TemplateId);
+
+            if (existingTemplate != null) {
+                // Mise à jour du template existant
+                existingTemplate.Title = templateViewModel.Title;
+                
+            } else {
+                // Création d'un nouveau template
+                Template template = new Template {
+                    TemplateId = templateViewModel.Template.TemplateId,
+                    Title = templateViewModel.Title,
+                    Tricount = Tricount.Id,
+                    TemplateItems = new List<TemplateItem>()
+                };
+                Context.Templates.Add(template);
+                existingTemplate = template; 
+            }
+
+            foreach (UserTemplateItemViewModel userTemplateItemViewModel in templateViewModel.TemplateItems) {
+                User user = Context.Users.FirstOrDefault(u => u.FullName == userTemplateItemViewModel.UserName);
+                if (user != null) {
+                    TemplateItem existingTemplateItem = existingTemplate.TemplateItems
+                        .FirstOrDefault(ti => ti.User == user.UserId);
+
+                    if (existingTemplateItem != null) {
+                        // Mise à jour de l'item existant
+                        existingTemplateItem.Weight = userTemplateItemViewModel.Weight;
+                    } else {
+                        if (!Context.TemplateItems.Local.Any(ti =>
+                                ti.User == user.UserId && ti.Template == existingTemplate.TemplateId)) {
+                            // Création d'un nouvel item
+                            TemplateItem templateItem = new TemplateItem {
+                                Weight = userTemplateItemViewModel.Weight,
+                                User = user.UserId,
+                                Template = existingTemplate.TemplateId,
+                                TemplateFromTemplateItem = existingTemplate,
+                                UserFromTemplateItem = user
+                            };
+                            existingTemplate.TemplateItems.Add(templateItem);
+                            Context.TemplateItems.Add(templateItem);
+                        }
+                    }
+                }
+            } 
+         } 
+        }
+
+        private void KeepTemplateFromView() {
+            List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
+            
+            var templatesInDb = Context.Templates
+                .Where(t => t.Tricount == Tricount.Id)
+                .ToList();
+            
+            var templatesToDelete = templatesInDb
+                .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))
+                .ToList();
+            
+            foreach (var templateToDelete in templatesToDelete) {
+                Context.Templates.Remove(templateToDelete);
+            }
+        }
     }
     
 }

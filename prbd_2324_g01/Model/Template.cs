@@ -17,6 +17,8 @@ public class Template : EntityBase<PridContext> {
     public virtual ICollection<User> Users { get;  set; } = new HashSet<User>();
 
    public virtual Tricount TricountFromTemplate { get; set; }
+   
+   public virtual ICollection<TemplateItem> TemplateItems { get; set; }
 
     public Template(int TemplateId, string Title, int Tricount) { 
     
@@ -28,8 +30,12 @@ public class Template : EntityBase<PridContext> {
     public Template() { }
 
     public static List<Template> templateByTricount(int Tricount) {
-        return PridContext.Context.Templates.Where(template => template.Tricount == Tricount).ToList();
+        return Context.Templates.Where(template => template.Tricount == Tricount).ToList();
         
+    }
+
+    public void Add() {
+        Context.Templates.Add(this);
     }
 
     public void Deleted() {
