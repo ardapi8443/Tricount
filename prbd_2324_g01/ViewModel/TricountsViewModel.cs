@@ -33,8 +33,7 @@ public class TricountsViewModel : ViewModelCommon {
     
     public ICommand DisplayTricountDetails { get; set; }
     private void ApplyFilterAction() {
-        
-        IEnumerable<Tricount> query = Tricount.tricountByMember(CurrentUser);
+        IEnumerable<Tricount> query;
         
         if (!string.IsNullOrEmpty(Filter)) {
             query = from t in Tricounts
@@ -44,7 +43,15 @@ public class TricountsViewModel : ViewModelCommon {
                       || t.Subscribers.Any(sub => sub.FullName.Contains(Filter))
                       || t.Operations.Any(ope => ope.Title.Contains(Filter))
                 select t;
+        } else {
+            query = Tricount.tricountByMember(CurrentUser);
+            Console.WriteLine("Filter is empty");
         }
+
+        foreach (var t in query) {
+            Console.WriteLine(t.Title);
+        }
+        Console.WriteLine("");
 
         Tricounts = new ObservableCollection<Tricount>(query);
 
@@ -89,6 +96,10 @@ public class TricountsViewModel : ViewModelCommon {
         
         NotifyColleagues(App.Messages.MSG_DISPLAY_NEW_TRICOUNT, tricount);
        
+    }
+    
+    protected override void OnRefreshData() {
+        ApplyFilterAction();
     }
 
 }
