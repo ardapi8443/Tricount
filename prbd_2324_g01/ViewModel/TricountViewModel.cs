@@ -145,6 +145,9 @@ namespace prbd_2324_g01.ViewModel {
             //refresh tricount
             var tricount = Tricount.GetTricountById(Tricount.Id);
             Tricount = tricount;
+            NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
+            NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+            NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
             
             //refresh operations
             DisplayOperations();
