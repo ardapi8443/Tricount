@@ -449,8 +449,11 @@ namespace prbd_2324_g01.ViewModel {
             } else if (titleExist) {
                 AddError(nameof(UpdatedTitle), "Title must be unique.");
             }
+            
+            DateTime TempDate = new DateTime(
+                Date.Year, Date.Month, Date.Day, 0, 0, 0);
                         
-             if (Date > DateTime.Today) {
+             if (TempDate > DateTime.Today) {
                 AddError(nameof(Date), "cannot be in the future");
             }
     
