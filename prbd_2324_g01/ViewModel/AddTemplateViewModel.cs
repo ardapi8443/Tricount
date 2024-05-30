@@ -78,12 +78,12 @@ namespace prbd_2324_g01.ViewModel {
 
         public AddTemplateViewModel(Tricount tricount, Template template, bool isNew,
             ObservableCollection<UserTemplateItemViewModel> templateItems,
-            ObservableCollectionFast<TemplateViewModel> templateViewModels) {
+            ObservableCollectionFast<TemplateViewModel> templateViewModels, bool fromTemplateView) {
             TemplateItems = templateItems;
             Templates = templateViewModels;
 
             if (isNew) {
-                if (Templates.IsNullOrEmpty()) {
+                if (!fromTemplateView) {
                     DisplayAddTemplateWindows(TemplateItems);
                     AddTemplateDbCommand = new RelayCommand(() => AddNewTemplateDB(Title, tricount.Id, TemplateItems));
                 } else {

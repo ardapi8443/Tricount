@@ -339,7 +339,7 @@ namespace prbd_2324_g01.ViewModel {
                 template = Context.Templates.Find(SelectedTemplate.TemplateId);
             } 
             // need to update code here
-            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,new ObservableCollectionFast<TemplateViewModel>()) {
+            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,new ObservableCollectionFast<TemplateViewModel>(),false) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog(); 

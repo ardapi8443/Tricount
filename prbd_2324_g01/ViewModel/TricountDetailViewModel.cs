@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace prbd_2324_g01.ViewModel
 {
-   public class TricountDetailViewModel : ViewModelCommon
-    {
+   public class TricountDetailViewModel : ViewModelCommon {
         public Tricount Tricount { get; set; }
         public string UpdatedDescription { get; set; }
         public User CurrentUser { get; set; }

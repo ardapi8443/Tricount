@@ -197,7 +197,7 @@ namespace prbd_2324_g01.ViewModel {
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_EDIT_TEMPLATE, (TemplateViewModel) => {
-                    AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems, Templates);
+                    AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems, Templates,true);
                 });
             
             
@@ -234,7 +234,7 @@ namespace prbd_2324_g01.ViewModel {
         
         private void AddTemplate() {
             var templateItems = new ObservableCollection<UserTemplateItemViewModel>();
-            AddTemplate(Tricount, new Template(), true, templateItems, Templates);
+            AddTemplate(Tricount, new Template(), true, templateItems, Templates,true);
         }
 
         private bool CanAddTemplate() {
@@ -335,6 +335,8 @@ namespace prbd_2324_g01.ViewModel {
         
 
         public override void SaveAction() {
+            NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+            
             Tricount.Title = UpdatedTitle;
             Tricount.Description = UpdatedDescription;
             Tricount.CreatedAt = Date;
@@ -343,7 +345,7 @@ namespace prbd_2324_g01.ViewModel {
                 Tricount.IsNew = false;
                 Context.Add(Tricount);
             }
-
+            
             Context.SaveChanges();
 
             foreach (ParticipantViewModel PVM in Participants) {
@@ -362,9 +364,8 @@ namespace prbd_2324_g01.ViewModel {
                     Subscription.DeleteIfExist(Tricount.Id, u.UserId);
                 }
             }
-
+            
             NotifyColleagues(App.Messages.MSG_TITLE_CHANGED, Tricount);
-            NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,Tricount);
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, Tricount);
             
@@ -380,9 +381,10 @@ namespace prbd_2324_g01.ViewModel {
         }
         
 
-        private void AddTemplate(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> existingItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
+        private void AddTemplate(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> existingItems, 
+            ObservableCollectionFast<TemplateViewModel> templateViewModels, bool fromTemplateView) {
             IsNew = isNew;
-            var addTemplateDialog = new AddTemplateView(tricount, template, isNew, existingItems,templateViewModels) {
+            var addTemplateDialog = new AddTemplateView(tricount, template, isNew, existingItems,templateViewModels, fromTemplateView) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog();

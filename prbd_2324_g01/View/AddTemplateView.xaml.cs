@@ -8,11 +8,12 @@ namespace prbd_2324_g01.View {
     public partial class AddTemplateView : Window {
         
         private readonly AddTemplateViewModel _viewModel;
-        public AddTemplateView(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems, ObservableCollectionFast<TemplateViewModel> templateViewModels) {
+        public AddTemplateView(Tricount tricount, Template template, bool isNew, ObservableCollection<UserTemplateItemViewModel> templateItems, 
+            ObservableCollectionFast<TemplateViewModel> templateViewModels, bool fromTemplateView) {
         
             InitializeComponent();
 
-            _viewModel = new AddTemplateViewModel(tricount, template, isNew, templateItems,templateViewModels); 
+            _viewModel = new AddTemplateViewModel(tricount, template, isNew, templateItems,templateViewModels, fromTemplateView); 
         
             _viewModel.RequestClose += ViewModel_RequestClose;
         
