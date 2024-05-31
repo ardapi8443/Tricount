@@ -105,12 +105,14 @@ namespace prbd_2324_g01.ViewModel {
             get => _date;
             set {
                 if (_date != value) {
+                    // SetProperty(ref _date, value);
                     SetProperty(ref _date, value);
                     RaisePropertyChanged(nameof(Date));
+                    Validate();
                 }
             }
         }
-
+        
         public ICommand AddTemplateCommand { get; private set; }
 
         public ICommand AddMySelfCommand { get; private set; }
