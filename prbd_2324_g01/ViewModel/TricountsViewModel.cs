@@ -72,6 +72,7 @@ public class TricountsViewModel : ViewModelCommon {
         
         Register<Tricount>(App.Messages.MSG_REFRESH_TRICOUNT, (tricount) => ClearFilterBeforeApplyFilter());
         
+        
         AddTricount = new RelayCommand(AddTricountAction);
         
         ClearFilter = new RelayCommand(() => Filter = "");
@@ -82,7 +83,6 @@ public class TricountsViewModel : ViewModelCommon {
             NotifyColleagues(App.Messages.MSG_DISPLAY_TRICOUNT, vm.Tricount);
         });
     }
-
     private void ClearFilterBeforeApplyFilter() {
         Filter = "";
         ApplyFilterAction();

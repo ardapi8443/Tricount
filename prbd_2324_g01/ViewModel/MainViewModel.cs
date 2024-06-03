@@ -25,6 +25,7 @@ public class MainViewModel : ViewModelCommon {
             App.ClearContext();
             App.PrepareDatabase();
             //ajouter tout les App.Messages pour refresh les données
+            NotifyColleagues(App.Messages.REM_NEW_TRICOUNT);
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
             NotifyColleagues(App.Messages.MSG_REFRESH_TRICOUNT,null);
         });

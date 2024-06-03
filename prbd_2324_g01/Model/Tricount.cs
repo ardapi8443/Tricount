@@ -268,6 +268,7 @@ public class Tricount : EntityBase<PridContext> {
                 where t.Id == id
                 select t;
         return q.First();
+        // return q.FirstOrDefault();
     }
 
     public List<User> getUsersNotSubscribed() {
@@ -301,6 +302,5 @@ public class Tricount : EntityBase<PridContext> {
     public void addUserToSubscribers(User u) {
         this.Subscribers.Add(u);
     }
-
 }
 

@@ -12,8 +12,15 @@ namespace prbd_2324_g01.View;
 public partial class MainView : WindowBase {
     
     Tricount openTricount;
+
+    private List<Tricount> NewTricount = new List<Tricount>();
+    
     public MainView() {
         InitializeComponent();
+        
+        Register(App.Messages.REM_NEW_TRICOUNT, () => ClearNewTricount());
+        
+        Register<Tricount>(App.Messages.MSG_ADD_NEW_TRICOUNT, tricount => UpdateNewTricountList(tricount));
 
         Register<Tricount>(App.Messages.MSG_NEW_TRICOUNT,
             member => DoDisplayTricount(member, true));
@@ -38,6 +45,20 @@ public partial class MainView : WindowBase {
 
         Register<Tricount>(App.Messages.MSG_CLOSE_TAB,
             tricount => { DoCloseTab(tricount); Console.WriteLine(tricount.Title); }); ;
+    }
+
+    private void UpdateNewTricountList(Tricount tricount) {
+        NewTricount.Add(tricount);
+    }
+    
+    private void ClearNewTricount() {
+      
+        foreach (Tricount t in NewTricount) {
+           var tab =  tabControl.FindByTag(t.Title);
+           if (tab != null) {
+               tabControl.CloseByTag(tab.Tag.ToString());
+           }
+        }
     }
 
     private void DoDisplayTricount(Tricount tricount, bool isNew) {

@@ -348,7 +348,9 @@ namespace prbd_2324_g01.ViewModel {
                 Context.Add(Tricount);
             }
             
-            Context.SaveChanges();
+            Context.SaveChanges(); 
+            
+            NotifyColleagues(App.Messages.MSG_ADD_NEW_TRICOUNT, Tricount);
 
             foreach (ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {

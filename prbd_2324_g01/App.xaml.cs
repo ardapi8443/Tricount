@@ -33,7 +33,9 @@ public partial class App {
         MSG_CHECKBOX_CHANGED,
         MSG_DEL_PARTICIPANT,
         MSG_ADD_TEMPLATE,
-        MSG_ADD_TEMPLATE_OPE
+        MSG_ADD_TEMPLATE_OPE,
+        REM_NEW_TRICOUNT,
+        MSG_ADD_NEW_TRICOUNT
     }
 
     public App() {
