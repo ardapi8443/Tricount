@@ -72,7 +72,8 @@ namespace prbd_2324_g01.ViewModel {
                 Email = Email,
                 HashedPassword = SecretHasher.Hash(Password) 
             };
-            Context.Users.Add(newUser);
+            // Context.Users.Add(newUser);
+            Context.Add(newUser);
             Context.SaveChanges();
             NotifyColleagues(App.Messages.MSG_LOGIN, newUser);
         }

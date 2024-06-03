@@ -44,7 +44,7 @@ public partial class MainView : WindowBase {
             t => DoRenameTab(string.IsNullOrEmpty(t.Title) ? "<New Tricount>" : t.Title));
 
         Register<Tricount>(App.Messages.MSG_CLOSE_TAB,
-            tricount => { DoCloseTab(tricount); Console.WriteLine(tricount.Title); }); ;
+            tricount => { DoCloseTab(tricount);}); ;
     }
 
     private void UpdateNewTricountList(Tricount tricount) {
