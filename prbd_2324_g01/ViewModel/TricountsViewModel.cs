@@ -36,12 +36,14 @@ public class TricountsViewModel : ViewModelCommon {
         IEnumerable<Tricount> query;
         
         if (!string.IsNullOrEmpty(Filter)) {
+            string lowerFilter = Filter.ToLower();
+            
             query = from t in Tricounts
-                where t.Title.Contains(Filter)
-                      || t.Description.Contains(Filter)
-                      || User.UserById(t.Creator).FullName.Contains(Filter)
-                      || t.Subscribers.Any(sub => sub.FullName.Contains(Filter))
-                      || t.Operations.Any(ope => ope.Title.Contains(Filter))
+                where t.Title.ToLower().Contains(lowerFilter)
+                      || t.Description.ToLower().Contains(lowerFilter)
+                      || User.UserById(t.Creator).FullName.ToLower().Contains(lowerFilter)
+                      || t.Subscribers.Any(sub => sub.FullName.ToLower().Contains(lowerFilter))
+                      || t.Operations.Any(ope => ope.Title.ToLower().Contains(lowerFilter))
                 select t;
         } else {
             query = Tricount.tricountByMember(CurrentUser);
