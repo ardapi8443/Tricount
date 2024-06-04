@@ -33,13 +33,16 @@ public class TricountsViewModel : ViewModelCommon {
     
     public ICommand DisplayTricountDetails { get; set; }
     private void ApplyFilterAction() {
+        //on vide la vue
+        TricountsDetailVM.Clear();
+        //on va chercher tout les tricounts du user
+        IEnumerable<Tricount> tricountList = Tricount.tricountByMember(CurrentUser);
         
-        ClearTricountList();
-        
+        //si le filtre n'est pas vide, on la liste de tricount en fonction du filtre
         if (!string.IsNullOrEmpty(Filter)) {
             string lowerFilter = Filter.ToLower();
             
-            IEnumerable<Tricount> query = from t in Tricounts
+            IEnumerable<Tricount> query = from t in tricountList
                 where t.Title.ToLower().Contains(lowerFilter)
                       || t.Description.ToLower().Contains(lowerFilter)
                       || User.UserById(t.Creator).FullName.ToLower().Contains(lowerFilter)
@@ -48,24 +51,19 @@ public class TricountsViewModel : ViewModelCommon {
                 select t;
             
             Tricounts = new ObservableCollection<Tricount>(query);
-        } 
         
-        TricountsDetailVM.Clear();
+        //sinon on renvoie la liste complète
+        } else {
+            Tricounts = new ObservableCollection<Tricount>(tricountList);
+        }
         
+        //enfin, on ajoute les tricounts à la vue
         foreach (var tricount in Tricounts) {
             TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
         }
         
     }
-
-    private void ClearTricountList() {
-        IEnumerable<Tricount>  query = Tricount.tricountByMember(CurrentUser);
-        Tricounts = new ObservableCollection<Tricount>(query);
-        foreach (var tricount in Tricounts) {
-            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
-        }
-        
-    }
+    
     private void InitiateVM() {
         IEnumerable<Tricount> tricounts = Tricount.tricountByMember(CurrentUser);
 

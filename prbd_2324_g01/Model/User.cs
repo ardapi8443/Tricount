@@ -94,6 +94,7 @@ public class User : EntityBase<PridContext> {
         return  PridContext.Context.Users.ToList();
     }
 
+    //renvoie la balance du user pour un tricount donné déjà arrondie à 2 décimales
     public double GetBalanceByTricount(int tricountId) {
         //Pour calculer la balance globale du tricount, vous devez considérer que chaque participant au tricount possède un "compte" virtuel dont le solde est nul au départ.
         //Ensuite, pour chacune des dépenses du tricount, vous effectuez les opérations suivantes :
@@ -130,7 +131,7 @@ public class User : EntityBase<PridContext> {
             }
         }
 
-        return balance;
+        return Math.Round(balance, 2);
     }
 
     public static List<User> GetAllUserButOne(User creator) {
