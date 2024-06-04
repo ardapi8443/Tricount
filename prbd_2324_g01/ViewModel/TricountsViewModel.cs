@@ -33,31 +33,38 @@ public class TricountsViewModel : ViewModelCommon {
     
     public ICommand DisplayTricountDetails { get; set; }
     private void ApplyFilterAction() {
-        IEnumerable<Tricount> query;
+        
+        ClearTricountList();
         
         if (!string.IsNullOrEmpty(Filter)) {
             string lowerFilter = Filter.ToLower();
             
-            query = from t in Tricounts
+            IEnumerable<Tricount> query = from t in Tricounts
                 where t.Title.ToLower().Contains(lowerFilter)
                       || t.Description.ToLower().Contains(lowerFilter)
                       || User.UserById(t.Creator).FullName.ToLower().Contains(lowerFilter)
                       || t.Subscribers.Any(sub => sub.FullName.ToLower().Contains(lowerFilter))
                       || t.Operations.Any(ope => ope.Title.ToLower().Contains(lowerFilter))
                 select t;
-        } else {
-            query = Tricount.tricountByMember(CurrentUser);
-        }
-
-        Tricounts = new ObservableCollection<Tricount>(query);
-
+            
+            Tricounts = new ObservableCollection<Tricount>(query);
+        } 
+        
         TricountsDetailVM.Clear();
         
         foreach (var tricount in Tricounts) {
             TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
         }
+        
+    }
 
-
+    private void ClearTricountList() {
+        IEnumerable<Tricount>  query = Tricount.tricountByMember(CurrentUser);
+        Tricounts = new ObservableCollection<Tricount>(query);
+        foreach (var tricount in Tricounts) {
+            TricountsDetailVM.Add(new TricountDetailViewModel(tricount));
+        }
+        
     }
     private void InitiateVM() {
         IEnumerable<Tricount> tricounts = Tricount.tricountByMember(CurrentUser);
