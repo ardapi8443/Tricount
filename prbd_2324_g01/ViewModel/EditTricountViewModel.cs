@@ -447,13 +447,16 @@ namespace prbd_2324_g01.ViewModel {
             
             bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id);
 
-            if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
-                AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
-            }
             if (string.IsNullOrEmpty(UpdatedTitle)) {
                 AddError(nameof(UpdatedTitle), "Title is required.");
+            } else if (UpdatedTitle.Length < 3) {
+                AddError(nameof(UpdatedTitle), "Minimum 3 characters required.");
             } else if (titleExist) {
                 AddError(nameof(UpdatedTitle), "Title must be unique.");
+            }
+            
+            if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
+                AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
             }
             
             DateTime TempDate = new DateTime(
