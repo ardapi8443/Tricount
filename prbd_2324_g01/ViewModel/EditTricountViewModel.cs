@@ -8,6 +8,7 @@ using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -549,6 +550,6 @@ namespace prbd_2324_g01.ViewModel {
                 Context.Templates.Remove(templateToDelete);
             }
         }
+        
     }
-    
 }
