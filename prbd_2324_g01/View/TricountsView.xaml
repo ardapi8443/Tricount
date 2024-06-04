@@ -33,7 +33,6 @@
 
         <ListView x:Name="listView"
                   ItemsSource="{Binding TricountsDetailVM}" Grid.Row="1" BorderBrush="Transparent"
-                 
                   SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
