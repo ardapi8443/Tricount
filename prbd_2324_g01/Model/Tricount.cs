@@ -283,6 +283,7 @@ public class Tricount : EntityBase<PridContext> {
             .Where(user => !Context.Subscriptions
                                .Any(sub => sub.UserId == user.UserId && sub.TricountId == this.Id) 
                            && user.Role == Role.Viewer)
+            .OrderBy(x => x.FullName)
             .ToList();
 
         return usersNotSubscribed;

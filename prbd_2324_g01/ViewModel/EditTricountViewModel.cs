@@ -175,6 +175,7 @@ namespace prbd_2324_g01.ViewModel {
             newTricount = tricount.IsNew;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
+            UsersSubscribed = UsersSubscribed.OrderBy(x => x.FullName).ToList();
             Myself = CurrentUser.UserId;
 
             if (tricount.IsNew) {
@@ -275,6 +276,7 @@ namespace prbd_2324_g01.ViewModel {
             }
             
             FullnameNotSubscribed = res;
+            FullnameNotSubscribed.Sort();
         }
         
         private void AddEveryBody() {
@@ -475,6 +477,7 @@ namespace prbd_2324_g01.ViewModel {
             
             Participants.Remove(PVM);
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
+            UsersNotSubscribed = UsersNotSubscribed.OrderBy(x => x.FullName).ToList();
             setFullnameNotSubscribed();
             PVM.Dispose();
 
