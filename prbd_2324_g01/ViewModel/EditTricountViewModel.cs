@@ -337,6 +337,7 @@ namespace prbd_2324_g01.ViewModel {
         
 
         public override void SaveAction() {
+            ClearErrors();
             NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
             
             Tricount.Title = UpdatedTitle;
