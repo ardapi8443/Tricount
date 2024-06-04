@@ -301,6 +301,14 @@ public class Tricount : EntityBase<PridContext> {
         return res;
     }
 
+    public ICollection<User> GetSubscribersForOperation() {
+        var query = from t in PridContext.Context.Tricounts
+            where t.Id == Id
+            select t.Subscribers;
+        
+        return query.First();
+    }
+
     public void Save() {
         Context.Tricounts.Add(this);
         
