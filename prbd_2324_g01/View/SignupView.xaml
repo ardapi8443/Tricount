@@ -10,7 +10,7 @@
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=vm:SignupViewModel, IsDesignTimeCreatable=False}"
             FocusManager.FocusedElement="{Binding ElementName=fullNameBox}" ResizeMode="NoResize"
-            Title="Signup" WindowStartupLocation="CenterScreen" Height="370" Width="350">
+            Title="Signup" WindowStartupLocation="CenterScreen" Height="370" Width="370">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
