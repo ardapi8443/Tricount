@@ -43,6 +43,9 @@ public partial class App {
             DateTimeFormat = {
                 ShortDatePattern = "dd/MM/yyyy",
                 DateSeparator = "/"
+            },
+            NumberFormat = {
+                NumberDecimalSeparator = ","
             }
         };
         CultureInfo.DefaultThreadCurrentCulture = ci;

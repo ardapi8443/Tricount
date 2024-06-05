@@ -70,7 +70,7 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _date, value, () => { Validate();});
         }
 
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedAt { get;  private set; }
 
         public ObservableCollectionFast<Template> Templates {
             get => _templates;
@@ -102,7 +102,7 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Title), "min 3 characters");
             }
             
-            if (Amount < 0.01) {
+            if ( double.IsPositive(Amount) && Amount < 0.01) {
                 AddError(nameof(Amount), "minimum 1 cent");
             }
 
@@ -157,11 +157,11 @@ namespace prbd_2324_g01.ViewModel {
             var q2 = from t in Context.Templates
                 where t.Tricount == tricount.Id
                 select t;
-            var templates = q2.ToList();
+            var templates = q2.OrderBy(t =>t.Title).ToList();
             
             if (!templates.IsNullOrEmpty()) {
                foreach (var row in templates) { 
-               Templates.Add(row);
+                Templates.Add(row);
                }
             }
             
