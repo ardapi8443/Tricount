@@ -10,7 +10,7 @@ namespace prbd_2324_g01.View {
         public EditTricountView(Tricount tricount) {
             InitializeComponent();
             DataContext = new EditTricountViewModel(tricount);
-        }
-        
+        } 
+   
     }
 }

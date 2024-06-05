@@ -69,7 +69,11 @@ namespace prbd_2324_g01.ViewModel {
 
         public List<String> FullnameNotSubscribed {
             get => _fullnameNotSubscribed;
-            set => SetProperty(ref _fullnameNotSubscribed, value);
+            set {
+                SetProperty(ref _fullnameNotSubscribed, value);
+                
+               
+            }
         }
 
         public bool IsNew {
@@ -275,6 +279,8 @@ namespace prbd_2324_g01.ViewModel {
             }
             
             FullnameNotSubscribed = res;
+            FullnameNotSubscribed.OrderBy(s => s);
+           
         }
         
         private void AddEveryBody() {
@@ -554,6 +560,5 @@ namespace prbd_2324_g01.ViewModel {
                 Context.Templates.Remove(templateToDelete);
             }
         }
-        
     }
 }
