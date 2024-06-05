@@ -62,8 +62,15 @@
                 <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="*"/> 
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Creation Date:" VerticalAlignment="Center" Grid.Column="0" Margin="0,0,10,0"/>
-            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{x:Static sys:DateTime.Today}" Grid.Column="1" VerticalAlignment="Center" />
+            <TextBlock  Text="Creation Date:" VerticalAlignment="Center" Grid.Column="0" Margin="0,0,10,0"/>
+            <DatePicker SelectedDate="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         DisplayDateEnd="{x:Static sys:DateTime.Today}" Grid.Column="1" VerticalAlignment="Center">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
         </Grid>
         
         <Grid Grid.Row="5">

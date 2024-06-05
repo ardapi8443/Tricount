@@ -115,6 +115,7 @@ namespace prbd_2324_g01.ViewModel {
                     RaisePropertyChanged(nameof(Date));
                     Validate();
                 }
+                
             }
         }
         
