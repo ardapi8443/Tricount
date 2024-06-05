@@ -63,7 +63,7 @@ namespace prbd_2324_g01.ViewModel {
             
             //attribution des actions aux boutons
             EditTricount = new RelayCommand(EditTricountAction);
-            DeleteTricount = new RelayCommand(DeleteTricountAction);
+            DeleteTricount = new RelayCommand(DeleteTricountAction, CanDeleteTricountAction);
             
             NewOperation = new RelayCommand<OperationCardViewModel>(vm => {
                 // NotifyColleagues(App.Messages.MSG_NEW_OPERATION, new Operation());
@@ -74,6 +74,10 @@ namespace prbd_2324_g01.ViewModel {
                 // NotifyColleagues(App.Messages.MSG_DISPLAY_OPERATION, vm.Operation);
                 App.ShowDialog<AddEditOperationViewModel, Operation, PridContext>(vm.Operation, tricount, false);
             });
+        }
+
+        private bool CanDeleteTricountAction() {
+            return CurrentUser.UserId == Tricount.Creator || CurrentUser.Role == Role.Administrator;
         }
 
         private void DisplayMap() {
