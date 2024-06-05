@@ -68,6 +68,7 @@ public class Operation : EntityBase<PridContext> {
             where o.OperationId == OperationId
             select o.Users;
 
-        return query.First();
+        var users = query.First();
+        return users.OrderBy(u => u.FullName).ToList();
     }
 }

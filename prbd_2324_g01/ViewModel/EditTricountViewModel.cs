@@ -252,18 +252,9 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void AddParticipantAction() {
-
-            foreach (User u in UsersNotSubscribed) {
-                if (u.FullName == SelectedFullName) {
-                    int numberOfExpenses = Repartition.getExpenseByUserAndTricount(u.UserId, Tricount.Id);
-                    Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == CurrentTricountCreator.UserId));
-                    UsersNotSubscribed.Remove(u);
-                    break;
-                }
-            }
-            
-            setFullnameNotSubscribed();
-            SortPaticipants();
+            var user = Context.Users.FirstOrDefault(u => u.FullName == SelectedFullName);
+            int numberOfExpenses = Repartition.getExpenseByUserAndTricount(user.UserId, Tricount.Id);
+            AddParticipants(SelectedFullName,numberOfExpenses);
         }
 
         private bool CanAddParticipantAction() {
@@ -314,24 +305,22 @@ namespace prbd_2324_g01.ViewModel {
         }
         
     private void AddMySelfInParticipant() {
-            var user = CurrentUser;
-            var alreadySubscribed = Context.Subscriptions
-                .Any(s => s.UserId == user.UserId && s.TricountId == Tricount.Id);
+        string user = CurrentUser.FullName;
+        int numberOfExpenses = 0;
+        AddParticipants(user, numberOfExpenses);
+    }
 
-            if (!alreadySubscribed) {
-                var newSub = new Subscription() {
-                    UserId = user.UserId,
-                    TricountId = Tricount.Id
-                };
-                Context.Subscriptions.Add(newSub);
-                Context.SaveChanges();
-                OnRefreshData();
-            } else {
-                Console.WriteLine("déja sub");
+    private void AddParticipants(string usernotsub, int numberOfExpenses) {
+        foreach (User u in UsersNotSubscribed) {
+            if (u.FullName == usernotsub) {
+                Participants. Add(new ParticipantViewModel(Tricount, u, numberOfExpenses, u.UserId == CurrentTricountCreator.UserId));
+                UsersNotSubscribed.Remove(u);
+                break;
             }
-
-            SortPaticipants();
         }
+        setFullnameNotSubscribed();
+        SortPaticipants();
+    }
     
         private bool CanAddMySelfInParticipant() {
             
@@ -365,7 +354,7 @@ namespace prbd_2324_g01.ViewModel {
 
             foreach (ParticipantViewModel PVM in Participants) {
                 if (!Subscription.Exist(Tricount.Id, PVM.User.UserId)) {
-
+                    Console.WriteLine(PVM.User.UserId);
                     Subscription NewSub = new(PVM.User.UserId, Tricount.Id);
                     NewSub.Add();
                 }

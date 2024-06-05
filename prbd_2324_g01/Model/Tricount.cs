@@ -299,8 +299,9 @@ public class Tricount : EntityBase<PridContext> {
         var query = from t in PridContext.Context.Tricounts
             where t.Id == Id
             select t.Subscribers;
-        
-        return query.First();
+        var users = query.First();
+
+        return users.OrderBy(u => u.FullName).ToList();
     }
 
     public void Save() {

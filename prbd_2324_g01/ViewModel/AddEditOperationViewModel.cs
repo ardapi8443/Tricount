@@ -70,6 +70,8 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _date, value, () => { Validate();});
         }
 
+        public DateTime CreatedAt { get; private set; }
+
         public ObservableCollectionFast<Template> Templates {
             get => _templates;
             set => SetProperty(ref _templates, value);
@@ -127,6 +129,7 @@ namespace prbd_2324_g01.ViewModel {
             _isNew = isNew;
             Operation = operation;
             _tricount = tricount;
+            CreatedAt = tricount.CreatedAt;
             if (isNew) {
                 Operation.TricountId = tricount.Id;   
             }

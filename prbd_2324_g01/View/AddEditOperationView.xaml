@@ -45,6 +45,7 @@
         <Label Grid.Row="3" Content="Date:" Margin="15"/>
         <DatePicker Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Margin="15"
                     SelectedDate="{Binding Date,UpdateSourceTrigger=PropertyChanged}" IsTodayHighlighted="True"
+                    DisplayDateStart="{Binding CreatedAt}"
                     DisplayDateEnd="{x:Static sys:DateTime.Today}">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
