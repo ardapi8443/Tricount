@@ -38,11 +38,9 @@ namespace prbd_2324_g01.View
             if (DataContext is TricountDetailViewModel viewModel) {
                 //on va chercher le string UserBal et on retire le "€" pour en faire un double
                 double balance = double.Parse(UserBal.Text.Replace(" €", ""));
-                //if (viewModel.Tricount.ConnectedUserBal(viewModel.CurrentUser) > 0) {
                 if (balance > 0) { 
                     UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 200, 125));
                     FullCard.Background = new SolidColorBrush(Color.FromArgb(255, 200, 230, 190));
-                //} else if (viewModel.Tricount.ConnectedUserBal(viewModel.CurrentUser) < 0) {
                 } else if (balance < 0) {
                     UserBal.Foreground = new SolidColorBrush(Color.FromArgb(255, 220, 20, 60));
                     FullCard.Background = new SolidColorBrush(Color.FromArgb(255, 255, 230, 210));

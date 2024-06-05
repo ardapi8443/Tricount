@@ -57,15 +57,15 @@
         </Button>
         <WrapPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-40,10">
             <TextBlock Width="125">
-                <Run Background="Gray" Text="     " />
+                <Run x:Name="gray"  Text="     " />
                 <Run Text="Null Balance" />
             </TextBlock>
             <TextBlock Width="125">
-                <Run Background="Green" Text="     " />
+                <Run x:Name="green"  Text="     " />
                 <Run Text="Positive Balance" />
             </TextBlock>
             <TextBlock Width="125">
-                <Run Background="Red" Text="     " />
+                <Run x:Name="red" Text="     " />
                 <Run Text="Negative Balance" />
             </TextBlock>
         </WrapPanel>
