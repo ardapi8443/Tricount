@@ -62,4 +62,12 @@ public class Operation : EntityBase<PridContext> {
                 .OrderBy(ope => ope.OperationDate)
                 .FirstOrDefault();
     }
+
+    public ICollection<User> GetUsers() {
+        var query = from o in PridContext.Context.Operations
+            where o.OperationId == OperationId
+            select o.Users;
+
+        return query.First();
+    }
 }

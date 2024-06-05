@@ -137,6 +137,7 @@ public class User : EntityBase<PridContext> {
     public static List<User> GetAllUserButOne(User creator) {
         List<User> AllButOne = PridContext.Context.Users
             .Where(user =>user.UserId != creator.UserId  && user.Role == Role.Viewer)
+            .OrderBy(x => x.FullName)
             .ToList();
 
         return AllButOne;

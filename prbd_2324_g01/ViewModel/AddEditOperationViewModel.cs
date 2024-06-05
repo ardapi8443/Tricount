@@ -135,20 +135,15 @@ namespace prbd_2324_g01.ViewModel {
             Date = isNew ? DateTime.Today : operation.OperationDate;
 
             //we populate the Users Combobox
-            IQueryable<ICollection<User>> query;
+            ICollection<User> users;
             if (!isNew) {
-                query = from o in Context.Operations
-                    where o.OperationId == operation.OperationId
-                    select o.Users;
-                  
+                users = operation.GetUsers();
+
             } else {
-                query = from t in Context.Tricounts
-                    where t.Id == tricount.Id
-                    select t.Subscribers;
+                users = _tricount.GetSubscribersForOperation();
             }
-            var user = query.First();
             
-            foreach (var row in user) {
+            foreach (var row in users) {
                 Users.Add(row);
             }
                             

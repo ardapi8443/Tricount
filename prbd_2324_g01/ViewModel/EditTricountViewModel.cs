@@ -179,6 +179,7 @@ namespace prbd_2324_g01.ViewModel {
             newTricount = tricount.IsNew;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
+            UsersSubscribed = UsersSubscribed.OrderBy(x => x.FullName).ToList();
             Myself = CurrentUser.UserId;
 
             if (tricount.IsNew) {
@@ -280,7 +281,7 @@ namespace prbd_2324_g01.ViewModel {
             
             FullnameNotSubscribed = res;
             FullnameNotSubscribed.OrderBy(s => s);
-           
+            FullnameNotSubscribed.Sort();
         }
         
         private void AddEveryBody() {
@@ -453,14 +454,14 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
             
-            bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id);
+            bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id && t.Creator == Tricount.Creator);
 
             if (string.IsNullOrEmpty(UpdatedTitle)) {
                 AddError(nameof(UpdatedTitle), "Title is required.");
             } else if (UpdatedTitle.Length < 3) {
                 AddError(nameof(UpdatedTitle), "Minimum 3 characters required.");
             } else if (titleExist) {
-                AddError(nameof(UpdatedTitle), "Title must be unique.");
+                AddError(nameof(UpdatedTitle), "Title must be unique by Creator.");
             }
             
             if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
@@ -481,6 +482,7 @@ namespace prbd_2324_g01.ViewModel {
             
             Participants.Remove(PVM);
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
+            UsersNotSubscribed = UsersNotSubscribed.OrderBy(x => x.FullName).ToList();
             setFullnameNotSubscribed();
             PVM.Dispose();
 

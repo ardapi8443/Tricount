@@ -283,6 +283,7 @@ public class Tricount : EntityBase<PridContext> {
             .Where(user => !Context.Subscriptions
                                .Any(sub => sub.UserId == user.UserId && sub.TricountId == this.Id) 
                            && user.Role == Role.Viewer)
+            .OrderBy(x => x.FullName)
             .ToList();
 
         return usersNotSubscribed;
@@ -298,6 +299,14 @@ public class Tricount : EntityBase<PridContext> {
         }
 
         return res;
+    }
+
+    public ICollection<User> GetSubscribersForOperation() {
+        var query = from t in PridContext.Context.Tricounts
+            where t.Id == Id
+            select t.Subscribers;
+        
+        return query.First();
     }
 
     public void Save() {
