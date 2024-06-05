@@ -166,25 +166,19 @@ public class Tricount : EntityBase<PridContext> {
 
                     if (latestOperationDate1 == latestOperationDate2) {
                         
-                        return tricount2.CreatedAt.CompareTo(latestOperationDate1);
+                        return tricount2.CreatedAt.CompareTo(tricount1.CreatedAt);
                         
                     } else {
                         return latestOperationDate2.CompareTo(latestOperationDate1);
                     }
                     
                 }  else if (tricount1.HaveOpe) {
-
-                    var latestOperationDate1 = tricount1.Operations.Max(operation => operation.OperationDate);
-                    var creationTricount2 = tricount2.CreatedAt;
-
-                    return creationTricount2.CompareTo(latestOperationDate1);
+                    
+                    return -1;
 
                 } else if (tricount2.HaveOpe) {
-
-                    var creationTricount1 = tricount1.CreatedAt;
-                    var latestOperationDate2 = tricount2.Operations.Max(operation => operation.OperationDate);
-
-                    return latestOperationDate2.CompareTo(creationTricount1);
+                    
+                    return 1;
 
                 } else {
                     return tricount2.CreatedAt.CompareTo(tricount1.CreatedAt);

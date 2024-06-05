@@ -119,7 +119,7 @@ namespace prbd_2324_g01.ViewModel {
             if (string.IsNullOrWhiteSpace(Password)) {
                 AddError(nameof(Password), "Password is required.");
             } else if (!ValidatePasswordComplexity(Password))
-                AddError(nameof(Password), "Password does not meet requirements.");
+                    AddError(nameof(Password), "Password does not meet requirements.");
             else if (Password.Length < 3)
                 AddError(nameof(Pseudo), "length must be >= 3");
             
