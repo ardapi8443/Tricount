@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace prbd_2324_g01.ViewModel {
     public class EditTricountViewModel : ViewModelCommon {
@@ -406,7 +407,13 @@ namespace prbd_2324_g01.ViewModel {
         
         protected override void OnRefreshData() {
             /*if (IsNew || Tricount == null) return;*/
-            LinqToXaml();
+            if (Tricount.IsNew) {
+                ClearErrors();
+                NotifyColleagues(App.Messages.MSG_CLOSE_TAB, Tricount);
+            } else {
+                LinqToXaml();
+            }
+           
         }
         
         private bool CanCancelAction() {

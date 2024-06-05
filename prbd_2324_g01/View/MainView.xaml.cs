@@ -59,6 +59,7 @@ public partial class MainView : WindowBase {
                tabControl.CloseByTag(tab.Tag.ToString());
            }
         }
+       
     }
 
     private void DoDisplayTricount(Tricount tricount, bool isNew) {
