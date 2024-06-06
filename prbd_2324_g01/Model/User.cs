@@ -32,7 +32,7 @@ public class User : EntityBase<PridContext> {
 
 
     public static User GetUserById(int id) {
-        var q = from u in PridContext.Context.Users
+        var q = from u in Context.Users
             where u.UserId == id
             select u;
         return q.First();
@@ -72,16 +72,16 @@ public class User : EntityBase<PridContext> {
     }
     public void Persist() {
 
-        PridContext.Context.Update(this);
-        PridContext.Context.SaveChanges();
+        Context.Update(this);
+        Context.SaveChanges();
     }
 
     public static User UserById(int id) {
-        return PridContext.Context.Users.FirstOrDefault(user => user.UserId == id);
+        return Context.Users.FirstOrDefault(user => user.UserId == id);
     }
 
     public double getExpenseByTricount(int id) {
-        var q = from o in PridContext.Context.Operations
+        var q = from o in Context.Operations
                 let tricountId = id
                 let userId = this.UserId
                 where o.TricountId == tricountId
@@ -91,7 +91,7 @@ public class User : EntityBase<PridContext> {
     }
 
     public static List<User> GetAllUser() {
-        return  PridContext.Context.Users.ToList();
+        return  Context.Users.ToList();
     }
 
     //renvoie la balance du user pour un tricount donné déjà arrondie à 2 décimales
@@ -105,17 +105,17 @@ public class User : EntityBase<PridContext> {
         //au départ, balance null
         double balance = 0;
         
-        var operations = from o in PridContext.Context.Operations
+        var operations = from o in Context.Operations
                 where o.TricountId == tricountId
                 select o;
 
         //pour chaque opérations :
         foreach (var operation in operations) {
             //trouver le poids total de l'opération
-            int poidsTotal = PridContext.Context.Repartitions.Where(r => r.OperationId == operation.OperationId).Sum(r => r.Weight);
+            int poidsTotal = Context.Repartitions.Where(r => r.OperationId == operation.OperationId).Sum(r => r.Weight);
             
             //pour la répartition du user :
-            var repartition = from r in PridContext.Context.Repartitions
+            var repartition = from r in Context.Repartitions
                 where r.OperationId == operation.OperationId && r.UserId == this.UserId
                 select r;
             
@@ -135,7 +135,7 @@ public class User : EntityBase<PridContext> {
     }
 
     public static List<User> GetAllUserButOne(User creator) {
-        List<User> AllButOne = PridContext.Context.Users
+        List<User> AllButOne = Context.Users
             .Where(user =>user.UserId != creator.UserId  && user.Role == Role.Viewer)
             .OrderBy(x => x.FullName)
             .ToList();

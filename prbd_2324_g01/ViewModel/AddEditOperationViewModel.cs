@@ -285,15 +285,12 @@ namespace prbd_2324_g01.ViewModel {
 
                     if (repartition.Weight > 0) {
                         if (existingRepartition != null) {
-                            // Console.WriteLine("Existing repartition: " + existingRepartition.OperationId + "." + existingRepartition.UserId);
                             // If repartition exists, update the weight
-                            // Console.WriteLine(existingRepartition.Weight + " -> " + repartition.Weight);
                             existingRepartition.Weight = repartition.Weight;
                             
                             // Attach the repartition to the context and set its state to Modified
                             //Context.Repartitions.Update(existingRepartition);
                         } else {
-                            // Console.WriteLine("c'est le caca");
                             // Else create a new repartition
                             var newRepartition = new Repartition(userId, Operation.OperationId, repartition.Weight);
                             Context.Repartitions.Add(newRepartition);
@@ -308,7 +305,6 @@ namespace prbd_2324_g01.ViewModel {
             }
             //finally, save the changes
             Context.SaveChanges();
-            Console.WriteLine("");
             
             NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
             CancelAction();

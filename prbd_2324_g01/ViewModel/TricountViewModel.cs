@@ -88,7 +88,7 @@ namespace prbd_2324_g01.ViewModel {
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
-            var operations = from o in PridContext.Context.Operations
+            var operations = from o in Context.Operations
                 where o.TricountId == Tricount.Id
                 group o by o.UserId into g
                 orderby g.Key
@@ -117,7 +117,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private void DisplayOperations() {
             //on va chercher les opérations lié au Tricount en DB
-            var query = from o in PridContext.Context.Operations
+            var query = from o in Context.Operations
                 where o.TricountId == Tricount.Id
                 select o;
             query = query.OrderByDescending(x => x.OperationDate)

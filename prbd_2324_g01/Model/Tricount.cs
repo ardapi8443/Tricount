@@ -296,7 +296,7 @@ public class Tricount : EntityBase<PridContext> {
     }
 
     public ICollection<User> GetSubscribersForOperation() {
-        var query = from t in PridContext.Context.Tricounts
+        var query = from t in Context.Tricounts
             where t.Id == Id
             select t.Subscribers;
         var users = query.First();
