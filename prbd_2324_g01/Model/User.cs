@@ -168,4 +168,12 @@ public class User : EntityBase<PridContext> {
             where u.Email.Equals(Email)
             select u.Email).Any();
     }
+
+    public static bool IsPseudoExist(string Pseudo) {
+        return Context.Users.Any(u => u.FullName.Equals(Pseudo));
+    }
+
+    public void Add() {
+        Context.Add(this);
+    }
 }

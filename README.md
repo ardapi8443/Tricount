@@ -12,4 +12,4 @@
 
 ### Divers
 
-parfois on selectionne l'user selon le fullname(qui n'est pas toujours unique?  cf User.GetUserByFUllName())
+On a rendu le pseudo unique au signup(pas deux username identiques dans la DB)
