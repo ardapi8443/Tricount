@@ -52,4 +52,17 @@ public class Template : EntityBase<PridContext> {
         Context.SaveChanges();
         Context.ChangeTracker.Clear();
     }
+
+    public List<TemplateItem> GetTemplateItems() {
+       return Context.TemplateItems
+            .AsNoTracking()
+            .Where(ti => ti.Template == this.TemplateId) 
+            .Include(ti => ti.UserFromTemplateItem) 
+            .DefaultIfEmpty()
+            .ToList();
+    }
+
+    public static Template GetTemplateById(int id) {
+        return Context.Templates.Find(id);
+    }
 }

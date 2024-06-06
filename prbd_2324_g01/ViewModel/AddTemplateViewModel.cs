@@ -99,7 +99,6 @@ namespace prbd_2324_g01.ViewModel {
                     AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 }
             } else {
-                Console.WriteLine("ici-bas");
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
             }
@@ -204,7 +203,7 @@ namespace prbd_2324_g01.ViewModel {
                 .GroupBy(u => u.FullName)
                 .Select(g => g.First())
                 .ToList();
-
+            
 
             Title = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId)?.Title;
             AddButtonText = "Save";
@@ -233,6 +232,8 @@ namespace prbd_2324_g01.ViewModel {
                 .GroupBy(u => u.FullName)
                 .Select(g => g.First())
                 .ToList();
+
+            // var distinctUsers = Tricount.Subscribers;
 
             Title = "New Template";
             AddButtonText = "Add";
@@ -284,10 +285,8 @@ namespace prbd_2324_g01.ViewModel {
             if (part_weight == TemplateItems.Count) {
                 AddError(nameof(TemplateItems),"You must check at least one participant");
                 ErrorMessage = "you must check at least one participant";
-                Console.WriteLine("ici");
             } else {
                 ErrorMessage = "";
-                Console.WriteLine("la");
             }
             
             return !HasErrors;

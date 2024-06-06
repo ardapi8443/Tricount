@@ -29,7 +29,12 @@ public class Repartition : EntityBase<PridContext> {
     public static int getExpenseByUserAndTricount(int UserId, int TricountId) {
         
         return Context.Repartitions.Count(rep => rep.UserId == UserId && rep.OperationFromRepartition.TricountId == TricountId);
-
-
     }
+
+    public static Repartition GetRepartitionByUserIdAndOperationId(int UserId, int OperationId) {
+        return Context.Repartitions.FirstOrDefault(r => r.OperationId == OperationId && r.UserId == UserId);
+    }
+        
+        
+
 }

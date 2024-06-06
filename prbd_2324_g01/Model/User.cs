@@ -142,4 +142,8 @@ public class User : EntityBase<PridContext> {
 
         return AllButOne;
     }
+
+    public static int GetUserIdFromUserName(string UserName) {
+        return Context.Users.Where(u => u.FullName == UserName).Select(u => u.UserId).FirstOrDefault();
+    }
 }

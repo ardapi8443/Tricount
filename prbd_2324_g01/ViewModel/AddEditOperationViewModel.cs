@@ -5,6 +5,7 @@ using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Operation = prbd_2324_g01.Model.Operation;
 
@@ -51,10 +52,8 @@ namespace prbd_2324_g01.ViewModel {
                     
                     //if (double.TryParse(Amount, out _amountParsed)) {
                     if (!CheckIfDouble(Amount)) {
-                        Console.WriteLine("NaN");
                         Amount = _amountParsed.ToString();
                     } else {
-                        Console.WriteLine("rounding");
                         _amountParsed = double.Parse(Amount);
                         Amount = Math.Round(_amountParsed, 2).ToString("F2");
                         
@@ -95,12 +94,6 @@ namespace prbd_2324_g01.ViewModel {
         public ObservableCollectionFast<UserTemplateItemViewModel> TemplateItems {
             get => _templateItems;
             set => SetProperty(ref _templateItems, value, () => { Validate();});
-            // set {
-            //     if (_templateItems != value) {
-            //         _templateItems = value;
-            //         RaisePropertyChanged(nameof(TemplateItems));
-            //     }
-            // }
         }
         
         public string ErrorMessage {
@@ -168,10 +161,7 @@ namespace prbd_2324_g01.ViewModel {
             SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
             
             //we populate the Templates Combobox
-            var q2 = from t in Context.Templates
-                where t.Tricount == tricount.Id
-                select t;
-            var templates = q2.OrderBy(t =>t.Title).ToList();
+            List<Template> templates = tricount.GetTemplatesByTricount();
             
             if (!templates.IsNullOrEmpty()) {
                foreach (var row in templates) { 
@@ -200,19 +190,14 @@ namespace prbd_2324_g01.ViewModel {
 
         private void DisplayRepartitions() {
             // we populate the TemplateItems
-            var queryUsersID = from s in Context.Subscriptions
-                where s.TricountId == _tricount.Id
-                select s.UserId;
-            //transform the list of user ids to a list of users
-            var userTemplateItems = queryUsersID.ToList().Select(u => Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
+            // //transform the list of user ids to a list of users
+   
+            List<User> userTemplateItems = _tricount.GetUserTemplateItems();
             
             if (!_isNew) {
                 // Fetch the information from the Repartition table
-                var repartitionItems = Context.Repartitions
-                    .AsNoTracking()
-                    .Where(r => r.OperationId == _operation.OperationId)
-                    .ToList();
-
+                List<Repartition> repartitionItems = Operation.GetRepartitionItems();
+   
                 TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
                     userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName,
                         repartitionItems.FirstOrDefault(ri => ri.UserId == u.UserId)?.Weight ?? 0,
@@ -235,7 +220,6 @@ namespace prbd_2324_g01.ViewModel {
             }
             NotifyColleagues(App.Messages.MSG_TOTAL_WEIGHT_CHANGED, _totalWeight);
             _totalWeight = 0;
-            Console.WriteLine();
         }
 
         public override void CancelAction() {
@@ -268,20 +252,21 @@ namespace prbd_2324_g01.ViewModel {
             if (_isNew) {
                 //save repartitions
                 foreach (var repartition in TemplateItems) {
+                    int userID = User.GetUserIdFromUserName(repartition.UserName);
                     if (repartition.Weight > 0) {
                         Repartition rep = new(
                             //get UserId from the UserName
-                            Context.Users.Where(u => u.FullName == repartition.UserName).Select(u => u.UserId).FirstOrDefault(),
+                            userID,
                             Operation.OperationId,
                             repartition.Weight);
                         Context.Repartitions.Add(rep);
                     }
-                }
+                } 
             } else {
                 // Update repartitions
                 foreach (var repartition in TemplateItems) {
-                    var userId = Context.Users.Where(u => u.FullName == repartition.UserName).Select(u => u.UserId).FirstOrDefault();
-                    var existingRepartition = Context.Repartitions.FirstOrDefault(r => r.OperationId == Operation.OperationId && r.UserId == userId);
+                    int userId = User.GetUserIdFromUserName(repartition.UserName);
+                    var existingRepartition = Repartition.GetRepartitionByUserIdAndOperationId(userId, Operation.OperationId);
 
                     if (repartition.Weight > 0) {
                         if (existingRepartition != null) {
@@ -311,20 +296,10 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public void ApplyTemplateAction() {
+
+            List<TemplateItem> templateItems = SelectedTemplate.GetTemplateItems();
+            List<User> userTemplateItems = Operation.GetUserTemplateItems();
             
-            var templateItems = Context.TemplateItems
-                .AsNoTracking()
-                .Where(ti => ti.Template == SelectedTemplate.TemplateId) 
-                .Include(ti => ti.UserFromTemplateItem) 
-                .DefaultIfEmpty()
-                .ToList();
-                        
-            var userTemplateItems = Context.Tricounts
-                .Where(t => t.Id == Operation.TricountId)
-                .SelectMany(t => t.Subscribers)
-                .OrderBy(t => t.FullName)
-                .ToList();
-                        
             TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>(
                 userTemplateItems.Select(u => new UserTemplateItemViewModel(u.FullName, 
                     templateItems.FirstOrDefault(ti => ti.User == u.UserId)?.Weight ?? 0, 
@@ -341,7 +316,7 @@ namespace prbd_2324_g01.ViewModel {
             if (_isNewTemplate) {
                 template = new Template();
             } else {
-                template = Context.Templates.Find(SelectedTemplate.TemplateId);
+                template = Template.GetTemplateById(SelectedTemplate.TemplateId);
             } 
             // need to update code here
             var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,new ObservableCollectionFast<TemplateViewModel>(),false) {
@@ -359,11 +334,9 @@ namespace prbd_2324_g01.ViewModel {
             bool? dialogResult = confirmationDialog.ShowDialog();
 
             if (dialogResult == true && Operation != null) {
-                // Fetch the operation
-                var operation = Context.Operations.Find(Operation.OperationId);
-                // Delete the operation
-                Context.Operations.Remove(operation);
-                Context.SaveChanges();
+       
+                Operation.Delete();
+                
                 NotifyColleagues(ApplicationBaseMessages.MSG_REFRESH_DATA);
                 CancelAction();
             }
@@ -375,7 +348,8 @@ namespace prbd_2324_g01.ViewModel {
         //vraiment utile ici ?
         protected override void OnRefreshData() {
                 // Refresh the operation
-                var operation = Context.Operations.Find(Operation.OperationId);
+                Operation operation = Operation.GetOperationById(Operation.OperationId);
+                
                 if (operation != null) {
                     Operation = operation;
                 }
@@ -383,8 +357,6 @@ namespace prbd_2324_g01.ViewModel {
                 DisplayRepartitions();
                 
                 
-            }
+        }
     }
-    
-    
 }
