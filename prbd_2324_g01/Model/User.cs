@@ -150,4 +150,22 @@ public class User : EntityBase<PridContext> {
     public static int GetUserIdFromUserName(string UserName) {
         return Context.Users.Where(u => u.FullName == UserName).Select(u => u.UserId).FirstOrDefault();
     }
+
+    public static User GetUserByMail(string mail) {
+        return (from u in Context.Users
+            where u.Email.Equals(mail)
+            select u).First();
+    }
+    
+    public static string GetHashPassword(string Email) {
+        return (from u in Context.Users
+            where u.Email.Equals(Email)
+            select u.HashedPassword).First();
+    }
+    
+    public static bool IsMailExist(string Email) {
+        return (from u in Context.Users
+            where u.Email.Equals(Email)
+            select u.Email).Any();
+    }
 }

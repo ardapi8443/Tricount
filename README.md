@@ -11,3 +11,5 @@
 ### Liste des fonctionnalités supplémentaires
 
 ### Divers
+
+parfois on selectionne l'user selon le fullname(qui n'est pas toujours unique?  cf User.GetUserByFUllName())
