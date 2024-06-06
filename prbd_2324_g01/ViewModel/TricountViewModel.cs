@@ -81,9 +81,10 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayMap() {
-            var tricount = Context.Tricounts
-                .Include(t => t.Subscribers)
-                .FirstOrDefault(t => t.Id == Tricount.Id);
+            // var tricount = Context.Tricounts
+            //     .Include(t => t.Subscribers)
+            //     .FirstOrDefault(t => t.Id == Tricount.Id);
+            Tricount tricount = Tricount.GetTricountById(Tricount.Id);
             Tricount = tricount;
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
@@ -96,6 +97,8 @@ namespace prbd_2324_g01.ViewModel {
                     UserId = g.Key,
                     Amount = g.Sum(x => x.Amount)
                 };
+  
+           
             var query2 = from user in Tricount.Subscribers
                 join op in operations on user.UserId equals op.UserId into operationDetails
                 from subOp in operationDetails.DefaultIfEmpty()

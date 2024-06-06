@@ -312,5 +312,32 @@ public class Tricount : EntityBase<PridContext> {
     public void addUserToSubscribers(User u) {
         this.Subscribers.Add(u);
     }
+
+    public List<Template> GetTemplatesByTricount() {
+        var q2 = from t in Context.Templates
+            where t.Tricount == this.Id
+            select t;
+        return q2.OrderBy(t =>t.Title).ToList();
+    }
+
+    public List<User> GetUserTemplateItems() {
+        // we populate the TemplateItems
+        var queryUsersID = from s in Context.Subscriptions
+            where s.TricountId == this.Id
+            select s.UserId;
+        //transform the list of user ids to a list of users
+        return queryUsersID.ToList().Select(u => Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
+
+    }
+
+    public void Add() {
+        Context.Add(this);
+    }
+
+    public bool IsDuplicateTitle(string NewTitle) {
+        return Context.Tricounts.Any(t => t.Title.Equals(NewTitle) && this.Id != t.Id && t.Creator == this.Creator);
+    }
+    
+    
 }
 

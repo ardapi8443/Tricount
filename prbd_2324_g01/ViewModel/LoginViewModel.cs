@@ -50,9 +50,8 @@ namespace prbd_2324_g01.ViewModel
 
         private void LoginAction() {
             if (Validate() && ValidateHashPassword()) {
-                var user = (from u in Context.Users
-                        where u.Email.Equals(Email)
-                        select u).First();
+                
+                User user = User.GetUserByMail(Email);
                 
                 NotifyColleagues(App.Messages.MSG_LOGIN, user);
             } else {
@@ -63,17 +62,14 @@ namespace prbd_2324_g01.ViewModel
         public override bool Validate() {
             ClearErrors();
 
-            var user = from u in Context.Users
-                       where u.Email.Equals(Email)
-                       select u.Email;
+            bool user = User.IsMailExist(Email);
 
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
             else if (!Email.Contains('@') || !Email.Contains('.'))
                 AddError(nameof(Email), "email not valid");
-            else if (!user.Any())
+            else if (!user)
                 AddError(nameof(Email), "does not exist");
-
             return !HasErrors;
         }
 
@@ -88,41 +84,30 @@ namespace prbd_2324_g01.ViewModel
         }
 
         private bool ValidateHashPassword() {
-            var hashPassword = (from u in Context.Users
-                                 where u.Email.Equals(Email)
-                                 select u.HashedPassword).First();
+            string hashPassword = User.GetHashPassword(Email);
             return SecretHasher.Verify(Password, hashPassword);
         }
 
         private void LoginAsBenoitAction() {
-            // var user = (from u in Context.Users
-            //                     where u.Email.Equals("bepenelle@epfc.eu")
-            //                     select u).First();
-
+   
             var user = getUserFromList("bepenelle@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
 
         private void LoginAsBorisAction() {
-            // var user = (from u in Context.Users
-            //                     where u.Email.Equals("boverhaegen@epfc.eu")
-            //                     select u).First();
+
             var user = getUserFromList("boverhaegen@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsXavierAction() {
-            // var user = (from u in Context.Users
-            //                     where u.Email.Equals("xapigeolet@epfc.eu")
-            //                     select u).First();
+    
             var user = getUserFromList("xapigeolet@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }
         
         private void LoginAsAdminAction() {
-            // var user = (from u in Context.Users
-            //                     where u.Email.Equals("admin@epfc.eu")
-            //                     select u).First();
+ 
             var user = getUserFromList("admin@epfc.eu");
             NotifyColleagues(App.Messages.MSG_LOGIN, user);
         }

@@ -107,7 +107,6 @@ namespace prbd_2324_g01.ViewModel {
                     AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 }
             } else {
-                Console.WriteLine("ici-bas");
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates), CanAddNewTemplate);
             }
@@ -186,7 +185,7 @@ namespace prbd_2324_g01.ViewModel {
             var templateViewModel = new TemplateViewModel(template, true, false);
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
+                User user = User.GetUserByFullName(userItem.UserName);
                 if (user != null) {
                     var templateItem = new UserTemplateItemViewModel(
                         user.FullName,
@@ -212,7 +211,7 @@ namespace prbd_2324_g01.ViewModel {
         private void DisplayEditTemplateWindows(Template template,
             ObservableCollection<UserTemplateItemViewModel> existingTemplateItems,
             ObservableCollectionFast<TemplateViewModel> templateViewModels) {
-            
+
             Title = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId)?.Title;
             AddButtonText = "Save";
 
@@ -233,7 +232,6 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayAddTemplateWindows(ObservableCollection<UserTemplateItemViewModel> templateItems) {
-            
             Title = "New Template";
             AddButtonText = "Add";
 
@@ -256,7 +254,8 @@ namespace prbd_2324_g01.ViewModel {
             };
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
+                var user = User.GetUserByFullName(userItem.UserName);
+              
                 if (user != null) {
                     var templateItem = new TemplateItem {
                         User = user.UserId,
@@ -264,7 +263,7 @@ namespace prbd_2324_g01.ViewModel {
                         TemplateFromTemplateItem = template
                     };
 
-                    Context.TemplateItems.Add(templateItem);
+                    templateItem.Add();
                 }
             }
 

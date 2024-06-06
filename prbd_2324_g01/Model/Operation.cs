@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System;
@@ -70,5 +71,37 @@ public class Operation : EntityBase<PridContext> {
 
         var users = query.First();
         return users.OrderBy(u => u.FullName).ToList();
+    }
+
+    public List<Repartition> GetRepartitionItems() {
+        return Context.Repartitions
+            .AsNoTracking()
+            .Where(r => r.OperationId == this.OperationId)
+            .ToList();
+    }
+
+    public List<User> GetUserTemplateItems() {
+        return Context.Tricounts
+            .Where(t => t.Id == this.TricountId)
+            .SelectMany(t => t.Subscribers)
+            .OrderBy(t => t.FullName)
+            .ToList();
+
+    }
+
+    public void Delete() {
+        // Fetch the operation
+        var operation = Context.Operations.Find(this.OperationId);
+        // Delete the operation
+        Context.Operations.Remove(operation);
+        Context.SaveChanges();
+    }
+
+    public void Add() {
+        Context.Operations.Add(this);
+    }
+
+    public static Operation GetOperationById(int id) {
+        return Context.Operations.Find(id);
     }
 }

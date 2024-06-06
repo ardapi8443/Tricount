@@ -11,3 +11,5 @@
 ### Liste des fonctionnalités supplémentaires
 
 ### Divers
+
+On a rendu le pseudo unique au signup(pas deux username identiques dans la DB)

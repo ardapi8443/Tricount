@@ -72,8 +72,9 @@ namespace prbd_2324_g01.ViewModel {
                 Email = Email,
                 HashedPassword = SecretHasher.Hash(Password) 
             };
-            // Context.Users.Add(newUser);
-            Context.Add(newUser);
+
+            newUser.Add();
+            
             Context.SaveChanges();
             NotifyColleagues(App.Messages.MSG_LOGIN, newUser);
         }
@@ -102,8 +103,8 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
 
-            bool emailExists = Context.Users.Any(u => u.Email.Equals(Email));
-
+            bool emailExists = User.IsMailExist(Email);
+     
             if (string.IsNullOrEmpty(Email))
                 AddError(nameof(Email), "required");
             else if (!Email.Contains('@') || !Email.Contains('.'))
@@ -128,7 +129,7 @@ namespace prbd_2324_g01.ViewModel {
 
         public bool ValidePseudo() {
             
-            bool existingUser = Context.Users.Any(u => u.FullName.Equals(Pseudo));
+            bool existingUser = User.IsPseudoExist(Pseudo);
             
             if (string.IsNullOrEmpty(Pseudo))
                 AddError(nameof(Pseudo), "required");

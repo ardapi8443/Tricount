@@ -3,6 +3,7 @@ using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace prbd_2324_g01.ViewModel {
@@ -75,10 +76,8 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void LoadTemplateItemsFromDb(int templateId) {
-            var templateItems = Context.TemplateItems
-                .Where(ti => ti.Template == templateId)
-                .Include(ti => ti.UserFromTemplateItem)
-                .ToList();
+            
+            List<TemplateItem> templateItems = TemplateItem.GetAllItemByTemplateID(templateId);
 
 
             foreach (var item in templateItems) {
