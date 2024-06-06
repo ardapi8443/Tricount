@@ -24,6 +24,7 @@ public class MainViewModel : ViewModelCommon {
         ResetCommand = new RelayCommand(() => {
             App.ClearContext();
             App.PrepareDatabase();
+            
             //ajouter tout les App.Messages pour refresh les données
             NotifyColleagues(App.Messages.REM_NEW_TRICOUNT);
             if (CurrentUser.UserId > 5) {
