@@ -72,6 +72,8 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
+        
+        private int part_weight { get; set; }
 
         public ICommand AddTemplateDbCommand { get; private set; }
         public ICommand CancelTemplate { get; private set; }
@@ -98,6 +100,21 @@ namespace prbd_2324_g01.ViewModel {
             }
 
             CancelTemplate = new RelayCommand(CloseWindow);
+            
+            Register(App.Messages.MSG_TEMP_0, () => {
+                CountWeightZero();
+                Validate();
+            });
+        }
+
+        private void CountWeightZero() {
+                           
+            part_weight = 0;
+            foreach (UserTemplateItemViewModel UTIVM in TemplateItems) {
+                if (UTIVM.Weight == 0) {
+                    part_weight++;
+                }
+            }
         }
 
         private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template,
@@ -258,6 +275,9 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Title), "Title is required.");
             } else if (Title.Length < 3) {
                 AddError(nameof(Title), "Minimum 3 characters required.");
+            }
+            if (part_weight == TemplateItems.Count) {
+                AddError(nameof(TemplateItems),"You must check at least one participant");
             }
             
             return !HasErrors;
