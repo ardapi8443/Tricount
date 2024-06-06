@@ -563,6 +563,8 @@ namespace prbd_2324_g01.ViewModel {
                 templateToDelete.Delete();
                 
             }
+
+            Context.SaveChanges();
         }
     }
 }
