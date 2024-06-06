@@ -35,7 +35,8 @@
         
         <Label Grid.Row="1" Content="Amount:" Margin="15"/>
         <TextBox  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="15"
-                 Text="{Binding Amount,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N2}}"/>
+                 Text="{Binding Amount,UpdateSourceTrigger=PropertyChanged, 
+                    Delay=500, FallbackValue='0.00'}"/>
         
         <Label Grid.Row="2" Content="Initiator:" Margin="15"/>
         <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="initiator" Margin="15"
@@ -85,7 +86,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Height="25" Width="50" Margin="5" Content="Cancel"
                         Command="{Binding Cancel}"/>
-                <Button Height="25" Width="50" Margin="5" Content="Edit" Name="saveadd"
+                <Button Height="25" Width="50" Margin="5" Content="Save" Name="saveadd"
                         Command="{Binding AddOperation}"/>
             </StackPanel>
         </DockPanel>

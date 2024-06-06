@@ -45,7 +45,7 @@ public partial class App {
                 DateSeparator = "/"
             },
             NumberFormat = {
-                NumberDecimalSeparator = ","
+                NumberDecimalSeparator = "."
             }
         };
         CultureInfo.DefaultThreadCurrentCulture = ci;

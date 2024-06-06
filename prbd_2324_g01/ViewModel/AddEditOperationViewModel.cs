@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Operation = prbd_2324_g01.Model.Operation;
 
@@ -45,6 +44,15 @@ namespace prbd_2324_g01.ViewModel {
             get => _amount;
             set => SetProperty(ref _amount, value,
                 () => {
+                    
+                    if (double.IsNaN(Amount)) {
+                        Console.WriteLine("NaN");
+                        Amount = 0.00;
+                    } else {
+                        Console.WriteLine("rounding");
+                        Amount = Math.Round(_amount, 2);
+                    }
+                    Console.WriteLine(Amount);
                     Validate();
                     NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
                 });
@@ -101,8 +109,7 @@ namespace prbd_2324_g01.ViewModel {
             } else if (Title.Length < 3) {
                 AddError(nameof(Title), "min 3 characters");
             }
-            
-            if ( double.IsPositive(Amount) && Amount < 0.01) {
+            if (double.IsNaN(Amount) || Amount < 0.01) {
                 AddError(nameof(Amount), "minimum 1 cent");
             }
 
@@ -139,19 +146,14 @@ namespace prbd_2324_g01.ViewModel {
 
             //we populate the Users Combobox
             ICollection<User> users;
-            if (!isNew) {
-                users = operation.GetUsers();
-
-            } else {
                 users = _tricount.GetSubscribersForOperation();
-            }
             
             foreach (var row in users) {
                 Users.Add(row);
             }
                             
             //default selected user must be a user from the combobox(=> from Users)
-            SelectedUser = isNew ? Users.FirstOrDefault(u => u.UserId == App.CurrentUser.UserId) : operation.Initiator;
+            SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
             
             //we populate the Templates Combobox
             var q2 = from t in Context.Templates
