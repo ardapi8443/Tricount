@@ -72,6 +72,8 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
+        
+        private int part_weight { get; set; }
 
         public ICommand AddTemplateDbCommand { get; private set; }
         public ICommand CancelTemplate { get; private set; }
@@ -86,17 +88,33 @@ namespace prbd_2324_g01.ViewModel {
             if (isNew) {
                 if (!fromTemplateView) {
                     DisplayAddTemplateWindows(TemplateItems);
-                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplateDB(Title, tricount.Id, TemplateItems));
+                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplateDB(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 } else {
                     DisplayAddTemplateWindows(new ObservableCollection<UserTemplateItemViewModel>());
-                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
+                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 }
             } else {
+                Console.WriteLine("ici-bas");
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
             }
 
             CancelTemplate = new RelayCommand(CloseWindow);
+            
+            Register(App.Messages.MSG_TEMP_0, () => {
+                CountWeightZero();
+                Validate();
+            });
+        }
+
+        private void CountWeightZero() {
+                           
+            part_weight = 0;
+            foreach (UserTemplateItemViewModel UTIVM in TemplateItems) {
+                if (UTIVM.Weight == 0) {
+                    part_weight++;
+                }
+            }
         }
 
         private void EditTemplate(string title, IEnumerable<UserTemplateItemViewModel> userItems, Template template,
@@ -133,6 +151,10 @@ namespace prbd_2324_g01.ViewModel {
             RaisePropertyChanged(nameof(SelectedTemplate));
             CloseWindow();
 
+        }
+
+        private bool CanAddNewTemplate() {
+            return !HasErrors;
         }
 
         private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
@@ -253,6 +275,9 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Title), "Title is required.");
             } else if (Title.Length < 3) {
                 AddError(nameof(Title), "Minimum 3 characters required.");
+            }
+            if (part_weight == TemplateItems.Count) {
+                AddError(nameof(TemplateItems),"You must check at least one participant");
             }
             
             return !HasErrors;
