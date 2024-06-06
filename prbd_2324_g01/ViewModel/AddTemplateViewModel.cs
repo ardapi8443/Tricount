@@ -171,7 +171,7 @@ namespace prbd_2324_g01.ViewModel {
             var templateViewModel = new TemplateViewModel(template, true, false);
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                User user = User.UserByFullName(userItem.UserName);
+                User user = User.GetUserByFullName(userItem.UserName);
                 if (user != null) {
                     var templateItem = new UserTemplateItemViewModel(
                         user.FullName,
@@ -240,7 +240,7 @@ namespace prbd_2324_g01.ViewModel {
             };
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = User.UserByFullName(userItem.UserName);
+                var user = User.GetUserByFullName(userItem.UserName);
               
                 if (user != null) {
                     var templateItem = new TemplateItem {

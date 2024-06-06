@@ -64,5 +64,16 @@ public class Template : EntityBase<PridContext> {
 
     public static Template GetTemplateById(int id) {
         return Context.Templates.Find(id);
+        
+    }
+
+    public bool Exist(User u) {
+        return !Context.TemplateItems.Local.Any(
+            ti =>
+                ti.User == u.UserId && ti.Template == this.TemplateId);
+    }
+
+    public void Delete() {
+        Context.Templates.Remove(this);
     }
 }

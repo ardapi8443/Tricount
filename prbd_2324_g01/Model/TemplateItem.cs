@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System;
@@ -30,6 +31,13 @@ public class TemplateItem : EntityBase<PridContext> {
 
     public void Add() {
         Context.TemplateItems.Add(this);
+    }
+
+    public static List<TemplateItem> GetAllItemByTemplateID(int id) {
+        return Context.TemplateItems
+            .Where(ti => ti.Template == id)
+            .Include(ti => ti.UserFromTemplateItem)
+            .ToList();
     }
 }
 
