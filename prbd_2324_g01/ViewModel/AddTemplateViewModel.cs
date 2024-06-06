@@ -35,7 +35,12 @@ namespace prbd_2324_g01.ViewModel {
                 RaisePropertyChanged(SelectedTemplate);
             }
         }
-
+        private string _errorMessage;
+        public string ErrorMessage {
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
+        }
+        
         private ObservableCollectionFast<TemplateViewModel> _templates;
 
         public ObservableCollectionFast<TemplateViewModel> Templates {
@@ -278,6 +283,11 @@ namespace prbd_2324_g01.ViewModel {
             }
             if (part_weight == TemplateItems.Count) {
                 AddError(nameof(TemplateItems),"You must check at least one participant");
+                ErrorMessage = "you must check at least one participant";
+                Console.WriteLine("ici");
+            } else {
+                ErrorMessage = "";
+                Console.WriteLine("la");
             }
             
             return !HasErrors;

@@ -22,6 +22,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <TextBlock  Name="errorRepartition" Foreground="Red" 
+                   Text="{Binding ErrorMessage}" 
+        />
+ 
 
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
