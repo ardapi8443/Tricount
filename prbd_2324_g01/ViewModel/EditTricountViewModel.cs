@@ -165,10 +165,11 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         public void LoadTemplates() {
-            var templates = Context.Templates
-                .Where(t => t.Tricount == Tricount.Id)
-                .ToList();
-            
+            // var templates = Context.Templates
+            //     .Where(t => t.Tricount == Tricount.Id)
+            //     .ToList();
+
+            List<Template> templates = Tricount.GetTemplatesByTricount();
 
             Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t, true))
@@ -252,7 +253,7 @@ namespace prbd_2324_g01.ViewModel {
         }
         
         private void AddParticipantAction() {
-            var user = Context.Users.FirstOrDefault(u => u.FullName == SelectedFullName);
+            User user = User.GetUserByFullName(SelectedFullName);
             int numberOfExpenses = Repartition.getExpenseByUserAndTricount(user.UserId, Tricount.Id);
             AddParticipants(SelectedFullName,numberOfExpenses);
         }
@@ -345,7 +346,8 @@ namespace prbd_2324_g01.ViewModel {
 
             if (newTricount) {
                 Tricount.IsNew = false;
-                Context.Add(Tricount);
+                Tricount.Add();
+                
             }
             
             Context.SaveChanges(); 
@@ -432,9 +434,9 @@ namespace prbd_2324_g01.ViewModel {
             
             Participants = new ObservableCollectionFast<ParticipantViewModel>(
                 Tricount.getSubscribers().Select(sub => {
-                    var numberOfExpenses = Context.Repartitions
-                        .Count(rep => rep.UserId == sub.UserId && rep.OperationFromRepartition.TricountId == Tricount.Id);
-            
+      
+                    int numberOfExpenses = Repartition.getExpenseByUserAndTricount(sub.UserId, Tricount.Id);
+                    
                     return new ParticipantViewModel(
                         Tricount,
                         sub, 
@@ -451,7 +453,7 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
             
-            bool titleExist = Context.Tricounts.Any(t => t.Title.Equals(UpdatedTitle) && Tricount.Id != t.Id && t.Creator == Tricount.Creator);
+            bool titleExist = Tricount.IsDuplicateTitle(UpdatedTitle);
 
             if (string.IsNullOrEmpty(UpdatedTitle)) {
                 AddError(nameof(UpdatedTitle), "Title is required.");
@@ -495,9 +497,11 @@ namespace prbd_2324_g01.ViewModel {
          KeepTemplateFromView();
          
          foreach (TemplateViewModel templateViewModel in Templates) {
-            Template existingTemplate = Context.Templates
-                .Include(t => t.TemplateItems)
-                .FirstOrDefault(t => t.TemplateId == templateViewModel.Template.TemplateId);
+            // Template existingTemplate = Context.Templates
+            //     .Include(t => t.TemplateItems)
+            //     .FirstOrDefault(t => t.TemplateId == templateViewModel.Template.TemplateId);
+
+            Template existingTemplate = Template.GetTemplateById(templateViewModel.Template.TemplateId);
 
             if (existingTemplate != null) {
                 // Mise à jour du template existant
@@ -511,12 +515,14 @@ namespace prbd_2324_g01.ViewModel {
                     Tricount = Tricount.Id,
                     TemplateItems = new List<TemplateItem>()
                 };
-                Context.Templates.Add(template);
+                template.Add();
+
                 existingTemplate = template; 
             }
 
             foreach (UserTemplateItemViewModel userTemplateItemViewModel in templateViewModel.TemplateItems) {
-                User user = Context.Users.FirstOrDefault(u => u.FullName == userTemplateItemViewModel.UserName);
+                User user = User.GetUserByFullName(userTemplateItemViewModel.UserName);
+                
                 if (user != null) {
                     TemplateItem existingTemplateItem = existingTemplate.TemplateItems
                         .FirstOrDefault(ti => ti.User == user.UserId);
@@ -525,8 +531,7 @@ namespace prbd_2324_g01.ViewModel {
                         // Mise à jour de l'item existant
                         existingTemplateItem.Weight = userTemplateItemViewModel.Weight;
                     } else {
-                        if (!Context.TemplateItems.Local.Any(ti =>
-                                ti.User == user.UserId && ti.Template == existingTemplate.TemplateId)) {
+                        if(existingTemplate.Exist(user)) {
                             // Création d'un nouvel item
                             TemplateItem templateItem = new TemplateItem {
                                 Weight = userTemplateItemViewModel.Weight,
@@ -536,7 +541,8 @@ namespace prbd_2324_g01.ViewModel {
                                 UserFromTemplateItem = user
                             };
                             existingTemplate.TemplateItems.Add(templateItem);
-                            Context.TemplateItems.Add(templateItem);
+                            templateItem.Add();
+                           
                         }
                     }
                 }
@@ -546,17 +552,16 @@ namespace prbd_2324_g01.ViewModel {
 
         private void KeepTemplateFromView() {
             List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
-            
-            var templatesInDb = Context.Templates
-                .Where(t => t.Tricount == Tricount.Id)
-                .ToList();
+
+            List<Template> templatesInDb = Tricount.GetTemplatesByTricount();
             
             var templatesToDelete = templatesInDb
                 .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))
                 .ToList();
             
-            foreach (var templateToDelete in templatesToDelete) {
-                Context.Templates.Remove(templateToDelete);
+            foreach (Template templateToDelete in templatesToDelete) {
+                templateToDelete.Delete();
+                
             }
         }
     }

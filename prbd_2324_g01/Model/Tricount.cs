@@ -329,5 +329,13 @@ public class Tricount : EntityBase<PridContext> {
         return queryUsersID.ToList().Select(u => Context.Users.Find(u)).OrderBy(t => t.FullName).ToList();
 
     }
+
+    public void Add() {
+        Context.Add(this);
+    }
+
+    public bool IsDuplicateTitle(string NewTitle) {
+        return Context.Tricounts.Any(t => t.Title.Equals(NewTitle) && this.Id != t.Id && t.Creator == this.Creator);
+    }
 }
 

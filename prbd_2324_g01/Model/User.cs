@@ -80,7 +80,7 @@ public class User : EntityBase<PridContext> {
         return Context.Users.FirstOrDefault(user => user.UserId == id);
     }
     
-    public static User UserByFullName(string Fullname) {
+    public static User GetUserByFullName(string Fullname) {
         return  Context.Users.FirstOrDefault(u => u.FullName == Fullname);
     }
 
