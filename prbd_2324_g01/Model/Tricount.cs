@@ -337,5 +337,7 @@ public class Tricount : EntityBase<PridContext> {
     public bool IsDuplicateTitle(string NewTitle) {
         return Context.Tricounts.Any(t => t.Title.Equals(NewTitle) && this.Id != t.Id && t.Creator == this.Creator);
     }
+    
+    
 }
 
