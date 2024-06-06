@@ -22,6 +22,7 @@ namespace prbd_2324_g01.ViewModel {
                 {
                     _isNew = value;
                     RaisePropertyChanged(nameof(IsNew));
+                    
                 }
             }
         }
@@ -90,5 +91,4 @@ namespace prbd_2324_g01.ViewModel {
             }
         }
     }
-
 }

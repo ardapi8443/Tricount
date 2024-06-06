@@ -68,6 +68,7 @@ namespace prbd_2324_g01.ViewModel {
                 if (_title != value) {
                     _title = value;
                     RaisePropertyChanged(nameof(Title));
+                    Validate();
                 }
             }
         }
@@ -245,6 +246,16 @@ namespace prbd_2324_g01.ViewModel {
             NotifyColleagues(App.Messages.MSG_ADD_TEMPLATE_OPE, template);
             CloseWindow();
         }
+        public override bool Validate() {
+            ClearErrors();
+            
+            if (string.IsNullOrEmpty(Title)) {
+                AddError(nameof(Title), "Title is required.");
+            } else if (Title.Length < 3) {
+                AddError(nameof(Title), "Minimum 3 characters required.");
+            }
+            
+            return !HasErrors;
+        }
     }
-
 }
