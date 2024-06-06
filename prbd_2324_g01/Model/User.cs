@@ -116,7 +116,9 @@ public class User : EntityBase<PridContext> {
         //pour chaque opérations :
         foreach (var operation in operations) {
             //trouver le poids total de l'opération
-            int poidsTotal = Context.Repartitions.Where(r => r.OperationId == operation.OperationId).Sum(r => r.Weight);
+            int poidsTotal = Context.Repartitions
+                .Where(r => r.OperationId == operation.OperationId)
+                .Sum(r => r.Weight);
             
             //pour la répartition du user :
             var repartition = from r in Context.Repartitions
@@ -129,12 +131,21 @@ public class User : EntityBase<PridContext> {
                 balance -= operation.Amount * repartition.First().Weight / poidsTotal;
                 
                 //si le user a payé l'opération, on lui rajoute le montant de l'opération
-                if (operation.Initiator == this) {
+                if (operation.Initiator.UserId == this.UserId) {
                     balance += operation.Amount;
+                    //Console.WriteLine("INITIATOR");
                 }
+            }
+            if (tricountId == 4) {
+                //Console.WriteLine( "operation : " + operation.Title + "\nbalance : " + balance + 
+                //                   "\noperation amount : " + operation.Amount + "\npoids total : " + poidsTotal);
+                //Console.WriteLine();
             }
         }
 
+        //Console.WriteLine($"Balance : " + balance + " user : " + this.FullName + " tricount : " + tricountId);
+            
+        
         return Math.Round(balance, 2);
     }
 
