@@ -87,6 +87,7 @@ namespace prbd_2324_g01.ViewModel {
         public AddTemplateViewModel(Tricount tricount, Template template, bool isNew,
             ObservableCollection<UserTemplateItemViewModel> templateItems,
             ObservableCollectionFast<TemplateViewModel> templateViewModels, bool fromTemplateView) {
+            Tricount = tricount;
             TemplateItems = templateItems;
             Templates = templateViewModels;
 
@@ -100,7 +101,7 @@ namespace prbd_2324_g01.ViewModel {
                 }
             } else {
                 DisplayEditTemplateWindows(template, templateItems, Templates);
-                AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
+                AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates), CanAddNewTemplate);
             }
 
             CancelTemplate = new RelayCommand(CloseWindow);
@@ -197,20 +198,12 @@ namespace prbd_2324_g01.ViewModel {
             ObservableCollection<UserTemplateItemViewModel> existingTemplateItems,
             ObservableCollectionFast<TemplateViewModel> templateViewModels) {
 
-            var distinctUsers = Context.Users
-                .Where(u => u.Role == Role.Viewer)
-                .OrderBy(u => u.FullName)
-                .GroupBy(u => u.FullName)
-                .Select(g => g.First())
-                .ToList();
-            
-
             Title = templateViewModels.FirstOrDefault(t => t.Template.TemplateId == template.TemplateId)?.Title;
             AddButtonText = "Save";
 
 
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                distinctUsers.Select(u => {
+                Tricount.getSubscribers().OrderBy(u => u.FullName).Select(u => {
                     var templateItem = existingTemplateItems.FirstOrDefault(ti => ti.UserName == u.FullName);
                     return new UserTemplateItemViewModel(
                         u.FullName,
@@ -225,22 +218,12 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayAddTemplateWindows(ObservableCollection<UserTemplateItemViewModel> templateItems) {
-
-            var distinctUsers = Context.Users
-                .Where(u => u.Role == Role.Viewer)
-                .OrderBy(u => u.FullName)
-                .GroupBy(u => u.FullName)
-                .Select(g => g.First())
-                .ToList();
-
-            // var distinctUsers = Tricount.Subscribers;
-
             Title = "New Template";
             AddButtonText = "Add";
 
             if (templateItems.IsNullOrEmpty()) {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                    distinctUsers.Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, false)));
+                    Tricount.getSubscribers().OrderBy(u => u.FullName).Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, false)));
             } else {
                 foreach (var userTemplateItemViewModel in templateItems) {
                     userTemplateItemViewModel.FromOperation = false;
