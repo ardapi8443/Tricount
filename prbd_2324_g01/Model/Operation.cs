@@ -52,19 +52,19 @@ public class Operation : EntityBase<PridContext> {
     public Operation() { }
 
     public static List<Operation> OperationByTricount(int tricount) {
-        return PridContext.Context.Operations.Where(ope => ope.TricountId == tricount).ToList();
+        return Context.Operations.Where(ope => ope.TricountId == tricount).ToList();
     }
 
     public static Operation NewestOperationByTricount(int tricount) {
 
-        return PridContext.Context.Operations
+        return Context.Operations
                 .Where(ope => ope.TricountId == tricount)
                 .OrderBy(ope => ope.OperationDate)
                 .FirstOrDefault();
     }
 
     public ICollection<User> GetUsers() {
-        var query = from o in PridContext.Context.Operations
+        var query = from o in Context.Operations
             where o.OperationId == OperationId
             select o.Users;
 

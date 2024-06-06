@@ -28,7 +28,7 @@ public class Repartition : EntityBase<PridContext> {
 
     public static int getExpenseByUserAndTricount(int UserId, int TricountId) {
         
-        return PridContext.Context.Repartitions.Count(rep => rep.UserId == UserId && rep.OperationFromRepartition.TricountId == TricountId);
+        return Context.Repartitions.Count(rep => rep.UserId == UserId && rep.OperationFromRepartition.TricountId == TricountId);
 
 
     }

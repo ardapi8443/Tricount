@@ -200,7 +200,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private void DisplayAddTemplateWindows(ObservableCollection<UserTemplateItemViewModel> templateItems) {
 
-            var distinctUsers = PridContext.Context.Users
+            var distinctUsers = Context.Users
                 .Where(u => u.Role == Role.Viewer)
                 .OrderBy(u => u.FullName)
                 .GroupBy(u => u.FullName)
