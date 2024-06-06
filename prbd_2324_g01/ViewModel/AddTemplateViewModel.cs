@@ -86,12 +86,13 @@ namespace prbd_2324_g01.ViewModel {
             if (isNew) {
                 if (!fromTemplateView) {
                     DisplayAddTemplateWindows(TemplateItems);
-                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplateDB(Title, tricount.Id, TemplateItems));
+                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplateDB(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 } else {
                     DisplayAddTemplateWindows(new ObservableCollection<UserTemplateItemViewModel>());
-                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems));
+                    AddTemplateDbCommand = new RelayCommand(() => AddNewTemplate(Title, tricount.Id, TemplateItems), CanAddNewTemplate);
                 }
             } else {
+                Console.WriteLine("ici-bas");
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates));
             }
@@ -133,6 +134,10 @@ namespace prbd_2324_g01.ViewModel {
             RaisePropertyChanged(nameof(SelectedTemplate));
             CloseWindow();
 
+        }
+
+        private bool CanAddNewTemplate() {
+            return !HasErrors;
         }
 
         private void AddNewTemplate(string title, int tricountId, IEnumerable<UserTemplateItemViewModel> userItems) {
