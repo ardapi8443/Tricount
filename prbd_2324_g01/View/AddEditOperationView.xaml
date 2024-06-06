@@ -36,7 +36,7 @@
         <Label Grid.Row="1" Content="Amount:" Margin="15"/>
         <TextBox  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="15"
                  Text="{Binding Amount,UpdateSourceTrigger=PropertyChanged, 
-                    Delay=500, FallbackValue='0.00'}"/>
+                    StringFormat={}{0:0.##}}"/>
         
         <Label Grid.Row="2" Content="Initiator:" Margin="15"/>
         <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="initiator" Margin="15"

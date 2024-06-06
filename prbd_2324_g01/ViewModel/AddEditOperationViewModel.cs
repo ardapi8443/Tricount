@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using prbd_2324_g01.Model;
 using prbd_2324_g01.View;
 using PRBD_Framework;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Operation = prbd_2324_g01.Model.Operation;
 
@@ -18,7 +20,7 @@ namespace prbd_2324_g01.ViewModel {
         private bool _isNew { get; set; }
         private Operation _operation;
         private string _title;
-        private double _amount;
+        private string _amount;
         private User _selectedUser;
         private Template _selectedTemplate;
         private ObservableCollectionFast<User> _users = new();
@@ -26,6 +28,7 @@ namespace prbd_2324_g01.ViewModel {
         private ObservableCollectionFast<Template> _templates = new();
         private ObservableCollectionFast<UserTemplateItemViewModel> _templateItems;
         private string _errorMessage;
+        private double _amountParsed;
 
         private bool _isNewTemplate = true;
         private int _totalWeight = 0;
@@ -40,21 +43,25 @@ namespace prbd_2324_g01.ViewModel {
             set => SetProperty(ref _title, value, () => { Validate();});
         }
 
-        public double Amount {
+        public string Amount {
             get => _amount;
             set => SetProperty(ref _amount, value,
                 () => {
+                    //_amountParsed = double.Parse(Amount);
                     
-                    if (double.IsNaN(Amount)) {
+                    //if (double.TryParse(Amount, out _amountParsed)) {
+                    if (!CheckIfDouble(Amount)) {
                         Console.WriteLine("NaN");
-                        Amount = 0.00;
+                        Amount = _amountParsed.ToString();
                     } else {
                         Console.WriteLine("rounding");
-                        Amount = Math.Round(_amount, 2);
-                    }
+                        _amountParsed = double.Parse(Amount);
+                        Amount = Math.Round(_amountParsed, 2).ToString("F2");
+                        
+                    } 
                     Console.WriteLine(Amount);
                     Validate();
-                    NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
+                    NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, _amountParsed);
                 });
         }
 
@@ -109,7 +116,7 @@ namespace prbd_2324_g01.ViewModel {
             } else if (Title.Length < 3) {
                 AddError(nameof(Title), "min 3 characters");
             }
-            if (double.IsNaN(Amount) || Amount < 0.01) {
+            if (double.IsNaN(_amountParsed) || _amountParsed < 0.01) {
                 AddError(nameof(Amount), "minimum 1 cent");
             }
 
@@ -131,6 +138,10 @@ namespace prbd_2324_g01.ViewModel {
             
             return !HasErrors;
         }
+        
+        private bool CheckIfDouble(string value) {
+            return Regex.IsMatch(value, @"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$");
+        }
 
         public AddEditOperationViewModel(Operation operation, Tricount tricount, bool isNew) {
             _isNew = isNew;
@@ -141,7 +152,8 @@ namespace prbd_2324_g01.ViewModel {
                 Operation.TricountId = tricount.Id;   
             }
             Title = isNew ? "" : operation.Title;
-            Amount = isNew ? 0.00 : operation.Amount;
+            _amountParsed = isNew ? 0.00 : operation.Amount;
+            Amount = _amountParsed.ToString();
             Date = isNew ? DateTime.Today : operation.OperationDate;
 
             //we populate the Users Combobox
@@ -214,7 +226,7 @@ namespace prbd_2324_g01.ViewModel {
             Register(App.Messages.MSG_WEIGHT_CHANGED, CalculateTotalWeight);
             
             CalculateTotalWeight();
-            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
+            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, _amountParsed);
         }
 
         private void CalculateTotalWeight() {
@@ -233,7 +245,7 @@ namespace prbd_2324_g01.ViewModel {
         private void AddOperationAction() {
            
             Operation.Title = Title;
-            Operation.Amount = Amount;
+            Operation.Amount = _amountParsed;
             Operation.OperationDate = Date;
                 
             //first, save/update the operation 
@@ -245,9 +257,6 @@ namespace prbd_2324_g01.ViewModel {
                 Context.Operations.Add(Operation);
                 
             } else {
-                Operation.Title = Title;
-                Operation.Amount = Amount;
-                Operation.OperationDate = Date;
                 Operation.Initiator = SelectedUser;
                 
             }
@@ -326,7 +335,7 @@ namespace prbd_2324_g01.ViewModel {
                     _isNew, true)));
             
             CalculateTotalWeight();
-            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, Amount);
+            NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, _amountParsed);
         }
 
         // !! doit prendre les élément tels que vu dans Templatesitems au moment de cliquer sur le bouton
