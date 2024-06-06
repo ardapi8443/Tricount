@@ -62,7 +62,7 @@ namespace prbd_2324_g01.ViewModel {
             DisplayMap();
             
             //attribution des actions aux boutons
-            EditTricount = new RelayCommand(EditTricountAction);
+            EditTricount = new RelayCommand(EditTricountAction, CanDeleteTricountAction);
             DeleteTricount = new RelayCommand(DeleteTricountAction, CanDeleteTricountAction);
             
             NewOperation = new RelayCommand<OperationCardViewModel>(vm => {

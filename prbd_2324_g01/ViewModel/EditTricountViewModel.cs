@@ -8,6 +8,7 @@ using prbd_2324_g01.View;
 using PRBD_Framework;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -72,8 +73,6 @@ namespace prbd_2324_g01.ViewModel {
             get => _fullnameNotSubscribed;
             set {
                 SetProperty(ref _fullnameNotSubscribed, value);
-                
-               
             }
         }
 
@@ -151,6 +150,7 @@ namespace prbd_2324_g01.ViewModel {
                     _templates = value;
                     RaisePropertyChanged(nameof(Templates));
                 }
+                RaisePropertyChanged(nameof(IsTemplatesEmpty));
             }
         }
         
@@ -163,6 +163,9 @@ namespace prbd_2324_g01.ViewModel {
             get => _template;
             set => SetProperty(ref _template, value);
         }
+        
+        public Visibility IsTemplatesEmpty => Templates == null || !Templates.Any() ? Visibility.Visible : Visibility.Collapsed;
+            
         
         public void LoadTemplates() {
             var templates = Context.Templates
@@ -195,14 +198,14 @@ namespace prbd_2324_g01.ViewModel {
 
             
             Register<TemplateViewModel>(App.Messages.MSG_ADD_TEMPLATE, (TemplateViewModel) => {
-                Templates.Add(TemplateViewModel);
+                Templates.Add(TemplateViewModel); RaisePropertyChanged(nameof(IsTemplatesEmpty));
             });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
-                    Templates.Remove(TemplateViewModel);
+                    Templates.Remove(TemplateViewModel); RaisePropertyChanged(nameof(IsTemplatesEmpty));
                 });
 
             Register<TemplateViewModel>(
@@ -459,7 +462,7 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(UpdatedTitle), "Minimum 3 characters required.");
             } else if (titleExist) {
                 AddError(nameof(UpdatedTitle), "Title must be unique by Creator.");
-            }
+            } 
             
             if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
                 AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
