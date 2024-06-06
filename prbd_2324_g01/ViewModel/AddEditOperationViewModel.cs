@@ -235,11 +235,10 @@ namespace prbd_2324_g01.ViewModel {
             //first, save/update the operation 
             if (_isNew) {    
                  // to prevent InvalidOperationException, we need bind the selected user to the context
-                 var user = Context.Users.Find(SelectedUser.UserId);
+                 var user = User.UserById(SelectedUser.UserId);
                  Operation.Initiator = user;
-                
-                Context.Operations.Add(Operation);
-                
+                Operation.Add();
+               
             } else {
                 Operation.Initiator = SelectedUser;
                 
@@ -259,7 +258,8 @@ namespace prbd_2324_g01.ViewModel {
                             userID,
                             Operation.OperationId,
                             repartition.Weight);
-                        Context.Repartitions.Add(rep);
+                        rep.Add();
+                       
                     }
                 } 
             } else {
@@ -278,12 +278,13 @@ namespace prbd_2324_g01.ViewModel {
                         } else {
                             // Else create a new repartition
                             var newRepartition = new Repartition(userId, Operation.OperationId, repartition.Weight);
-                            Context.Repartitions.Add(newRepartition);
+                            newRepartition.Add();
+                            
                         }
                     } else {
                         // If the weight is 0 and the repartition exists, delete the repartition
                         if (existingRepartition != null) {
-                            Context.Repartitions.Remove(existingRepartition);
+                            existingRepartition.Delete();
                         }
                     }
                 }

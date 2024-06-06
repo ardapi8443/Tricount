@@ -171,7 +171,7 @@ namespace prbd_2324_g01.ViewModel {
             var templateViewModel = new TemplateViewModel(template, true, false);
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
+                User user = User.UserByFullName(userItem.UserName);
                 if (user != null) {
                     var templateItem = new UserTemplateItemViewModel(
                         user.FullName,
@@ -240,7 +240,8 @@ namespace prbd_2324_g01.ViewModel {
             };
 
             foreach (var userItem in userItems.Where(u => u.IsChecked)) {
-                var user = Context.Users.FirstOrDefault(u => u.FullName == userItem.UserName);
+                var user = User.UserByFullName(userItem.UserName);
+              
                 if (user != null) {
                     var templateItem = new TemplateItem {
                         User = user.UserId,
@@ -248,7 +249,7 @@ namespace prbd_2324_g01.ViewModel {
                         TemplateFromTemplateItem = template
                     };
 
-                    Context.TemplateItems.Add(templateItem);
+                    templateItem.Add();
                 }
             }
 

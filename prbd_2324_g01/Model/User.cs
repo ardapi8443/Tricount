@@ -79,6 +79,10 @@ public class User : EntityBase<PridContext> {
     public static User UserById(int id) {
         return Context.Users.FirstOrDefault(user => user.UserId == id);
     }
+    
+    public static User UserByFullName(string Fullname) {
+        return  Context.Users.FirstOrDefault(u => u.FullName == Fullname);
+    }
 
     public double getExpenseByTricount(int id) {
         var q = from o in Context.Operations

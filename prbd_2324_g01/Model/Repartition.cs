@@ -34,6 +34,14 @@ public class Repartition : EntityBase<PridContext> {
     public static Repartition GetRepartitionByUserIdAndOperationId(int UserId, int OperationId) {
         return Context.Repartitions.FirstOrDefault(r => r.OperationId == OperationId && r.UserId == UserId);
     }
+
+    public void Add() {
+        Context.Repartitions.Add(this);
+    }
+
+    public void Delete() {
+        Context.Repartitions.Remove(this);
+    }
         
         
 

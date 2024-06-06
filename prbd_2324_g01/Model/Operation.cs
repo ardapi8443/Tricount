@@ -97,6 +97,10 @@ public class Operation : EntityBase<PridContext> {
         Context.SaveChanges();
     }
 
+    public void Add() {
+        Context.Operations.Add(this);
+    }
+
     public static Operation GetOperationById(int id) {
         return Context.Operations.Find(id);
     }
