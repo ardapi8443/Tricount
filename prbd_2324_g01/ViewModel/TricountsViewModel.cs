@@ -37,7 +37,7 @@ public class TricountsViewModel : ViewModelCommon {
         //on vide la vue
         TricountsDetailVM.Clear();
         //on va chercher tout les tricounts du user
-        IEnumerable<Tricount> tricountList = Tricount.TricountsByMember(CurrentUser);
+        IEnumerable<Tricount> tricountList = CurrentUser.GetTricounts();
         
         //si le filtre n'est pas vide, on la liste de tricount en fonction du filtre
         if (!string.IsNullOrEmpty(Filter)) {
@@ -66,7 +66,7 @@ public class TricountsViewModel : ViewModelCommon {
     }
     
     private void InitiateVM() {
-        IEnumerable<Tricount> tricounts = Tricount.TricountsByMember(CurrentUser);
+        IEnumerable<Tricount> tricounts = CurrentUser.GetTricounts();
 
         foreach (var tricount in tricounts) {
             TricountsDetailVM.Add(new TricountDetailViewModel(tricount));

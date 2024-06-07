@@ -241,4 +241,8 @@ public class User : EntityBase<PridContext> {
     public void AddToContext() {
         Context.Add(this);
     }
+    
+    public List<Tricount> GetTricounts() {
+        return Tricount.TricountsByMember(this);
+    }
 }
