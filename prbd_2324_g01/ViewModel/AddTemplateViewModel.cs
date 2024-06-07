@@ -110,6 +110,8 @@ namespace prbd_2324_g01.ViewModel {
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates), CanAddNewTemplate);
             }
+            
+            Register(App.Messages.MSG_CHECKBOX_CHANGED, () => Validate());
 
             CancelTemplate = new RelayCommand(CloseWindow);
         }
