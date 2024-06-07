@@ -29,6 +29,20 @@ public class Template : EntityBase<PridContext> {
 
     public Template() { }
 
+    public static bool ValidateUnicity(string title, int tricountId, int templateId) {
+        return Context.Templates.Any(t => t.Title == title && t.Tricount == tricountId && t.TemplateId != templateId);
+    }
+
+    public static string ValidateTitle(string title) {
+        if (string.IsNullOrEmpty(title)) {
+            return "Title is required.";
+        } else if (title.Length < 3) {
+            return "Minimum 3 characters required.";
+        }
+
+        return null;
+    }
+
     public static List<Template> templateByTricount(int Tricount) {
         return Context.Templates.Where(template => template.Tricount == Tricount).ToList();
         

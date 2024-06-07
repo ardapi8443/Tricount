@@ -275,17 +275,19 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
             
-            bool sameTitleTwice = Context.Templates.Any(t => t.Title == Title && t.Tricount == Tricount.Id && t.TemplateId != Template.TemplateId);
+            //on vérifie l'unicité du titre dans le context
+            bool sameTitleTwice = Template.ValidateUnicity(Title, Tricount.Id, Template.TemplateId);
 
+            //si pas, on vérifie dans les templates déjà existants et peut être pas encore sauvé
+            bool sameTitleTwiceInRAM = false;
             if (!sameTitleTwice) {
-                sameTitleTwice = Templates.Any(t => t.Title == Title && t.Template.TemplateId != Template.TemplateId);
+                sameTitleTwiceInRAM = Templates.Any(t => t.Title == Title && t.Template.TemplateId != Template.TemplateId);
             }
-            
-            if (string.IsNullOrEmpty(Title)) {
-                AddError(nameof(Title), "Title is required.");
-            } else if (Title.Length < 3) {
-                AddError(nameof(Title), "Minimum 3 characters required.");
-            } else if (sameTitleTwice) {
+
+            string validateTitle = Template.ValidateTitle(Title);
+            if (validateTitle != null) {
+                AddError(nameof(Title), validateTitle);
+            } else if (sameTitleTwice || sameTitleTwiceInRAM) {
                 AddError(nameof(Title), "Title already exists.");
             }
             
