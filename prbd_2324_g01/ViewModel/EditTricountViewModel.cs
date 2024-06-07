@@ -455,26 +455,26 @@ namespace prbd_2324_g01.ViewModel {
         
         public override bool Validate() {
             ClearErrors();
-            
-            bool titleExist = Tricount.IsDuplicateTitle(UpdatedTitle);
 
-            if (string.IsNullOrEmpty(UpdatedTitle)) {
-                AddError(nameof(UpdatedTitle), "Title is required.");
-            } else if (UpdatedTitle.Length < 3) {
-                AddError(nameof(UpdatedTitle), "Minimum 3 characters required.");
-            } else if (titleExist) {
-                AddError(nameof(UpdatedTitle), "Title must be unique by Creator.");
+            string validateTitle = Tricount.ValidateTitle(UpdatedTitle);
+            string titleExist = Tricount.IsDuplicateTitle(UpdatedTitle);
+            if (validateTitle != null) {
+                AddError(nameof(UpdatedTitle), validateTitle);
+            }  else if (titleExist != null) {
+                AddError(nameof(UpdatedTitle), titleExist);
             } 
             
-            if (!string.IsNullOrEmpty(UpdatedDescription) && UpdatedDescription.Length < 3) {
-                AddError(nameof(UpdatedDescription), "Minimum 3 characters required.");
+            string validateDescriptin = Tricount.ValidateDescription(UpdatedDescription);
+            if (validateDescriptin != null) {
+                AddError(nameof(UpdatedDescription), validateDescriptin);
             }
             
             DateTime TempDate = new DateTime(
                 Date.Year, Date.Month, Date.Day, 0, 0, 0);
                         
-             if (TempDate > DateTime.Today) {
-                AddError(nameof(Date), "cannot be in the future");
+            string validateDate = Tricount.ValidateDate(TempDate); 
+            if (validateDate != null) {
+                AddError(nameof(Date), validateDate);
             }
     
             return !HasErrors;

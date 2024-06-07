@@ -74,7 +74,7 @@ public class Tricount : EntityBase<PridContext> {
             return Subscribers.Count - 1;
         }
     }
-    //[NotMapped]
+    [NotMapped]
     public virtual Boolean HaveFriends {
         get {
             Context.Entry(this)
@@ -103,6 +103,40 @@ public class Tricount : EntityBase<PridContext> {
 
     }
     public Tricount() { }
+
+    public static string ValidateTitle(string title) {
+        if (string.IsNullOrEmpty(title)) {
+            return "Title is required.";
+        } else if (title.Length < 3) {
+            return "Minimum 3 characters required.";
+        }
+
+        return null;
+    }
+
+    public string IsDuplicateTitle(string newTitle) {
+        if (Context.Tricounts.Any(t => t.Title.Equals(newTitle) && this.Id != t.Id && t.Creator == this.Creator)) {
+            return "Title must be unique by Creator.";
+        }
+
+        return null;
+    }
+
+    public static string ValidateDescription(string description) {
+        if (!string.IsNullOrEmpty(description) && description.Length < 3) {
+            return "Minimum 3 characters required.";
+        }
+
+        return null;
+    }
+    
+    public static string ValidateDate(DateTime date) {
+        if (date > DateTime.Today) {
+            return "cannot be in the future";
+        }
+
+        return null;
+    }
 
     public Tricount(bool IsNew, string Title, string Description, int Creator, DateTime Created_at) {
         this.IsNew = IsNew;
@@ -274,10 +308,6 @@ public class Tricount : EntityBase<PridContext> {
 
     public void Add() {
         Context.Add(this);
-    }
-
-    public bool IsDuplicateTitle(string newTitle) {
-        return Context.Tricounts.Any(t => t.Title.Equals(newTitle) && this.Id != t.Id && t.Creator == this.Creator);
     }
     
     public dynamic  GetAllSubscribersBalance() {
