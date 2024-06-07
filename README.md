@@ -5,7 +5,7 @@
 ### Liste des bugs connus
 
 * pour reset: Rarement lorsqu'on delete un tricount pre existant et qu'on fait reset, le tricount se reouvre automatiquement (cela semble se decider a la compilation)
-* pour login/signup: après un signup, si le nouveau user créer un tricount, no a d'ffice un TabDirty malgré un ClearErrors() avant de changer d'onglet
+* pour login/signup: après un signup, si le nouveau user créer un tricount, on a d'office un TabDirty malgré un ClearErrors() avant de changer d'onglet
 * pour la gestion des opérations: parfois (rarement) editer une operation reouvre les tricount precedemment ouvert
 
 ### Liste des fonctionnalités supplémentaires
