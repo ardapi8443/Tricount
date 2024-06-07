@@ -62,23 +62,18 @@ namespace prbd_2324_g01.ViewModel
         public override bool Validate() {
             ClearErrors();
 
-            bool user = User.IsMailExist(Email);
-
-            if (string.IsNullOrEmpty(Email))
-                AddError(nameof(Email), "required");
-            else if (!Email.Contains('@') || !Email.Contains('.'))
-                AddError(nameof(Email), "email not valid");
-            else if (!user)
-                AddError(nameof(Email), "does not exist");
+            string validateMail = User.ValidateEmailForLogin(Email);
+            if (validateMail != null)
+                AddError(nameof(Email), validateMail);
+            
             return !HasErrors;
         }
 
         public bool ValidatePassword() {
 
-            if (string.IsNullOrEmpty(Password))
-                AddError(nameof(Password), "required");
-            else if (Password.Length < 3)
-                AddError(nameof(Password), "length must be >= 3");
+            string validatePassword = User.ValidatePasswordForLogin(Password);
+            if (validatePassword != null)
+                AddError(nameof(Password), validatePassword);
 
             return !HasErrors;
         }

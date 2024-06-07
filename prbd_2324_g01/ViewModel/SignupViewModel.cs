@@ -10,9 +10,7 @@ namespace prbd_2324_g01.ViewModel {
         private string _password;
         private string _confirmpassword;
         private string _email;
-
-        private static readonly string PasswordPattern =
-            @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}";
+        
         public string Pseudo {
             get => _pseudo;
             set => SetProperty(ref _pseudo, value, () => {
@@ -87,6 +85,7 @@ namespace prbd_2324_g01.ViewModel {
             NotifyColleagues(App.Messages.MSG_LOGOUT);
         }
         
+        //peut rester ici non ?
         private bool ValidateConfirmPassword() {
             
             if (!ConfirmPassword.Equals(Password))
@@ -94,49 +93,33 @@ namespace prbd_2324_g01.ViewModel {
             
             return !HasErrors;
         }
-
-
-        public bool ValidatePasswordComplexity(string password) {
-            return new Regex(PasswordPattern).IsMatch(password);
-        }
         
         public override bool Validate() {
             ClearErrors();
 
-            bool emailExists = User.IsMailExist(Email);
-     
-            if (string.IsNullOrEmpty(Email))
-                AddError(nameof(Email), "required");
-            else if (!Email.Contains('@') || !Email.Contains('.'))
-                AddError(nameof(Email), "email not valid");
-            else if (emailExists)
-                AddError(nameof(Email), "Already used");
+            string validateMail = User.ValidateEmailForSignup(Email);
+            if (validateMail != null)
+                AddError(nameof(Email), validateMail);
             
             return !HasErrors;
         }
 
         public bool ValidatePassword() {
+            string validatePassword = User.ValidatePasswordForSignup(Password);
             
-            if (string.IsNullOrWhiteSpace(Password)) {
-                AddError(nameof(Password), "Password is required.");
-            } else if (!ValidatePasswordComplexity(Password))
-                    AddError(nameof(Password), "Password does not meet requirements.");
-            else if (Password.Length < 3)
-                AddError(nameof(Pseudo), "length must be >= 3");
+            if (validatePassword != null) {
+                AddError(nameof(Password), validatePassword);
+            }
             
             return !HasErrors;
         }
 
         public bool ValidePseudo() {
+            string validatePseudo = User.ValidatePseudo(Pseudo);
             
-            bool existingUser = User.IsPseudoExist(Pseudo);
-            
-            if (string.IsNullOrEmpty(Pseudo))
-                AddError(nameof(Pseudo), "required");
-            else if (Pseudo.Length < 3 )
-                AddError(nameof(Pseudo), "length must be >= 3");
-            else if (existingUser)
-                AddError(nameof(Pseudo), "This Pseudo is not available");
+            if (validatePseudo != null) {
+                AddError(nameof(Pseudo), validatePseudo);  
+            }
             
             return !HasErrors;
         }

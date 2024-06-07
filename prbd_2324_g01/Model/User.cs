@@ -4,6 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
 namespace prbd_2324_g01.Model;
@@ -26,10 +27,73 @@ public class User : EntityBase<PridContext> {
         this.Email = email;
        
     }
-    public User() {
+    public User() { }
+
+    public static string ValidateEmailForLogin(string email) {
+        if (string.IsNullOrEmpty(email))
+            return "required";
+        else if (!email.Contains('@') || !email.Contains('.'))
+            return "email not valid";
+        else if (!IsMailExist(email))
+            return "does not exist";
+        return null;
+    }
+
+    public static string ValidateEmailForSignup(string email) {
+        if (string.IsNullOrEmpty(email))
+            return "required";
+        else if (!email.Contains('@') || !email.Contains('.'))
+            return "email not valid";
+        else if (IsMailExist(email))
+            return "Already used";
+        
+        return null;
     }
     
+    private static bool IsMailExist(string Email) {
+        return (from u in Context.Users
+            where u.Email.Equals(Email)
+            select u.Email).Any();
+    }
 
+    public static string ValidatePasswordForLogin(string passwd) {
+        if (string.IsNullOrEmpty(passwd))
+            return "required";
+        else if (passwd.Length < 3)
+            return "length must be >= 3";
+        return null;
+    }
+
+    public static string ValidatePasswordForSignup(string passwd) {
+        if (string.IsNullOrWhiteSpace(passwd)) {
+            return "Password is required.";
+        } else if (!ValidatePasswordComplexity(passwd))
+            return "Password does not meet requirements.";
+        else if (passwd.Length < 3)
+            return "length must be >= 3";
+
+        return null;
+    }
+    
+    private static bool ValidatePasswordComplexity(string password) {
+        string PasswordPattern =
+            @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}";
+        return new Regex(PasswordPattern).IsMatch(password);
+    }
+
+    public static string ValidatePseudo(string pseudo) {
+        if (string.IsNullOrEmpty(pseudo))
+            return "required";
+        else if (pseudo.Length < 3 )
+            return "length must be >= 3";
+        else if (IsPseudoExist(pseudo))
+            return "This Pseudo is not available";
+        return null;
+    }
+    
+    private static bool IsPseudoExist(string pseudo) {
+        return Context.Users.Any(u => u.FullName.Equals(pseudo));
+    }
 
     public static User GetUserById(int id) {
         var q = from u in Context.Users
@@ -172,16 +236,6 @@ public class User : EntityBase<PridContext> {
         return (from u in Context.Users
             where u.Email.Equals(Email)
             select u.HashedPassword).First();
-    }
-    
-    public static bool IsMailExist(string Email) {
-        return (from u in Context.Users
-            where u.Email.Equals(Email)
-            select u.Email).Any();
-    }
-
-    public static bool IsPseudoExist(string Pseudo) {
-        return Context.Users.Any(u => u.FullName.Equals(Pseudo));
     }
 
     public void Add() {
