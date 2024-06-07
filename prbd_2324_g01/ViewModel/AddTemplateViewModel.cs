@@ -65,6 +65,12 @@ namespace prbd_2324_g01.ViewModel {
             private init => SetProperty(ref _tricount, value);
         }
 
+        private Template _template;
+
+        public Template Template { 
+            get => _template;
+            private init => SetProperty(ref _template, value); }
+
         private string _title;
 
         public string Title {
@@ -88,6 +94,7 @@ namespace prbd_2324_g01.ViewModel {
             ObservableCollection<UserTemplateItemViewModel> templateItems,
             ObservableCollectionFast<TemplateViewModel> templateViewModels, bool fromTemplateView) {
             Tricount = tricount;
+            Template = template;
             TemplateItems = templateItems;
             Templates = templateViewModels;
 
@@ -167,6 +174,13 @@ namespace prbd_2324_g01.ViewModel {
                 Title = title,
                 Tricount = tricountId
             };
+            
+            bool duplicateTitle = Templates.Any(t => t.Template.TemplateId == 0 && t.Title == template.Title);
+            
+            if (duplicateTitle) {
+                AddError(nameof(Title), "Title already exists.");
+                return;
+            }
 
             var templateViewModel = new TemplateViewModel(template, true, false);
 
@@ -261,11 +275,20 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
             
+            bool sameTitleTwice = Context.Templates.Any(t => t.Title == Title && t.Tricount == Tricount.Id && t.TemplateId != Template.TemplateId);
+
+            if (!sameTitleTwice) {
+                sameTitleTwice = Templates.Any(t => t.Title == Title && t.Template.TemplateId != Template.TemplateId);
+            }
+            
             if (string.IsNullOrEmpty(Title)) {
                 AddError(nameof(Title), "Title is required.");
             } else if (Title.Length < 3) {
                 AddError(nameof(Title), "Minimum 3 characters required.");
+            } else if (sameTitleTwice) {
+                AddError(nameof(Title), "Title already exists.");
             }
+            
             if (part_weight == TemplateItems.Count) {
                 AddError(nameof(TemplateItems),"You must check at least one participant");
                 ErrorMessage = "you must check at least one participant";

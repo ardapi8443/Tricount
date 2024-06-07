@@ -102,16 +102,21 @@
                 </StackPanel>
                 
             </StackPanel>
-            
             <StackPanel Grid.Column="1" Margin="0,15,0,0">
                 <TextBlock Text="Templates" FontWeight="Bold" FontSize="18"/>
-                <ListView ItemsSource="{Binding Templates}">
+                <ListView ItemsSource="{Binding Templates}" Visibility="{Binding !IsTemplatesEmpty}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <local:TemplateView/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <TextBlock Text="No template" 
+                           FontWeight="Light" 
+                           FontStyle="Italic"
+                           FontSize="16" 
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding IsTemplatesEmpty}"/>
                 <Button Content="New Template" Command="{Binding AddTemplateCommand}" Margin="170,10,170,0"/>
             </StackPanel>
         </Grid>
