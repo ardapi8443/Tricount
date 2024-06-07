@@ -309,9 +309,15 @@ namespace prbd_2324_g01.ViewModel {
         }
         
     private void AddMySelfInParticipant() {
-        string user = CurrentUser.FullName;
-        int numberOfExpenses = 0;
-        AddParticipants(user, numberOfExpenses);
+        if (CurrentUser.Role != Role.Administrator) {
+            string user = CurrentUser.FullName;
+            int numberOfExpenses = 0;
+            AddParticipants(user, numberOfExpenses);
+        } else {
+            Participants. Add(new ParticipantViewModel(Tricount, CurrentUser, 0, CurrentUser.UserId == CurrentTricountCreator.UserId));
+            UsersNotSubscribed.Remove(CurrentUser);
+        }
+        
     }
 
     private void AddParticipants(string usernotsub, int numberOfExpenses) {
@@ -483,9 +489,12 @@ namespace prbd_2324_g01.ViewModel {
         private void DeleteParticipant(ParticipantViewModel PVM) {
             
             Participants.Remove(PVM);
-            UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
-            UsersNotSubscribed = UsersNotSubscribed.OrderBy(x => x.FullName).ToList();
-            setFullnameNotSubscribed();
+            if (PVM.User.Role != Role.Administrator) {
+                UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
+                UsersNotSubscribed = UsersNotSubscribed.OrderBy(x => x.FullName).ToList();
+                setFullnameNotSubscribed();
+            }
+            
             PVM.Dispose();
 
         }
@@ -548,23 +557,23 @@ namespace prbd_2324_g01.ViewModel {
                 }
             } 
          } 
-        }
-
-        private void KeepTemplateFromView() {
-            List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
-
-            List<Template> templatesInDb = Tricount.GetTemplates();
-            
-            var templatesToDelete = templatesInDb
-                .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))
-                .ToList();
-            
-            foreach (Template templateToDelete in templatesToDelete) {
-                templateToDelete.Delete();
-                
-            }
-
-            Context.SaveChanges();
-        }
-    }
-}
+         }
+ 
+         private void KeepTemplateFromView() {
+             List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
+ 
+             List<Template> templatesInDb = Tricount.GetTemplates();
+             
+             var templatesToDelete = templatesInDb
+                 .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))
+                 .ToList();
+             
+             foreach (Template templateToDelete in templatesToDelete) {
+                 templateToDelete.Delete();
+                 
+             }
+ 
+             Context.SaveChanges();
+         }
+     }
+ }
