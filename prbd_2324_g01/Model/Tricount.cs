@@ -22,16 +22,14 @@ public class Tricount : EntityBase<PridContext> {
     public virtual ICollection<Operation> Operations { get; set; } = new HashSet<Operation>();
     private  bool _haveOpe = false;
 
-    [NotMapped]
-    public virtual double TotalExp {
-        get {
+
+    public  double TotalExp() {
             double res = new();
             foreach (Operation ope in Operations) {
                 res += ope.Amount;
             }
-
             return Math.Round(res, 2);
-        }    
+           
     }
     
     [NotMapped]
