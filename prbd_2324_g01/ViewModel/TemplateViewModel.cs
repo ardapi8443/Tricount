@@ -84,7 +84,7 @@ namespace prbd_2324_g01.ViewModel {
                 TemplateItems.Add(new UserTemplateItemViewModel(
                     item.UserFromTemplateItem.FullName,
                     item.Weight,
-                    true,
+                    false,
                     false
                 ));
             }
