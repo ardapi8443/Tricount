@@ -4,6 +4,7 @@ using PRBD_Framework;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace prbd_2324_g01.Model;
 
@@ -52,26 +53,35 @@ public class Operation : EntityBase<PridContext> {
 
     public Operation() { }
 
-    public static List<Operation> OperationByTricount(int tricount) {
-        return Context.Operations.Where(ope => ope.TricountId == tricount).ToList();
+    //validation methods
+    public static string ValidateTitle(string title) {
+        if (string.IsNullOrEmpty(title)) {
+            return "required";
+        } else if (title.Length < 3) {
+            return "min 3 characters";
+        }
+        return null;
     }
 
-    public static Operation NewestOperationByTricount(int tricount) {
+    public static string ValidateAmount(double amount) {
+        if (double.IsNaN(amount) || amount < 0.01) {
+            return "minimum 1 cent";
+        }
 
-        return Context.Operations
-                .Where(ope => ope.TricountId == tricount)
-                .OrderBy(ope => ope.OperationDate)
-                .FirstOrDefault();
+        return null;
     }
 
-    public ICollection<User> GetUsers() {
-        var query = from o in Context.Operations
-            where o.OperationId == OperationId
-            select o.Users;
+    public static string ValidateDate(DateTime date, DateTime tricountDate) {
+        if (date < tricountDate) {
+            return "can't add operation before tricount creation date";
+        } else if (date > DateTime.Today) {
+            return "cannot be in the future";
+        }
 
-        var users = query.First();
-        return users.OrderBy(u => u.FullName).ToList();
+        return null;
     }
+    
+    //others
 
     public List<Repartition> GetRepartitionItems() {
         return Context.Repartitions

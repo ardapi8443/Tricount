@@ -104,26 +104,23 @@ namespace prbd_2324_g01.ViewModel {
         public override bool Validate() {
             ClearErrors();
 
-            if (string.IsNullOrEmpty(Title)) {
-                AddError(nameof(Title), "required");
-            } else if (Title.Length < 3) {
-                AddError(nameof(Title), "min 3 characters");
+            string validateTitle = Operation.ValidateTitle(Title);
+            if (validateTitle != null) {
+                AddError(nameof(Title), validateTitle);
             }
-            if (double.IsNaN(_amountParsed) || _amountParsed < 0.01) {
-                AddError(nameof(Amount), "minimum 1 cent");
-            }
-
-            DateTime tempDate = new DateTime(
-                _tricount.CreatedAt.Year, _tricount.CreatedAt.Month, _tricount.CreatedAt.Day, 0, 0, 0);
             
-            if (Date < tempDate) {
-                AddError(nameof(Date), "can't add operation before tricount creation date");
-            } else if (Date > DateTime.Today) {
-                AddError(nameof(Date), "cannot be in the future");
+            string validateAmount = Operation.ValidateAmount(_amountParsed);
+            if (validateAmount != null) {
+                AddError(nameof(Amount), validateAmount);
             }
 
+            string validateDate = Operation.ValidateDate(Date, _tricount.CreatedAt);
+            if (validateDate != null) {
+                AddError(nameof(Date), validateDate);
+            }
+            
             if (TemplateItems != null && !TemplateItems.Any(item => item.IsChecked)) {
-                AddError(nameof(TemplateItems), "you must check at least one participant");
+                AddError(nameof(TemplateItems), "");
                 ErrorMessage = "you must check at least one participant";
             } else {
                 ErrorMessage = "";
