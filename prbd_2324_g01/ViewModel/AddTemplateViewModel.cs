@@ -110,6 +110,8 @@ namespace prbd_2324_g01.ViewModel {
                 DisplayEditTemplateWindows(template, templateItems, Templates);
                 AddTemplateDbCommand = new RelayCommand(() => EditTemplate(Title, TemplateItems, template, Templates), CanAddNewTemplate);
             }
+            
+            Register(App.Messages.MSG_CHECKBOX_CHANGED, () => Validate());
 
             CancelTemplate = new RelayCommand(CloseWindow);
         }
@@ -289,8 +291,10 @@ namespace prbd_2324_g01.ViewModel {
             if (!TemplateItems.Any(item => item.IsChecked)) {
                 AddError(nameof(TemplateItems),"You must check at least one participant");
                 ErrorMessage = "you must check at least one participant";
+                Console.WriteLine("ok");
             } else {
                 ErrorMessage = "";
+                Console.WriteLine("pas ok");
             }
             
             return !HasErrors;
