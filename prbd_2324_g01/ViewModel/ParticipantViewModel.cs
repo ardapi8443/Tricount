@@ -13,7 +13,19 @@ namespace prbd_2324_g01.ViewModel
         public string CreatorStatusDisplay => IsCreator ? "(creator)" : "";
         public string ExpensesDisplay => (NumberOfExpenses > 0 && !IsCreator) ? $"({NumberOfExpenses} expenses)" : string.Empty;
         
-        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator && IsVisible) ? Visibility.Visible : Visibility.Collapsed;
+
+        private bool _isVisible;
+        public bool IsVisible {
+            get => _isVisible;
+            set {
+                if (_isVisible != value) {
+                    _isVisible = value;
+                    RaisePropertyChanged(nameof(IsVisible));
+                    RaisePropertyChanged(nameof(TrashCanVisibility)); 
+                }
+            }
+        }
 
         private bool _isCreator;
         
@@ -37,25 +49,29 @@ namespace prbd_2324_g01.ViewModel
                 _isCreator = value;
                 RaisePropertyChanged(nameof(IsCreator));
                 RaisePropertyChanged(nameof(CreatorStatusDisplay));
+                RaisePropertyChanged(nameof(TrashCanVisibility));
             }
         }
 
         
         public ParticipantViewModel(Tricount tricount, User User, int numberOfExpenses, bool isCreator) {
             _tricount = tricount;
-            Name = User.FullName;   
+            Name = User.FullName;
+            IsVisible = true;
             this.User = User;
             NumberOfExpenses = numberOfExpenses;
             IsCreator = isCreator;
-            
             DeleteCommand = new RelayCommand(DeleteParticipant);
+
+            Register<bool>(App.Messages.MODIFED_TEMPLATE, OnModifiedTemplate);
         }
 
         private void DeleteParticipant() {
-
             NotifyColleagues(App.Messages.MSG_DEL_PARTICIPANT, this);
-            
-
+        }
+        
+        private void OnModifiedTemplate(bool isModifiedTemplate) {
+            IsVisible = !isModifiedTemplate;
         }
     }
 }

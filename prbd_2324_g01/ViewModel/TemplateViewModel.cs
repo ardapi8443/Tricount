@@ -3,6 +3,7 @@ using Msn.ViewModel;
 using prbd_2324_g01.Model;
 using PRBD_Framework;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 
@@ -11,6 +12,19 @@ namespace prbd_2324_g01.ViewModel {
         public Template Template { get; private set; }
         public ICommand EditCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
+        
+        private bool _isVisible;
+        public bool IsVisible {
+            get => _isVisible;
+            set {
+                if (_isVisible != value) {
+                    _isVisible = value;
+                    RaisePropertyChanged(nameof(IsVisible));
+                    RaisePropertyChanged(nameof(Visibility)); 
+                }
+            }
+        }
+        public Visibility Visibility => IsVisible ? Visibility.Visible : Visibility.Collapsed;
         
         private bool _isNew;
         private string _title;
@@ -27,6 +41,7 @@ namespace prbd_2324_g01.ViewModel {
                 }
             }
         }
+        
         
         public string Title {
             get => _title;
@@ -53,6 +68,7 @@ namespace prbd_2324_g01.ViewModel {
         public TemplateViewModel(Template template,bool isNew, bool loadFromDb = true) {
             Template = template;
             Title = template.Title;
+            IsVisible = true;
             TemplateItems = new ObservableCollectionFast<UserTemplateItemViewModel>();
             IsNew = isNew;
             if (loadFromDb) {
@@ -60,6 +76,8 @@ namespace prbd_2324_g01.ViewModel {
             }
             EditCommand = new RelayCommand(EditTemplate);
             DeleteCommand = new RelayCommand(DeleteTemplate);
+            
+            Register<bool>(App.Messages.MODIFED_PARTICIPANT, OnModifiedParticipant);
             
         }
         
@@ -88,6 +106,9 @@ namespace prbd_2324_g01.ViewModel {
                     false
                 ));
             }
+        }
+        private void OnModifiedParticipant(bool isModifiedParticipant) {
+            IsVisible = !isModifiedParticipant;
         }
     }
 }

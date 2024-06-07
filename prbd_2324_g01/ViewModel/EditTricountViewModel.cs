@@ -23,6 +23,8 @@ namespace prbd_2324_g01.ViewModel {
         private int Myself;
        
         private bool _isNew;
+        private bool _isModifiedTemplate;
+        private bool _isModifiedParticpant;
         private string _updatedTitle;
         private string _TitlePlaceHolder;
         public string TitlePlaceHolder {
@@ -79,6 +81,16 @@ namespace prbd_2324_g01.ViewModel {
         public bool IsNew {
             get => _isNew;
             set => SetProperty(ref _isNew, value);
+        }
+        
+        public bool IsModifiedTemplate {
+            get => _isModifiedTemplate;
+            set => SetProperty(ref _isModifiedTemplate, value);
+        }
+        
+        public bool IsModifiedParticipant {
+            get => _isModifiedParticpant;
+            set => SetProperty(ref _isModifiedParticpant, value);
         }
 
 
@@ -183,6 +195,8 @@ namespace prbd_2324_g01.ViewModel {
             Tricount = tricount;
             Date = tricount.CreatedAt;
             newTricount = tricount.IsNew;
+            IsModifiedTemplate = false;
+            IsModifiedParticipant = false;
             CurrentTricountCreator = User.GetUserById(tricount.Creator);
             UsersSubscribed.Add(CurrentTricountCreator);
             UsersSubscribed = UsersSubscribed.OrderBy(x => x.FullName).ToList();
@@ -199,25 +213,34 @@ namespace prbd_2324_g01.ViewModel {
 
             
             Register<TemplateViewModel>(App.Messages.MSG_ADD_TEMPLATE, (TemplateViewModel) => {
-                Templates.Add(TemplateViewModel); RaisePropertyChanged(nameof(IsTemplatesEmpty));
+                Templates.Add(TemplateViewModel);
+                RaisePropertyChanged(nameof(IsTemplatesEmpty)); 
+                IsModifiedTemplate = true;
+                NotifyColleagues(App.Messages.MODIFED_TEMPLATE,  IsModifiedTemplate);
             });
 
             Register<Tricount>(App.Messages.MSG_UPDATE_EDITVIEW, (t) => OnRefreshData());
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_DELETE_TEMPLATE, (TemplateViewModel) => {
-                    Templates.Remove(TemplateViewModel); RaisePropertyChanged(nameof(IsTemplatesEmpty));
+                    Templates.Remove(TemplateViewModel); 
+                    RaisePropertyChanged(nameof(IsTemplatesEmpty)) ;
+                    IsModifiedTemplate = true;
+                    NotifyColleagues(App.Messages.MODIFED_TEMPLATE,  IsModifiedTemplate);
                 });
 
             Register<TemplateViewModel>(
                 App.Messages.MSG_EDIT_TEMPLATE, (TemplateViewModel) => {
                     AddTemplate(Tricount, TemplateViewModel.Template, false, TemplateViewModel.TemplateItems, Templates,true);
+                    IsModifiedTemplate = true;
+                    NotifyColleagues(App.Messages.MODIFED_TEMPLATE,IsModifiedTemplate);
                 });
             
             
             Register<ParticipantViewModel>(
                 App.Messages.MSG_DEL_PARTICIPANT, (PVM) => {
                     DeleteParticipant(PVM);
+                    NotifyColleagues(App.Messages.MODIFED_PARTICIPANT,  IsModifiedParticipant);
                 });
             
             AddTemplateCommand = new RelayCommand(AddTemplate, CanAddTemplate);
@@ -252,17 +275,18 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private bool CanAddTemplate() {
-            return !newTricount;
+            return !newTricount && !IsModifiedParticipant;
         }
         
         private void AddParticipantAction() {
             User user = User.GetUserByFullName(SelectedFullName);
             int numberOfExpenses = Repartition.getExpenseByUserAndTricount(user.UserId, Tricount.Id);
             AddParticipants(SelectedFullName,numberOfExpenses);
+            NotifyColleagues(App.Messages.MODIFED_PARTICIPANT,  IsModifiedParticipant);
         }
 
         private bool CanAddParticipantAction() {
-            return !UsersNotSubscribed.IsNullOrEmpty();
+            return !UsersNotSubscribed.IsNullOrEmpty() && !IsModifiedTemplate && !SelectedFullName.IsNullOrEmpty();
         }
         
         private void setFullnameNotSubscribed() {
@@ -305,7 +329,7 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private bool CanAddEverybody() {
-            return !UsersNotSubscribed.IsNullOrEmpty();
+            return !UsersNotSubscribed.IsNullOrEmpty() && !IsModifiedTemplate;
         }
         
     private void AddMySelfInParticipant() {
@@ -322,6 +346,8 @@ namespace prbd_2324_g01.ViewModel {
                 break;
             }
         }
+        IsModifiedParticipant = true;
+        NotifyColleagues(App.Messages.MODIFED_PARTICIPANT,  IsModifiedParticipant);
         setFullnameNotSubscribed();
         SortPaticipants();
     }
@@ -333,9 +359,7 @@ namespace prbd_2324_g01.ViewModel {
                     return false;
                 }
             }
-
-            return true;
-            
+            return !IsModifiedTemplate;
         }
         
 
@@ -483,6 +507,7 @@ namespace prbd_2324_g01.ViewModel {
         private void DeleteParticipant(ParticipantViewModel PVM) {
             
             Participants.Remove(PVM);
+            IsModifiedParticipant = true;
             UsersNotSubscribed.Add(User.GetUserById(PVM.User.UserId));
             UsersNotSubscribed = UsersNotSubscribed.OrderBy(x => x.FullName).ToList();
             setFullnameNotSubscribed();

@@ -18,12 +18,12 @@
         <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="0"/>
         
         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" >
-            <Button Command="{Binding EditCommand}" ToolTip="Edit" Margin="0,0,8,0"
+            <Button Command="{Binding EditCommand}" Visibility="{Binding Visibility}" ToolTip="Edit" Margin="0,0,8,0"
                     Style="{StaticResource FlatButtonStyle}">
                 <fa6:ImageAwesome Icon="Solid_Pencil" Width="15" Height="20" />
             </Button>
             
-            <Button Command="{Binding DeleteCommand}" ToolTip="Delete" 
+            <Button Command="{Binding DeleteCommand}" Visibility="{Binding Visibility}" ToolTip="Delete" 
                     Style="{StaticResource FlatButtonStyle}">
                 <fa6:ImageAwesome Icon="Regular_TrashCan" PrimaryColor="Red" Width="15" Height="20"/>
             </Button>
