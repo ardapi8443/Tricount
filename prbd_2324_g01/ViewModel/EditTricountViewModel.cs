@@ -343,7 +343,10 @@ namespace prbd_2324_g01.ViewModel {
             Participants. Add(new ParticipantViewModel(Tricount, CurrentUser, 0, CurrentUser.UserId == CurrentTricountCreator.UserId));
             UsersNotSubscribed.Remove(CurrentUser);
         }
-        
+
+        IsModifiedParticipant = true;
+        NotifyColleagues(App.Messages.MODIFED_PARTICIPANT,  IsModifiedParticipant);
+
     }
 
     private void AddParticipants(string usernotsub, int numberOfExpenses) {
