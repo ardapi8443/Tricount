@@ -115,7 +115,6 @@ namespace prbd_2324_g01.ViewModel {
             bool? dialogResult = confirmationDialog.ShowDialog();
 
             if (dialogResult == true && Tricount != null) {
-                Console.WriteLine("Vous venez de delete le Tricount : " + Tricount.Title );
                 Tricount.delete();
                 
                 NotifyColleagues(App.Messages.MSG_CLOSE_TAB,Tricount);
