@@ -13,7 +13,7 @@ namespace prbd_2324_g01.ViewModel
         public string CreatorStatusDisplay => IsCreator ? "(creator)" : "";
         public string ExpensesDisplay => (NumberOfExpenses > 0 && !IsCreator) ? $"({NumberOfExpenses} expenses)" : string.Empty;
         
-        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility TrashCanVisibility => (NumberOfExpenses == 0 && !IsCreator && User.Role != Role.Administrator) ? Visibility.Visible : Visibility.Collapsed;
 
         private bool _isCreator;
         
