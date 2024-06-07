@@ -337,7 +337,29 @@ public class Tricount : EntityBase<PridContext> {
     public bool IsDuplicateTitle(string NewTitle) {
         return Context.Tricounts.Any(t => t.Title.Equals(NewTitle) && this.Id != t.Id && t.Creator == this.Creator);
     }
-    
-    
+
+    public class UserBalance
+    {
+        public int UserId { get; set; }
+        public double Amount { get; set; }
+    }
+
+    public IQueryable<UserBalance> GetAllUserBal()
+    {
+        return from o in Context.Operations
+            where o.TricountId == this.Id
+            group o by o.UserId into g
+            orderby g.Key
+            select new UserBalance
+            {
+                UserId = g.Key,
+                Amount = g.Sum(x => x.Amount)
+            };
+    }
+    public IQueryable<Operation> GetAllOperation() {
+        return from o in Context.Operations
+            where o.TricountId == this.Id
+            select o;
+    }
 }
 

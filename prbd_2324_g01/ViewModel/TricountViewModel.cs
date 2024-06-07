@@ -81,23 +81,14 @@ namespace prbd_2324_g01.ViewModel {
         }
 
         private void DisplayMap() {
-            // var tricount = Context.Tricounts
-            //     .Include(t => t.Subscribers)
-            //     .FirstOrDefault(t => t.Id == Tricount.Id);
             Tricount tricount = Tricount.GetTricountById(Tricount.Id);
             Tricount = tricount;
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
-            var operations = from o in Context.Operations
-                where o.TricountId == Tricount.Id
-                group o by o.UserId into g
-                orderby g.Key
-                select new {
-                    UserId = g.Key,
-                    Amount = g.Sum(x => x.Amount)
-                };
-  
+      
+
+            var operations = Tricount.GetAllUserBal();
            
             var query2 = from user in Tricount.Subscribers
                 join op in operations on user.UserId equals op.UserId into operationDetails
@@ -120,9 +111,7 @@ namespace prbd_2324_g01.ViewModel {
 
         private void DisplayOperations() {
             //on va chercher les opérations lié au Tricount en DB
-            var query = from o in Context.Operations
-                where o.TricountId == Tricount.Id
-                select o;
+            var query = Tricount.GetAllOperation();
             query = query.OrderByDescending(x => x.OperationDate)
                 .ThenBy(x => x.Title);
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
