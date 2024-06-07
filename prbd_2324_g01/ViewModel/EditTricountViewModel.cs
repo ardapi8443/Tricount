@@ -504,11 +504,11 @@ namespace prbd_2324_g01.ViewModel {
             //     .Include(t => t.TemplateItems)
             //     .FirstOrDefault(t => t.TemplateId == templateViewModel.Template.TemplateId);
 
-            Template existingTemplate = Template.GetTemplateById(templateViewModel.Template.TemplateId);
+            Template = Template.GetTemplateById(templateViewModel.Template.TemplateId);
 
-            if (existingTemplate != null) {
+            if (Template != null) {
                 // Mise à jour du template existant
-                existingTemplate.Title = templateViewModel.Title;
+                Template.Title = templateViewModel.Title;
                 
             } else {
                 // Création d'un nouveau template
@@ -520,32 +520,29 @@ namespace prbd_2324_g01.ViewModel {
                 };
                 template.Add();
 
-                existingTemplate = template; 
+                Template = template; 
             }
 
             foreach (UserTemplateItemViewModel userTemplateItemViewModel in templateViewModel.TemplateItems) {
                 User user = User.GetUserByFullName(userTemplateItemViewModel.UserName);
                 
                 if (user != null) {
-                    TemplateItem existingTemplateItem = existingTemplate.TemplateItems
-                        .FirstOrDefault(ti => ti.User == user.UserId);
-
-                    if (existingTemplateItem != null) {
-                        // Mise à jour de l'item existant
-                        existingTemplateItem.Weight = userTemplateItemViewModel.Weight;
+                    List<TemplateItem> existingTemplateItems =  TemplateItem.GetAllItemByTemplateID(Template.TemplateId);
+                    var item = existingTemplateItems.FirstOrDefault(u => u.User == user.UserId);
+                    if (item != null) {
+                            item.Weight = userTemplateItemViewModel.Weight;
                     } else {
-                        if(existingTemplate.Exist(user)) {
+                        if(Template.Exist(user)) {
                             // Création d'un nouvel item
                             TemplateItem templateItem = new TemplateItem {
                                 Weight = userTemplateItemViewModel.Weight,
                                 User = user.UserId,
-                                Template = existingTemplate.TemplateId,
-                                TemplateFromTemplateItem = existingTemplate,
+                                Template = Template.TemplateId,
+                                TemplateFromTemplateItem = Template,
                                 UserFromTemplateItem = user
                             };
-                            existingTemplate.TemplateItems.Add(templateItem);
+                            Template.TemplateItems.Add(templateItem);
                             templateItem.Add();
-                           
                         }
                     }
                 }
