@@ -238,7 +238,7 @@ public class User : EntityBase<PridContext> {
             select u.HashedPassword).First();
     }
 
-    public void Add() {
+    public void AddToContext() {
         Context.Add(this);
     }
 }

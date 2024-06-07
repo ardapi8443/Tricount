@@ -48,9 +48,6 @@ namespace prbd_2324_g01.ViewModel {
             get => _amount;
             set => SetProperty(ref _amount, value,
                 () => {
-                    //_amountParsed = double.Parse(Amount);
-                    
-                    //if (double.TryParse(Amount, out _amountParsed)) {
                     if (!CheckIfDouble(Amount)) {
                         Amount = _amountParsed.ToString();
                     } else {
@@ -58,7 +55,6 @@ namespace prbd_2324_g01.ViewModel {
                         Amount = Math.Round(_amountParsed, 2).ToString("F2");
                         
                     } 
-                    Console.WriteLine(Amount);
                     Validate();
                     NotifyColleagues(App.Messages.MSG_AMOUNT_CHANGED, _amountParsed);
                 });
@@ -153,8 +149,8 @@ namespace prbd_2324_g01.ViewModel {
             foreach (var row in users) {
                 Users.Add(row);
             }
-                            
-            //default selected user must be a user from the combobox(=> from Users)
+            
+            //set the default selected user
             SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
             
             //we populate the Templates Combobox
@@ -166,6 +162,7 @@ namespace prbd_2324_g01.ViewModel {
                }
             }
             
+            //set the default selected template
             Templates.Insert(0, new Template{Title = "--choose a template--"});
             SelectedTemplate = Templates.FirstOrDefault();
             
@@ -315,9 +312,14 @@ namespace prbd_2324_g01.ViewModel {
                 template = new Template();
             } else {
                 template = Template.GetTemplateById(SelectedTemplate.TemplateId);
-            } 
+            }
+
+            var templatesItemsCopy = new ObservableCollectionFast<UserTemplateItemViewModel>();
+            foreach (var row in TemplateItems) {
+                templatesItemsCopy.Add(new UserTemplateItemViewModel(row.UserName, row.Weight, false, true));
+            }
             // need to update code here
-            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, TemplateItems,new ObservableCollectionFast<TemplateViewModel>(),false) {
+            var addTemplateDialog = new AddTemplateView(_tricount, template, _isNewTemplate, templatesItemsCopy,new ObservableCollectionFast<TemplateViewModel>(),false) {
                 Owner = App.Current.MainWindow
             };
             addTemplateDialog.ShowDialog(); 
