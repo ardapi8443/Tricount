@@ -172,7 +172,7 @@ namespace prbd_2324_g01.ViewModel {
             //     .Where(t => t.Tricount == Tricount.Id)
             //     .ToList();
 
-            List<Template> templates = Tricount.GetTemplatesByTricount();
+            List<Template> templates = Tricount.GetTemplates();
 
             Templates = new ObservableCollectionFast<TemplateViewModel>(
                 templates.Select(t => new TemplateViewModel(t, true))
@@ -191,7 +191,7 @@ namespace prbd_2324_g01.ViewModel {
             if (tricount.IsNew) {
                 UsersNotSubscribed = User.GetAllUserButOne(CurrentTricountCreator);
             } else {
-                UsersNotSubscribed = Tricount.getUsersNotSubscribed();
+                UsersNotSubscribed = Tricount.GetUsersNotSubscribed();
             }
             
             setFullnameNotSubscribed();
@@ -436,7 +436,7 @@ namespace prbd_2324_g01.ViewModel {
             LoadTemplates();
             
             Participants = new ObservableCollectionFast<ParticipantViewModel>(
-                Tricount.getSubscribers().Select(sub => {
+                Tricount.GetSubscribers().Select(sub => {
       
                     int numberOfExpenses = Repartition.getExpenseByUserAndTricount(sub.UserId, Tricount.Id);
                     
@@ -556,7 +556,7 @@ namespace prbd_2324_g01.ViewModel {
         private void KeepTemplateFromView() {
             List<int> templateIdsInViewModels = Templates.Select(t => t.Template.TemplateId).ToList();
 
-            List<Template> templatesInDb = Tricount.GetTemplatesByTricount();
+            List<Template> templatesInDb = Tricount.GetTemplates();
             
             var templatesToDelete = templatesInDb
                 .Where(t => !templateIdsInViewModels.Contains(t.TemplateId))

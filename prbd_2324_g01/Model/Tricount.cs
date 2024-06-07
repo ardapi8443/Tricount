@@ -74,8 +74,8 @@ public class Tricount : EntityBase<PridContext> {
             return Subscribers.Count - 1;
         }
     }
-    [NotMapped]
-    public virtual Boolean haveFriends {
+    //[NotMapped]
+    public virtual Boolean HaveFriends {
         get {
             Context.Entry(this)
               .Collection(t => t.Subscribers)
@@ -149,7 +149,7 @@ public class Tricount : EntityBase<PridContext> {
         Context.Tricounts.Remove(tricount);
         Context.SaveChanges();
     }
-    public static List<Tricount> tricountByMember(User user) {
+    public static List<Tricount> TricountsByMember(User user) {
         
         List<Tricount> res;
         
@@ -211,67 +211,18 @@ public class Tricount : EntityBase<PridContext> {
         return Math.Round(res, 2);
     }
     
-    public double ConnectedUserBal(User user) {
-
-        Double connectedUserExp = UserExpenses(user);
-        Double expenseUserCo = new();
-
-        foreach (Operation ope in user.OperationsCreated) {
-
-            if (ope.TricountId == Id) {
-                expenseUserCo += ope.Amount;
-            }
-        }
-        
-        return Math.Round(expenseUserCo - connectedUserExp, 2);
-    }
-
-
-    
     public override string ToString() {
         return ($"{this.Title} : {this.Creator}");
     }   
-    
-    public static IQueryable<int> GetTricountsIdByUser(User user) {
-        var q = from t in Context.Tricounts
-                where t.Creator == user.UserId
-                orderby t.CreatedAt
-                select t.Id;
-
-        return q;
-    }
-
-    public dynamic GetTricountCard() {
-        //manque balance !!!
-        //sous requete � faire � part dans user en envoyant le tricountId en param�tre
-        int Id = this.Id;
-        var q = from t in Context.Tricounts
-                where t.Id == Id
-                let lastOperationDate = t.Operations.OrderByDescending(x => x.OperationDate).FirstOrDefault()
-                let friendsCount = t.Subscribers.Count()
-                let operationsCount = t.Operations.Count()
-                let operationsAmount = t.Operations.Sum(x => x.Amount)
-                select new { t.Title, t.Description, Creator = t.CreatorFromTricount.FullName, t.CreatedAt, 
-                    lastOperationDate, friendsCount , operationsCount, operationsAmount };
-        return q.ToList();
-    }
-
-    public static dynamic GetTricountOperations(int id) {
-        var q = from o in Context.Operations
-                where o.TricountId == id
-                select o;
-        return q;
-    }
 
     public static dynamic GetTricountById(int id) {
         var q = from t in Context.Tricounts
                 where t.Id == id
                 select t;
         return q.First();
-        // return q.FirstOrDefault();
     }
 
-    public List<User> getUsersNotSubscribed() {
+    public List<User> GetUsersNotSubscribed() {
         
         List<User> usersNotSubscribed = Context.Users
             .Where(user => !Context.Subscriptions
@@ -283,7 +234,7 @@ public class Tricount : EntityBase<PridContext> {
         return usersNotSubscribed;
     }
         
-    public HashSet<User> getSubscribers() {
+    public HashSet<User> GetSubscribers() {
         HashSet<User> res = new HashSet<User>();
 
         var Sub = Context.Subscriptions.Where(s => s.TricountId == this.Id);
@@ -304,16 +255,7 @@ public class Tricount : EntityBase<PridContext> {
         return users.OrderBy(u => u.FullName).ToList();
     }
 
-    public void Save() {
-        Context.Tricounts.Add(this);
-        
-    }
-
-    public void addUserToSubscribers(User u) {
-        this.Subscribers.Add(u);
-    }
-
-    public List<Template> GetTemplatesByTricount() {
+    public List<Template> GetTemplates() {
         var q2 = from t in Context.Templates
             where t.Tricount == this.Id
             select t;
@@ -334,32 +276,39 @@ public class Tricount : EntityBase<PridContext> {
         Context.Add(this);
     }
 
-    public bool IsDuplicateTitle(string NewTitle) {
-        return Context.Tricounts.Any(t => t.Title.Equals(NewTitle) && this.Id != t.Id && t.Creator == this.Creator);
+    public bool IsDuplicateTitle(string newTitle) {
+        return Context.Tricounts.Any(t => t.Title.Equals(newTitle) && this.Id != t.Id && t.Creator == this.Creator);
     }
-
-    public class UserBalance
-    {
-        public int UserId { get; set; }
-        public double Amount { get; set; }
-    }
-
-    public IQueryable<UserBalance> GetAllUserBal()
-    {
-        return from o in Context.Operations
-            where o.TricountId == this.Id
+    
+    public dynamic  GetAllSubscribersBalance() {
+        var operations = from o in Context.Operations
+            where o.TricountId == Id
             group o by o.UserId into g
             orderby g.Key
-            select new UserBalance
-            {
+            select new {
                 UserId = g.Key,
                 Amount = g.Sum(x => x.Amount)
             };
+           
+        var query2 = from user in Subscribers
+            join op in operations on user.UserId equals op.UserId into operationDetails
+            from subOp in operationDetails.DefaultIfEmpty()
+            orderby user.FullName
+            select new {
+                UserId = user.UserId,
+                Amount = subOp != null ? subOp.Amount : 0.00 
+            };
+        
+        return query2;
     }
+    
     public IQueryable<Operation> GetAllOperation() {
-        return from o in Context.Operations
+        var q = from o in Context.Operations
             where o.TricountId == this.Id
             select o;
+        
+        return q.OrderByDescending(x => x.OperationDate)
+            .ThenBy(x => x.Title);
     }
 }
 

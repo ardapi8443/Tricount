@@ -86,20 +86,8 @@ namespace prbd_2324_g01.ViewModel {
             
             //on va chercher les Users ainsi que les montants lié à ceux-ci en DB
             Map = new Dictionary<User, double>();
-      
-
-            var operations = Tricount.GetAllUserBal();
-           
-            var query2 = from user in Tricount.Subscribers
-                join op in operations on user.UserId equals op.UserId into operationDetails
-                from subOp in operationDetails.DefaultIfEmpty()
-                orderby user.FullName
-                select new {
-                    UserId = user.UserId,
-                    Amount = subOp != null ? subOp.Amount : 0.00 
-                };
             
-            foreach (var q in query2) {
+            foreach (var q in Tricount.GetAllSubscribersBalance()) {
                 User user = User.GetUserById(q.UserId);
                 Map.Add(user, user.GetBalanceByTricount(Tricount.Id));
             }
@@ -112,8 +100,6 @@ namespace prbd_2324_g01.ViewModel {
         private void DisplayOperations() {
             //on va chercher les opérations lié au Tricount en DB
             var query = Tricount.GetAllOperation();
-            query = query.OrderByDescending(x => x.OperationDate)
-                .ThenBy(x => x.Title);
             Operations = new ObservableCollection<OperationCardViewModel>(query.Select(o => new OperationCardViewModel(o)));
         }
 

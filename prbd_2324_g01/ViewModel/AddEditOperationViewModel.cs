@@ -161,7 +161,7 @@ namespace prbd_2324_g01.ViewModel {
             SelectedUser = isNew ? App.CurrentUser : operation.Initiator;
             
             //we populate the Templates Combobox
-            List<Template> templates = tricount.GetTemplatesByTricount();
+            List<Template> templates = tricount.GetTemplates();
             
             if (!templates.IsNullOrEmpty()) {
                foreach (var row in templates) { 

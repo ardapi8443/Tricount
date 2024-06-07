@@ -217,7 +217,7 @@ namespace prbd_2324_g01.ViewModel {
 
 
             TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                Tricount.getSubscribers().OrderBy(u => u.FullName).Select(u => {
+                Tricount.GetSubscribers().OrderBy(u => u.FullName).Select(u => {
                     var templateItem = existingTemplateItems.FirstOrDefault(ti => ti.UserName == u.FullName);
                     return new UserTemplateItemViewModel(
                         u.FullName,
@@ -237,7 +237,7 @@ namespace prbd_2324_g01.ViewModel {
 
             if (templateItems.IsNullOrEmpty()) {
                 TemplateItems = new ObservableCollection<UserTemplateItemViewModel>(
-                    Tricount.getSubscribers().OrderBy(u => u.FullName).Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, false)));
+                    Tricount.GetSubscribers().OrderBy(u => u.FullName).Select(u => new UserTemplateItemViewModel(u.FullName, 0, true, false)));
             } else {
                 foreach (var userTemplateItemViewModel in templateItems) {
                     userTemplateItemViewModel.FromOperation = false;

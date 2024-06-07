@@ -29,7 +29,7 @@ namespace prbd_2324_g01.ViewModel
                 UpdatedDescription = Tricount.Description;
             }
             
-            if (!Tricount.haveFriends) {
+            if (!Tricount.HaveFriends) {
                 FriendMessage = "With no friend";
             } else if (Tricount.NumFriends == 1) {
                 FriendMessage = "With " + Tricount.NumFriends + " friend";
