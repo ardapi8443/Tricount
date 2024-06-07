@@ -112,11 +112,6 @@ namespace prbd_2324_g01.ViewModel {
             }
 
             CancelTemplate = new RelayCommand(CloseWindow);
-            
-            Register(App.Messages.MSG_TEMP_0, () => {
-                CountWeightZero();
-                Validate();
-            });
         }
 
         private void CountWeightZero() {
@@ -291,7 +286,7 @@ namespace prbd_2324_g01.ViewModel {
                 AddError(nameof(Title), "Title already exists.");
             }
             
-            if (part_weight == TemplateItems.Count) {
+            if (!TemplateItems.Any(item => item.IsChecked)) {
                 AddError(nameof(TemplateItems),"You must check at least one participant");
                 ErrorMessage = "you must check at least one participant";
             } else {

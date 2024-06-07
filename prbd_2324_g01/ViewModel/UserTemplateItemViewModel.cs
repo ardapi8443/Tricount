@@ -68,14 +68,12 @@ namespace prbd_2324_g01.ViewModel {
 
         private void IncreaseWeight() {
             Weight++;
-            NotifyColleagues(App.Messages.MSG_TEMP_0);
         }
 
         private void DecreaseWeight() {
             if (Weight > 0) {
                 Weight--;
             }
-            NotifyColleagues(App.Messages.MSG_TEMP_0);
         }
 
         private void CheckBoxAction() {
@@ -84,7 +82,6 @@ namespace prbd_2324_g01.ViewModel {
             } else {
                 Weight = 0;
             }
-            NotifyColleagues(App.Messages.MSG_TEMP_0);
         }
         
         private void CalculateTotal() {
